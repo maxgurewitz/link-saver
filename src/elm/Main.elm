@@ -1,10 +1,11 @@
 module Main exposing (..)
 
 import Html exposing (text, program)
+import Ports exposing (createLink)
 
 
 init =
-    ( Maybe.Nothing, Cmd.none )
+    ( Maybe.Nothing, createLink "first" )
 
 
 view model =

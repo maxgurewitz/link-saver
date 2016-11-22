@@ -16,7 +16,6 @@ module.exports = {
       {
         test: /\.elm$/,
         exclude: [/elm-stuff/, /node_modules/],
-        // loader: `elm-webpack?cwd=${elmPackage['source-directories'][0]}`
         loader: 'elm-webpack'
       }
     ],

@@ -1,6 +1,7 @@
 # Logs
 *.log
 .sass-cache
+elm-stuff
 npm-debug.log*
 coverage
 node_modules

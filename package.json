@@ -4,7 +4,7 @@
   "description": "Link saver app.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack-dev-server --port 3000 --open"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,11 @@
   "bugs": {
     "url": "https://github.com/maxgurewitz/link-saver/issues"
   },
-  "homepage": "https://github.com/maxgurewitz/link-saver#readme"
+  "homepage": "https://github.com/maxgurewitz/link-saver#readme",
+  "devDependencies": {
+    "elm-webpack-loader": "^3.0.6",
+    "file-loader": "^0.9.0",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2"
+  }
 }

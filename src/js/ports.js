@@ -1,11 +1,17 @@
 var firebase = require('firebase/app');
 var uuid = require('uuid');
+var Promise = firebase.promise;
 
 function createUser(loginForm, app) {
   // https://firebase.google.com/docs/auth/web/password-auth#create_a_password-based_account
   firebase
     .auth()
     .createUserWithEmailAndPassword(loginForm.email, loginForm.password)
+    .catch(function(error) {
+      return error.code === 'auth/email-already-in-use' ?
+        firebase.auth().signInWithEmailAndPassword(loginForm.email, loginForm.password) :
+        Promise.reject(error);
+    })
     .then(function() {
       app.ports.createUserResponse.send(null);
     })

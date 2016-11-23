@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (text, program, div, button, input)
-import Ports exposing (createLink, links, createUser)
+import Ports exposing (createLink, links, createUser, createUserResponse)
 import Types exposing (Msg(..), Session(..))
 import Html.Events exposing (onInput, onClick)
 import Html.Attributes exposing (placeholder)
@@ -10,7 +10,7 @@ import Html.Attributes exposing (placeholder)
 initialModel =
     { linkInputText = ""
     , links = []
-    , session = LoginInfo { email = "", password = "" }
+    , session = LoginInfo { email = "", password = "", error = "" }
     }
 
 
@@ -37,6 +37,7 @@ view model =
                             , onInput (\password -> SetLoginForm { loginForm | password = password })
                             ]
                             []
+                        , text loginForm.error
                         , button [ onClick Login ] [ text "create user" ]
                         ]
     in
@@ -85,11 +86,46 @@ update msg model =
             in
                 ( model, cmd )
 
+        CreateUserResponse response ->
+            let
+                newModel =
+                    case model.session of
+                        LoginInfo loginForm ->
+                            case response of
+                                Ok () ->
+                                    { model | session = UserInfo { email = loginForm.email } }
+
+                                Err message ->
+                                    { model | session = LoginInfo { loginForm | error = message } }
+
+                        UserInfo user ->
+                            model
+            in
+                ( newModel, Cmd.none )
+
+
+toResultErr toMsg maybeErr =
+    let
+        res =
+            case maybeErr of
+                Just err ->
+                    Err err
+
+                Nothing ->
+                    Ok ()
+    in
+        toMsg res
+
 
 main =
     program
         { init = init
         , update = update
-        , subscriptions = always (links SetLinks)
+        , subscriptions =
+            always
+                <| Sub.batch
+                    [ links SetLinks
+                    , createUserResponse (toResultErr CreateUserResponse)
+                    ]
         , view = view
         }

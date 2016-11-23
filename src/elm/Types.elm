@@ -16,6 +16,7 @@ type alias User =
 type alias LoginForm =
     { email : String
     , password : String
+    , error : String
     }
 
 
@@ -30,3 +31,4 @@ type Msg
     | SetLoginForm LoginForm
     | CreateLink
     | Login
+    | CreateUserResponse (Result String ())

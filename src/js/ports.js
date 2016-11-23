@@ -1,8 +1,17 @@
 var firebase = require('firebase/app');
 var uuid = require('uuid');
 
-function createUser(loginForm) {
-  console.log('loc1', loginForm);
+function createUser(loginForm, app) {
+  // https://firebase.google.com/docs/auth/web/password-auth#create_a_password-based_account
+  firebase
+    .auth()
+    .createUserWithEmailAndPassword(loginForm.email, loginForm.password)
+    .then(function() {
+      app.ports.createUserResponse.send(null);
+    })
+    .catch(function(error) {
+      app.ports.createUserResponse.send(error.message || null);
+    });
 }
 
 function createLink(href) {

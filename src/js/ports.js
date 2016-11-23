@@ -6,6 +6,7 @@ function createLink(href) {
 
   // FIXME: will want to be user specific
   // firebase.auth().currentUser.uid;
+  // use push method: https://firebase.google.com/docs/database/web/lists-of-data
   firebase.database().ref('links/' + id).set({
     href: href,
     timestamp: Date.now()

@@ -1,6 +1,10 @@
 var firebase = require('firebase/app');
 var uuid = require('uuid');
 
+function createUser(loginForm) {
+  console.log('loc1', loginForm);
+}
+
 function createLink(href) {
   var id = uuid();
 
@@ -17,6 +21,7 @@ function linkChanges(app) {
   firebase.database().ref('links').on('value', function(snapshot) {
     var val = snapshot.val();
 
+    // FIXME: use list api
     var links = Object.keys(val).map(function(guid) {
       var link = val[guid];
 
@@ -35,7 +40,8 @@ function linkChanges(app) {
 
 module.exports = {
   receive: {
-    createLink: createLink
+    createLink: createLink,
+    createUser: createUser
   },
   send: [
     linkChanges

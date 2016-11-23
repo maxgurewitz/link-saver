@@ -8,7 +8,25 @@ type alias Link =
     }
 
 
+type alias User =
+    { email : String
+    }
+
+
+type alias LoginForm =
+    { email : String
+    , password : String
+    }
+
+
+type Session
+    = UserInfo User
+    | LoginInfo LoginForm
+
+
 type Msg
     = SetLinks (List Link)
     | SetLinkInputText String
+    | SetLoginForm LoginForm
     | CreateLink
+    | Login

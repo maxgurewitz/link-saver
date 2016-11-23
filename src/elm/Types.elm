@@ -10,3 +10,5 @@ type alias Link =
 
 type Msg
     = SetLinks (List Link)
+    | SetLinkInputText String
+    | CreateLink

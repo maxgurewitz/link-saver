@@ -24,6 +24,8 @@ function linkChanges(app) {
         href: link.href,
         timestamp: link.timestamp
       };
+    }).sort(function(link1, link2) {
+      return link1.timestamp < link2.timestamp ? 1 : -1;
     });
 
     app.ports.links.send(links);

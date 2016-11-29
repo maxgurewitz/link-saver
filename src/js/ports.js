@@ -1,6 +1,7 @@
 var firebase = require('firebase/app');
 var uuid = require('uuid');
-var Promise = firebase.promise;
+var Promise = firebase.Promise;
+debugger;
 
 function createUser(loginForm, app) {
   // https://firebase.google.com/docs/auth/web/password-auth#create_a_password-based_account

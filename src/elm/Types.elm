@@ -25,6 +25,18 @@ type Session
     | LoginInfo LoginForm
 
 
+type alias Flags =
+    { user : Maybe User
+    }
+
+
+type alias Model =
+    { linkInputText : String
+    , links : List Link
+    , session : Session
+    }
+
+
 type Msg
     = SetLinks (List Link)
     | SetLinkInputText String

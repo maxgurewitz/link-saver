@@ -16,16 +16,23 @@ firebase.initializeApp({
   databaseURL: 'https://' + fbpid + '.firebaseio.com'
 });
 
-var app = Elm.Main.embed(document.getElementById('main'));
 
-Object.keys(ports.receive).forEach(function(name) {
-  var subscription = ports.receive[name];
+firebase.auth().onAuthStateChanged(function(user) {
+  var flags = {
+    user: user || null
+  };
 
-  app.ports[name].subscribe(function(data) {
-    subscription(data, app);
+  var app = Elm.Main.embed(document.getElementById('main'), flags);
+
+  Object.keys(ports.receive).forEach(function(name) {
+    var subscription = ports.receive[name];
+
+    app.ports[name].subscribe(function(data) {
+      subscription(data, app);
+    });
   });
-});
 
-ports.send.forEach(function(sendPort) {
-  sendPort(app);
+  ports.send.forEach(function(sendPort) {
+    sendPort(app);
+  });
 });

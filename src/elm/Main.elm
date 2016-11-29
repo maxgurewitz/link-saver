@@ -1,21 +1,31 @@
 module Main exposing (..)
 
-import Html exposing (text, program, div, button, input)
+import Html exposing (text, programWithFlags, div, button, input)
 import Ports exposing (createLink, links, createUser, createUserResponse)
-import Types exposing (Msg(..), Session(..))
+import Types exposing (..)
 import Html.Events exposing (onInput, onClick)
 import Html.Attributes exposing (placeholder)
 
 
-initialModel =
-    { linkInputText = ""
-    , links = []
-    , session = LoginInfo { email = "", password = "", error = "" }
-    }
+emptyLogin =
+    LoginInfo { email = "", password = "", error = "" }
 
 
-init =
-    ( initialModel, Cmd.none )
+init : Flags -> ( Model, Cmd Msg )
+init { user } =
+    let
+        session =
+            user
+                |> Maybe.map UserInfo
+                |> Maybe.withDefault emptyLogin
+
+        initialModel =
+            { linkInputText = ""
+            , links = []
+            , session = session
+            }
+    in
+        ( initialModel, Cmd.none )
 
 
 view model =
@@ -118,7 +128,7 @@ toResultErr toMsg maybeErr =
 
 
 main =
-    program
+    programWithFlags
         { init = init
         , update = update
         , subscriptions =

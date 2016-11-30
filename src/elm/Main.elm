@@ -16,12 +16,11 @@ init { user } =
     let
         session =
             user
-                |> Maybe.map LoggedIn
+                |> Maybe.map (\{ email } -> LoggedIn { email = email, linkInputText = "" })
                 |> Maybe.withDefault emptyLogin
 
         initialModel =
-            { linkInputText = ""
-            , links = []
+            { links = []
             , session = session
             }
     in
@@ -32,11 +31,13 @@ view model =
     let
         loginEl =
             case model.session of
-                LoggedIn user ->
+                LoggedIn model ->
                     div []
-                        [ text user.email
+                        [ text model.email
                         , button [ onClick LogOut ]
                             [ text "sign out" ]
+                        , input [ onInput SetLinkInputText ] []
+                        , button [ onClick CreateLink ] [ text "submit link" ]
                         ]
 
                 LoggedOut loginForm ->
@@ -57,12 +58,30 @@ view model =
     in
         div []
             [ loginEl
-            , input [ onInput SetLinkInputText ] []
-            , button [ onClick CreateLink ] [ text "submit link" ]
             , div []
                 <| List.map (\link -> text link.href)
                     model.links
             ]
+
+
+mapLoggedIn : (LoggedInModel -> LoggedInModel) -> Session -> Session
+mapLoggedIn mapper session =
+    case session of
+        LoggedIn loggedInModel ->
+            LoggedIn <| mapper loggedInModel
+
+        _ ->
+            session
+
+
+defaultLoggedOut : a -> (LoggedInModel -> a) -> Session -> a
+defaultLoggedOut defaultLoggedOut loggedInMapper session =
+    case session of
+        LoggedIn loggedInModel ->
+            loggedInMapper loggedInModel
+
+        _ ->
+            defaultLoggedOut
 
 
 update msg model =
@@ -83,10 +102,24 @@ update msg model =
             ( { model | links = links }, Cmd.none )
 
         SetLinkInputText linkInputText ->
-            ( { model | linkInputText = linkInputText }, Cmd.none )
+            let
+                session =
+                    model.session
+                        |> mapLoggedIn
+                            (\loggedInModel ->
+                                { loggedInModel | linkInputText = linkInputText }
+                            )
+            in
+                ( { model | session = session }, Cmd.none )
 
         CreateLink ->
-            ( model, createLink model.linkInputText )
+            let
+                cmd =
+                    model.session
+                        |> defaultLoggedOut Cmd.none
+                            (.linkInputText >> createLink)
+            in
+                ( model, cmd )
 
         LogIn ->
             let
@@ -104,7 +137,7 @@ update msg model =
             let
                 cmd =
                     case model.session of
-                        LoggedIn user ->
+                        LoggedIn loggedInModel ->
                             logOut ()
 
                         _ ->
@@ -115,7 +148,7 @@ update msg model =
         LogOutResponse err ->
             let
                 _ =
-                    Maybe.map (\str -> (Debug.log "log out error" err))
+                    Maybe.map (\str -> (Debug.log "log out error" str))
             in
                 ( { model | session = emptyLogin }, Cmd.none )
 
@@ -126,12 +159,15 @@ update msg model =
                         LoggedOut loginForm ->
                             case response of
                                 Ok () ->
-                                    { model | session = LoggedIn { email = loginForm.email } }
+                                    { model
+                                        | session =
+                                            LoggedIn { email = loginForm.email, linkInputText = "" }
+                                    }
 
                                 Err message ->
                                     { model | session = LoggedOut { loginForm | error = message } }
 
-                        LoggedIn user ->
+                        LoggedIn loggedInModel ->
                             model
             in
                 ( newModel, Cmd.none )

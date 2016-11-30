@@ -13,6 +13,12 @@ type alias User =
     }
 
 
+type alias LoggedInModel =
+    { email : String
+    , linkInputText : String
+    }
+
+
 type alias LoginForm =
     { email : String
     , password : String
@@ -21,7 +27,7 @@ type alias LoginForm =
 
 
 type Session
-    = LoggedIn User
+    = LoggedIn LoggedInModel
     | LoggedOut LoginForm
 
 
@@ -31,8 +37,7 @@ type alias Flags =
 
 
 type alias Model =
-    { linkInputText : String
-    , links : List Link
+    { links : List Link
     , session : Session
     }
 

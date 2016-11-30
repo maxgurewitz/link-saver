@@ -42,5 +42,7 @@ type Msg
     | SetLinkInputText String
     | SetLoginForm LoginForm
     | CreateLink
-    | Login
+    | LogIn
+    | LogOut
+    | LogOutResponse (Maybe String)
     | CreateUserResponse (Result String ())

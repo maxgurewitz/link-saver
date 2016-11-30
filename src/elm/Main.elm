@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (text, programWithFlags, div, button, input)
-import Ports exposing (createLink, links, createUser, createUserResponse)
+import Ports exposing (createLink, links, createUser, createUserResponse, logOut)
 import Types exposing (..)
 import Html.Events exposing (onInput, onClick)
 import Html.Attributes exposing (placeholder)
@@ -33,7 +33,11 @@ view model =
         loginEl =
             case model.session of
                 UserInfo user ->
-                    text user.email
+                    div []
+                        [ text user.email
+                        , button [ onClick LogOut ]
+                            [ text "sign out" ]
+                        ]
 
                 LoginInfo loginForm ->
                     div []
@@ -48,7 +52,7 @@ view model =
                             ]
                             []
                         , text loginForm.error
-                        , button [ onClick Login ] [ text "create user" ]
+                        , button [ onClick LogIn ] [ text "register/login" ]
                         ]
     in
         div []
@@ -84,7 +88,7 @@ update msg model =
         CreateLink ->
             ( model, createLink model.linkInputText )
 
-        Login ->
+        LogIn ->
             let
                 cmd =
                     case model.session of
@@ -95,6 +99,25 @@ update msg model =
                             Cmd.none
             in
                 ( model, cmd )
+
+        LogOut ->
+            let
+                cmd =
+                    case model.session of
+                        UserInfo user ->
+                            logOut ()
+
+                        _ ->
+                            Cmd.none
+            in
+                ( model, cmd )
+
+        LogOutResponse err ->
+            let
+                _ =
+                    Maybe.map (\str -> (Debug.log "log out error" err))
+            in
+                ( { model | session = emptyLogin }, Cmd.none )
 
         CreateUserResponse response ->
             let

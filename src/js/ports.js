@@ -1,7 +1,14 @@
 var firebase = require('firebase/app');
 var uuid = require('uuid');
 var Promise = firebase.Promise;
-debugger;
+
+function logOut(nothing, app) {
+  firebase.auth().signOut().then(function(res) {
+    app.ports.logOutResponse.send(null);
+  }, function(error) {
+    app.ports.logOutResponse.send(String(error));
+  });
+}
 
 function createUser(loginForm, app) {
   // https://firebase.google.com/docs/auth/web/password-auth#create_a_password-based_account
@@ -57,7 +64,8 @@ function linkChanges(app) {
 module.exports = {
   receive: {
     createLink: createLink,
-    createUser: createUser
+    createUser: createUser,
+    logOut: logOut
   },
   send: [
     linkChanges

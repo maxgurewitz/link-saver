@@ -21,8 +21,8 @@ type alias LoginForm =
 
 
 type Session
-    = UserInfo User
-    | LoginInfo LoginForm
+    = LoggedIn User
+    | LoggedOut LoginForm
 
 
 type alias Flags =

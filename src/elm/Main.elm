@@ -8,7 +8,7 @@ import Html.Attributes exposing (placeholder)
 
 
 emptyLogin =
-    LoginInfo { email = "", password = "", error = "" }
+    LoggedOut { email = "", password = "", error = "" }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -16,7 +16,7 @@ init { user } =
     let
         session =
             user
-                |> Maybe.map UserInfo
+                |> Maybe.map LoggedIn
                 |> Maybe.withDefault emptyLogin
 
         initialModel =
@@ -32,14 +32,14 @@ view model =
     let
         loginEl =
             case model.session of
-                UserInfo user ->
+                LoggedIn user ->
                     div []
                         [ text user.email
                         , button [ onClick LogOut ]
                             [ text "sign out" ]
                         ]
 
-                LoginInfo loginForm ->
+                LoggedOut loginForm ->
                     div []
                         [ input
                             [ placeholder "email"
@@ -71,8 +71,8 @@ update msg model =
             let
                 newModel =
                     case model.session of
-                        LoginInfo oldForm ->
-                            { model | session = LoginInfo loginForm }
+                        LoggedOut oldForm ->
+                            { model | session = LoggedOut loginForm }
 
                         _ ->
                             model
@@ -92,7 +92,7 @@ update msg model =
             let
                 cmd =
                     case model.session of
-                        LoginInfo loginForm ->
+                        LoggedOut loginForm ->
                             createUser loginForm
 
                         _ ->
@@ -104,7 +104,7 @@ update msg model =
             let
                 cmd =
                     case model.session of
-                        UserInfo user ->
+                        LoggedIn user ->
                             logOut ()
 
                         _ ->
@@ -123,15 +123,15 @@ update msg model =
             let
                 newModel =
                     case model.session of
-                        LoginInfo loginForm ->
+                        LoggedOut loginForm ->
                             case response of
                                 Ok () ->
-                                    { model | session = UserInfo { email = loginForm.email } }
+                                    { model | session = LoggedIn { email = loginForm.email } }
 
                                 Err message ->
-                                    { model | session = LoginInfo { loginForm | error = message } }
+                                    { model | session = LoggedOut { loginForm | error = message } }
 
-                        UserInfo user ->
+                        LoggedIn user ->
                             model
             in
                 ( newModel, Cmd.none )

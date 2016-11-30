@@ -45,7 +45,7 @@ function linkChanges(app) {
     var val = snapshot.val();
 
     // FIXME: use list api
-    var links = Object.keys(val).map(function(guid) {
+    var links = Object.keys(val || {}).map(function(guid) {
       var link = val[guid];
 
       return {

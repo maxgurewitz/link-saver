@@ -16,7 +16,10 @@ init { user } =
     let
         session =
             user
-                |> Maybe.map (\{ email } -> LoggedIn { email = email, linkInputText = "" })
+                |> Maybe.map
+                    (\{ email, uid } ->
+                        LoggedIn { email = email, linkInputText = "", uid = uid }
+                    )
                 |> Maybe.withDefault emptyLogin
 
         initialModel =
@@ -158,10 +161,14 @@ update msg model =
                     case model.session of
                         LoggedOut loginForm ->
                             case response of
-                                Ok () ->
+                                Ok uid ->
                                     { model
                                         | session =
-                                            LoggedIn { email = loginForm.email, linkInputText = "" }
+                                            LoggedIn
+                                                { email = loginForm.email
+                                                , linkInputText = ""
+                                                , uid = uid
+                                                }
                                     }
 
                                 Err message ->
@@ -173,17 +180,16 @@ update msg model =
                 ( newModel, Cmd.none )
 
 
-toResultErr toMsg maybeErr =
+resultFromRecord : ok -> ResultRecord err ok -> Result err ok
+resultFromRecord default record =
     let
-        res =
-            case maybeErr of
-                Just err ->
-                    Err err
-
-                Nothing ->
-                    Ok ()
+        ok =
+            record.ok
+                |> Maybe.withDefault default
     in
-        toMsg res
+        record.err
+            |> Maybe.map Err
+            |> Maybe.withDefault (Ok ok)
 
 
 main =
@@ -194,7 +200,7 @@ main =
             always
                 <| Sub.batch
                     [ links SetLinks
-                    , createUserResponse (toResultErr CreateUserResponse)
+                    , createUserResponse (resultFromRecord "" >> CreateUserResponse)
                     ]
         , view = view
         }

@@ -10,12 +10,20 @@ type alias Link =
 
 type alias User =
     { email : String
+    , uid : String
     }
 
 
 type alias LoggedInModel =
     { email : String
+    , uid : String
     , linkInputText : String
+    }
+
+
+type alias ResultRecord err ok =
+    { ok : Maybe ok
+    , err : Maybe err
     }
 
 
@@ -50,4 +58,4 @@ type Msg
     | LogIn
     | LogOut
     | LogOutResponse (Maybe String)
-    | CreateUserResponse (Result String ())
+    | CreateUserResponse (Result String String)

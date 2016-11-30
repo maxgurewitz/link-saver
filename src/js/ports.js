@@ -20,11 +20,11 @@ function createUser(loginForm, app) {
         firebase.auth().signInWithEmailAndPassword(loginForm.email, loginForm.password) :
         Promise.reject(error);
     })
-    .then(function() {
-      app.ports.createUserResponse.send(null);
+    .then(function(user) {
+      app.ports.createUserResponse.send({ ok: user.val().uid || "", err: null });
     })
-    .catch(function(error) {
-      app.ports.createUserResponse.send(error.message || null);
+    .catch(function(err) {
+      app.ports.createUserResponse.send({ err: err.message || "", ok: null });
     });
 }
 

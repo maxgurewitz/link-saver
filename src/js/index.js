@@ -16,23 +16,28 @@ firebase.initializeApp({
   databaseURL: 'https://' + fbpid + '.firebaseio.com'
 });
 
+var initialized = false;
 
 firebase.auth().onAuthStateChanged(function(user) {
-  var flags = {
-    user: user || null
-  };
+  if (!initialized) {
+    initialized = true
 
-  var app = Elm.Main.embed(document.getElementById('main'), flags);
+    var flags = {
+      user: user || null
+    };
 
-  Object.keys(ports.receive).forEach(function(name) {
-    var subscription = ports.receive[name];
+    var app = Elm.Main.embed(document.getElementById('main'), flags);
 
-    app.ports[name].subscribe(function(data) {
-      subscription(data, app);
+    Object.keys(ports.receive).forEach(function(name) {
+      var subscription = ports.receive[name];
+
+      app.ports[name].subscribe(function(data) {
+        subscription(data, app);
+      });
     });
-  });
 
-  ports.send.forEach(function(sendPort) {
-    sendPort(app);
-  });
+    ports.send.forEach(function(sendPort) {
+      sendPort(app, user);
+    });
+  }
 });

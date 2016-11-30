@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (text, programWithFlags, div, button, input)
-import Ports exposing (createLink, links, createUser, createUserResponse, logOut)
+import Ports exposing (createLink, links, createUser, createUserResponse, logOut, logOutResponse)
 import Types exposing (..)
 import Html.Events exposing (onInput, onClick)
 import Html.Attributes exposing (placeholder)
@@ -34,13 +34,16 @@ view model =
     let
         loginEl =
             case model.session of
-                LoggedIn model ->
+                LoggedIn loggedIn ->
                     div []
-                        [ text model.email
+                        [ text loggedIn.email
                         , button [ onClick LogOut ]
                             [ text "sign out" ]
                         , input [ onInput SetLinkInputText ] []
                         , button [ onClick CreateLink ] [ text "submit link" ]
+                        , div []
+                            <| List.map (\link -> text link.href)
+                                model.links
                         ]
 
                 LoggedOut loginForm ->
@@ -61,9 +64,6 @@ view model =
     in
         div []
             [ loginEl
-            , div []
-                <| List.map (\link -> text link.href)
-                    model.links
             ]
 
 
@@ -120,7 +120,7 @@ update msg model =
                 cmd =
                     model.session
                         |> defaultLoggedOut Cmd.none
-                            (.linkInputText >> createLink)
+                            (\{ linkInputText, uid } -> createLink { href = linkInputText, uid = uid })
             in
                 ( model, cmd )
 
@@ -141,7 +141,7 @@ update msg model =
                 cmd =
                     case model.session of
                         LoggedIn loggedInModel ->
-                            logOut ()
+                            logOut loggedInModel.uid
 
                         _ ->
                             Cmd.none
@@ -201,6 +201,7 @@ main =
                 <| Sub.batch
                     [ links SetLinks
                     , createUserResponse (resultFromRecord "" >> CreateUserResponse)
+                    , logOutResponse LogOutResponse
                     ]
         , view = view
         }

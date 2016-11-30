@@ -1,9 +1,11 @@
 var firebase = require('firebase/app');
-var uuid = require('uuid');
 var Promise = firebase.Promise;
 
-function logOut(nothing, app) {
-  firebase.auth().signOut().then(function(res) {
+var refs = {};
+
+function logOut(uid, app) {
+  firebase.auth().signOut().then(function() {
+    refs.linksRef.off('value');
     app.ports.logOutResponse.send(null);
   }, function(error) {
     app.ports.logOutResponse.send(String(error));
@@ -21,32 +23,32 @@ function createUser(loginForm, app) {
         Promise.reject(error);
     })
     .then(function(user) {
-      app.ports.createUserResponse.send({ ok: user.val().uid || "", err: null });
+      var uid = user.uid || 'fake-id';
+      linkChanges(app, uid);
+      app.ports.createUserResponse.send({ ok: uid, err: null });
     })
     .catch(function(err) {
       app.ports.createUserResponse.send({ err: err.message || "", ok: null });
     });
 }
 
-function createLink(href) {
-  var id = uuid();
-
-  // FIXME: will want to be user specific
-  // firebase.auth().currentUser.uid;
-  // use push method: https://firebase.google.com/docs/database/web/lists-of-data
-  firebase.database().ref('links/' + id).set({
-    href: href,
+function createLink(payload) {
+  firebase.database().ref('links/' + payload.uid).push().set({
+    href: payload.href,
     timestamp: Date.now()
   });
 }
 
-function linkChanges(app) {
-  firebase.database().ref('links').on('value', function(snapshot) {
-    var val = snapshot.val();
+function linkChanges(app, uid) {
+  refs.linksRef = refs.linksRef ||
+    firebase.database().ref('links/' + uid);
 
-    // FIXME: use list api
-    var links = Object.keys(val || {}).map(function(guid) {
-      var link = val[guid];
+  // TODO: add pagination with child_added event
+  refs.linksRef.on('value', function(snapshot) {
+    var vals = snapshot.val();
+
+    var links = Object.keys(vals || {}).map(function(guid) {
+      var link = vals[guid];
 
       return {
         guid: guid,
@@ -61,6 +63,12 @@ function linkChanges(app) {
   });
 }
 
+function linkChangesFromUser(app, user) {
+  if (user) {
+    linkChanges(app, user.uid);
+  }
+}
+
 module.exports = {
   receive: {
     createLink: createLink,
@@ -68,6 +76,6 @@ module.exports = {
     logOut: logOut
   },
   send: [
-    linkChanges
+    linkChangesFromUser
   ]
 };

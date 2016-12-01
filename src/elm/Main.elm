@@ -4,9 +4,10 @@ import Html exposing (text, programWithFlags, div, button, input)
 import Ports exposing (createLink, links, createUser, createUserResponse, logOut, logOutResponse)
 import Types exposing (..)
 import Html.Events exposing (onInput, onClick)
-import Html.Attributes exposing (placeholder)
+import Html.Attributes exposing (placeholder, style)
 import Material
 import Material.Layout as Layout
+import Material.Grid exposing (grid, cell, size, offset, Device(..))
 
 
 emptyLogin =
@@ -39,33 +40,54 @@ view model =
             case model.session of
                 LoggedIn loggedIn ->
                     { header =
-                        [ text loggedIn.email
-                        , button [ onClick LogOut ]
-                            [ text "sign out" ]
-                        , input [ onInput SetLinkInputText ] []
-                        , button [ onClick CreateLink ] [ text "submit link" ]
+                        [ Layout.row []
+                            [ text loggedIn.email
+                            , Layout.spacer
+                            , button [ onClick LogOut ] [ text "sign out" ]
+                            ]
                         ]
                     , main =
-                        List.map (\link -> text link.href)
-                            model.links
-                    , drawer = []
+                        [ grid []
+                            [ cell [ size All 2 ]
+                                [ input
+                                    [ style [ ( "width", "100%" ) ]
+                                    , onInput SetLinkInputText
+                                    ]
+                                    []
+                                ]
+                            , cell [ size All 1, offset All 1 ]
+                                [ button [ onClick CreateLink ] [ text "submit link" ] ]
+                            ]
+                        , div []
+                            (List.map (\link -> div [] [ text link.href ])
+                                model.links
+                            )
+                        ]
+                    , drawer =
+                        []
                     , tabs = ( [], [] )
                     }
 
                 LoggedOut loginForm ->
                     { header =
-                        [ input
-                            [ placeholder "email"
-                            , onInput (\email -> SetLoginForm { loginForm | email = email })
+                        [ Layout.row []
+                            [ div []
+                                [ input
+                                    [ placeholder "email"
+                                    , onInput (\email -> SetLoginForm { loginForm | email = email })
+                                    , style [ ( "display", "block" ) ]
+                                    ]
+                                    []
+                                , input
+                                    [ placeholder "password"
+                                    , style [ ( "display", "block" ) ]
+                                    , onInput (\password -> SetLoginForm { loginForm | password = password })
+                                    ]
+                                    []
+                                ]
+                            , text loginForm.error
+                            , button [ onClick LogIn ] [ text "register/login" ]
                             ]
-                            []
-                        , input
-                            [ placeholder "password"
-                            , onInput (\password -> SetLoginForm { loginForm | password = password })
-                            ]
-                            []
-                        , text loginForm.error
-                        , button [ onClick LogIn ] [ text "register/login" ]
                         ]
                     , main = []
                     , drawer = []
@@ -74,7 +96,8 @@ view model =
     in
         Layout.render Mdl
             model.mdl
-            [ Layout.fixedHeader ]
+            [ Layout.fixedHeader
+            ]
             layoutConfig
 
 

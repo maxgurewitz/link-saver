@@ -6,6 +6,7 @@ import Types exposing (..)
 import Html.Events exposing (onInput, onClick)
 import Html.Attributes exposing (placeholder)
 import Material
+import Material.Layout as Layout
 
 
 emptyLogin =
@@ -34,22 +35,25 @@ init { user } =
 
 view model =
     let
-        loginEl =
+        layoutConfig =
             case model.session of
                 LoggedIn loggedIn ->
-                    div []
+                    { header =
                         [ text loggedIn.email
                         , button [ onClick LogOut ]
                             [ text "sign out" ]
                         , input [ onInput SetLinkInputText ] []
                         , button [ onClick CreateLink ] [ text "submit link" ]
-                        , div []
-                            <| List.map (\link -> text link.href)
-                                model.links
                         ]
+                    , main =
+                        List.map (\link -> text link.href)
+                            model.links
+                    , drawer = []
+                    , tabs = ( [], [] )
+                    }
 
                 LoggedOut loginForm ->
-                    div []
+                    { header =
                         [ input
                             [ placeholder "email"
                             , onInput (\email -> SetLoginForm { loginForm | email = email })
@@ -63,10 +67,15 @@ view model =
                         , text loginForm.error
                         , button [ onClick LogIn ] [ text "register/login" ]
                         ]
+                    , main = []
+                    , drawer = []
+                    , tabs = ( [], [] )
+                    }
     in
-        div []
-            [ loginEl
-            ]
+        Layout.render Mdl
+            model.mdl
+            [ Layout.fixedHeader ]
+            layoutConfig
 
 
 mapLoggedIn : (LoggedInModel -> LoggedInModel) -> Session -> Session

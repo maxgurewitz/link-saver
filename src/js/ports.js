@@ -5,7 +5,10 @@ var refs = {};
 
 function logOut(uid, app) {
   firebase.auth().signOut().then(function() {
-    refs.linksRef.off('value');
+    if (refs.linksRef) {
+      refs.linksRef.off();
+    }
+
     app.ports.logOutResponse.send(null);
   }, function(error) {
     app.ports.logOutResponse.send(String(error));
@@ -13,7 +16,6 @@ function logOut(uid, app) {
 }
 
 function createUser(loginForm, app) {
-  // https://firebase.google.com/docs/auth/web/password-auth#create_a_password-based_account
   firebase
     .auth()
     .createUserWithEmailAndPassword(loginForm.email, loginForm.password)

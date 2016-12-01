@@ -1,5 +1,7 @@
 module Types exposing (..)
 
+import Material
+
 
 type alias Link =
     { href : String
@@ -47,6 +49,7 @@ type alias Flags =
 type alias Model =
     { links : List Link
     , session : Session
+    , mdl : Material.Model
     }
 
 
@@ -59,3 +62,4 @@ type Msg
     | LogOut
     | LogOutResponse (Maybe String)
     | CreateUserResponse (Result String String)
+    | Mdl (Material.Msg Msg)

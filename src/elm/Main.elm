@@ -5,6 +5,7 @@ import Ports exposing (createLink, links, createUser, createUserResponse, logOut
 import Types exposing (..)
 import Html.Events exposing (onInput, onClick)
 import Html.Attributes exposing (placeholder)
+import Material
 
 
 emptyLogin =
@@ -25,6 +26,7 @@ init { user } =
         initialModel =
             { links = []
             , session = session
+            , mdl = Material.model
             }
     in
         ( initialModel, Cmd.none )
@@ -154,6 +156,9 @@ update msg model =
                     Maybe.map (\str -> (Debug.log "log out error" str))
             in
                 ( { model | session = emptyLogin }, Cmd.none )
+
+        Mdl mdlMessage ->
+            Material.update mdlMessage model
 
         CreateUserResponse response ->
             let

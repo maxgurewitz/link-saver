@@ -211,11 +211,12 @@ main =
         { init = init
         , update = update
         , subscriptions =
-            always
-                <| Sub.batch
+            \model ->
+                Sub.batch
                     [ links SetLinks
                     , createUserResponse (resultFromRecord "" >> CreateUserResponse)
                     , logOutResponse LogOutResponse
+                    , Material.subscriptions Mdl model
                     ]
         , view = view
         }

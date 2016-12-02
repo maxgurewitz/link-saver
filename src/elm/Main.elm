@@ -35,70 +35,62 @@ init { user } =
 
 
 view model =
-    let
-        layoutConfig =
-            case model.session of
-                LoggedIn loggedIn ->
-                    { header =
-                        [ Layout.row []
-                            [ text loggedIn.email
-                            , Layout.spacer
-                            , button [ onClick LogOut ] [ text "sign out" ]
-                            ]
+    case model.session of
+        LoggedIn loggedIn ->
+            Layout.render Mdl
+                model.mdl
+                [ Layout.fixedHeader
+                ]
+                { header =
+                    [ Layout.row []
+                        [ text loggedIn.email
+                        , Layout.spacer
+                        , button [ onClick LogOut ] [ text "sign out" ]
                         ]
-                    , main =
-                        [ grid []
-                            [ cell [ size All 2 ]
-                                [ input
-                                    [ style [ ( "width", "100%" ) ]
-                                    , onInput SetLinkInputText
-                                    ]
-                                    []
+                    ]
+                , main =
+                    [ grid []
+                        [ cell [ size All 2 ]
+                            [ input
+                                [ style [ ( "width", "100%" ) ]
+                                , onInput SetLinkInputText
                                 ]
-                            , cell [ size All 1, offset All 1 ]
-                                [ button [ onClick CreateLink ] [ text "submit link" ] ]
+                                []
                             ]
-                        , div []
-                            (List.map (\link -> div [] [ text link.href ])
-                                model.links
-                            )
+                        , cell [ size All 1, offset All 1 ]
+                            [ button [ onClick CreateLink ] [ text "submit link" ] ]
                         ]
-                    , drawer =
-                        []
-                    , tabs = ( [], [] )
-                    }
+                    , div []
+                        (List.map (\link -> div [] [ text link.href ])
+                            model.links
+                        )
+                    ]
+                , drawer =
+                    []
+                , tabs = ( [], [] )
+                }
 
-                LoggedOut loginForm ->
-                    { header =
-                        [ Layout.row []
-                            [ div []
-                                [ input
-                                    [ placeholder "email"
-                                    , onInput (\email -> SetLoginForm { loginForm | email = email })
-                                    , style [ ( "display", "block" ) ]
-                                    ]
-                                    []
-                                , input
-                                    [ placeholder "password"
-                                    , style [ ( "display", "block" ) ]
-                                    , onInput (\password -> SetLoginForm { loginForm | password = password })
-                                    ]
-                                    []
-                                ]
-                            , text loginForm.error
-                            , button [ onClick LogIn ] [ text "register/login" ]
+        LoggedOut loginForm ->
+            div []
+                [ Layout.row []
+                    [ div []
+                        [ input
+                            [ placeholder "email"
+                            , onInput (\email -> SetLoginForm { loginForm | email = email })
+                            , style [ ( "display", "block" ) ]
                             ]
+                            []
+                        , input
+                            [ placeholder "password"
+                            , style [ ( "display", "block" ) ]
+                            , onInput (\password -> SetLoginForm { loginForm | password = password })
+                            ]
+                            []
                         ]
-                    , main = []
-                    , drawer = []
-                    , tabs = ( [], [] )
-                    }
-    in
-        Layout.render Mdl
-            model.mdl
-            [ Layout.fixedHeader
-            ]
-            layoutConfig
+                    , text loginForm.error
+                    , button [ onClick LogIn ] [ text "register/login" ]
+                    ]
+                ]
 
 
 mapLoggedIn : (LoggedInModel -> LoggedInModel) -> Session -> Session

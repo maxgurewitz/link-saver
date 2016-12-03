@@ -1,16 +1,17 @@
 module Main exposing (..)
 
-import Html exposing (text, programWithFlags, div, button, input)
+import Html exposing (text, programWithFlags, div, button, input, a)
 import Ports exposing (createLink, links, createUser, createUserResponse, logOut, logOutResponse)
 import Types exposing (..)
 import Html.Events exposing (onInput, onClick)
 import Html
-import Html.Attributes exposing (placeholder, style)
+import Html.Attributes exposing (placeholder, style, target, href)
 import Material
 import Material.Layout as Layout
 import Material.Grid exposing (grid, cell, size, offset, Device(..))
 import Material.Snackbar as Snackbar
 import Material.Helpers exposing (map1st, map2nd)
+import Material.Icon as Icon
 
 
 emptyLogin =
@@ -82,8 +83,20 @@ view model =
                                     , cell [ size All 1, offset All 1 ]
                                         [ button [ onClick CreateLink ] [ text "submit link" ] ]
                                     ]
-                                    (List.map (\link -> cell [ size All 4 ] [ text link.href ])
+                                    (List.map
+                                        (\link ->
+                                            [ cell [ size All 2 ] [ text link.href ]
+                                            , cell [ size All 2 ]
+                                                [ a
+                                                    [ target "_blank"
+                                                    , href link.href
+                                                    ]
+                                                    [ Icon.view "subdirectory_arrow_right" [ Icon.size24 ] ]
+                                                ]
+                                            ]
+                                        )
                                         model.links
+                                        |> List.concat
                                     )
                                 )
                             ]

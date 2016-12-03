@@ -1,6 +1,7 @@
 module Types exposing (..)
 
 import Material
+import Material.Snackbar as Snackbar
 
 
 type alias Link =
@@ -32,7 +33,6 @@ type alias ResultRecord err ok =
 type alias LoginForm =
     { email : String
     , password : String
-    , error : String
     }
 
 
@@ -50,6 +50,7 @@ type alias Model =
     { links : List Link
     , session : Session
     , mdl : Material.Model
+    , snackbar : Snackbar.Model ()
     }
 
 
@@ -62,4 +63,5 @@ type Msg
     | LogOut
     | LogOutResponse (Maybe String)
     | CreateUserResponse (Result String String)
+    | Snack (Snackbar.Msg ())
     | Mdl (Material.Msg Msg)

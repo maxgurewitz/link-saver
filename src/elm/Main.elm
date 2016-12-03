@@ -4,14 +4,17 @@ import Html exposing (text, programWithFlags, div, button, input)
 import Ports exposing (createLink, links, createUser, createUserResponse, logOut, logOutResponse)
 import Types exposing (..)
 import Html.Events exposing (onInput, onClick)
+import Html
 import Html.Attributes exposing (placeholder, style)
 import Material
 import Material.Layout as Layout
 import Material.Grid exposing (grid, cell, size, offset, Device(..))
+import Material.Snackbar as Snackbar
+import Material.Helpers exposing (map1st, map2nd)
 
 
 emptyLogin =
-    LoggedOut { email = "", password = "", error = "" }
+    LoggedOut { email = "", password = "" }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -29,68 +32,90 @@ init { user } =
             { links = []
             , session = session
             , mdl = Material.model
+            , snackbar = Snackbar.model
             }
     in
         ( initialModel, Cmd.none )
 
 
-view model =
-    case model.session of
-        LoggedIn loggedIn ->
-            Layout.render Mdl
-                model.mdl
-                [ Layout.fixedHeader
-                ]
-                { header =
-                    [ Layout.row []
-                        [ text loggedIn.email
-                        , Layout.spacer
-                        , button [ onClick LogOut ] [ text "sign out" ]
-                        ]
-                    ]
-                , main =
-                    [ grid []
-                        [ cell [ size All 2 ]
-                            [ input
-                                [ style [ ( "width", "100%" ) ]
-                                , onInput SetLinkInputText
-                                ]
-                                []
-                            ]
-                        , cell [ size All 1, offset All 1 ]
-                            [ button [ onClick CreateLink ] [ text "submit link" ] ]
-                        ]
-                    , div []
-                        (List.map (\link -> div [] [ text link.href ])
-                            model.links
-                        )
-                    ]
-                , drawer =
-                    []
-                , tabs = ( [], [] )
-                }
+addSnackbar : String -> String -> Model -> ( Model, Cmd Msg )
+addSnackbar contents header model =
+    let
+        snackbar =
+            Snackbar.snackbar () contents header
+    in
+        Snackbar.add snackbar model.snackbar |> mapSnackbarTuple model
 
-        LoggedOut loginForm ->
-            div []
-                [ Layout.row []
-                    [ div []
-                        [ input
-                            [ placeholder "email"
-                            , onInput (\email -> SetLoginForm { loginForm | email = email })
-                            , style [ ( "display", "block" ) ]
-                            ]
-                            []
-                        , input
-                            [ placeholder "password"
-                            , style [ ( "display", "block" ) ]
-                            , onInput (\password -> SetLoginForm { loginForm | password = password })
-                            ]
-                            []
+
+mapSnackbarTuple model tuple =
+    tuple
+        |> map1st (\s -> { model | snackbar = s })
+        |> map2nd (Cmd.map Snack)
+
+
+view model =
+    let
+        content =
+            case model.session of
+                LoggedIn loggedIn ->
+                    Layout.render Mdl
+                        model.mdl
+                        [ Layout.fixedHeader
                         ]
-                    , text loginForm.error
-                    , button [ onClick LogIn ] [ text "register/login" ]
-                    ]
-                ]
+                        { header =
+                            [ Layout.row []
+                                [ text loggedIn.email
+                                , Layout.spacer
+                                , button [ onClick LogOut ] [ text "sign out" ]
+                                ]
+                            ]
+                        , main =
+                            [ grid []
+                                [ cell [ size All 2 ]
+                                    [ input
+                                        [ style [ ( "width", "100%" ) ]
+                                        , onInput SetLinkInputText
+                                        ]
+                                        []
+                                    ]
+                                , cell [ size All 1, offset All 1 ]
+                                    [ button [ onClick CreateLink ] [ text "submit link" ] ]
+                                ]
+                            , div []
+                                (List.map (\link -> div [] [ text link.href ])
+                                    model.links
+                                )
+                            ]
+                        , drawer =
+                            []
+                        , tabs = ( [], [] )
+                        }
+
+                LoggedOut loginForm ->
+                    div []
+                        [ Layout.row []
+                            [ div []
+                                [ input
+                                    [ placeholder "email"
+                                    , onInput (\email -> SetLoginForm { loginForm | email = email })
+                                    , style [ ( "display", "block" ) ]
+                                    ]
+                                    []
+                                , input
+                                    [ placeholder "password"
+                                    , style [ ( "display", "block" ) ]
+                                    , onInput (\password -> SetLoginForm { loginForm | password = password })
+                                    ]
+                                    []
+                                ]
+                            , button [ onClick LogIn ] [ text "register/login" ]
+                            ]
+                        ]
+    in
+        div []
+            [ content
+            , Snackbar.view model.snackbar |> Html.map Snack
+            ]
 
 
 mapLoggedIn : (LoggedInModel -> LoggedInModel) -> Session -> Session
@@ -115,6 +140,10 @@ defaultLoggedOut defaultLoggedOut loggedInMapper session =
 
 update msg model =
     case msg of
+        Snack snackMsg ->
+            Snackbar.update snackMsg model.snackbar
+                |> mapSnackbarTuple model
+
         SetLoginForm loginForm ->
             let
                 newModel =
@@ -185,28 +214,30 @@ update msg model =
             Material.update mdlMessage model
 
         CreateUserResponse response ->
-            let
-                newModel =
-                    case model.session of
-                        LoggedOut loginForm ->
-                            case response of
-                                Ok uid ->
-                                    { model
-                                        | session =
-                                            LoggedIn
-                                                { email = loginForm.email
-                                                , linkInputText = ""
-                                                , uid = uid
-                                                }
-                                    }
+            case model.session of
+                LoggedOut loginForm ->
+                    case response of
+                        Ok uid ->
+                            ( { model
+                                | session =
+                                    LoggedIn
+                                        { email = loginForm.email
+                                        , linkInputText = ""
+                                        , uid = uid
+                                        }
+                              }
+                            , Cmd.none
+                            )
 
-                                Err message ->
-                                    { model | session = LoggedOut { loginForm | error = message } }
+                        Err message ->
+                            addSnackbar "ERROR"
+                                message
+                                { model
+                                    | session = LoggedOut loginForm
+                                }
 
-                        LoggedIn loggedInModel ->
-                            model
-            in
-                ( newModel, Cmd.none )
+                LoggedIn loggedInModel ->
+                    ( model, Cmd.none )
 
 
 resultFromRecord : ok -> ResultRecord err ok -> Result err ok

@@ -71,19 +71,20 @@ view model =
                             ]
                         , main =
                             [ grid []
-                                [ cell [ size All 2 ]
-                                    [ input
-                                        [ style [ ( "width", "100%" ) ]
-                                        , onInput SetLinkInputText
+                                (List.append
+                                    [ cell [ size All 2 ]
+                                        [ input
+                                            [ style [ ( "width", "100%" ) ]
+                                            , onInput SetLinkInputText
+                                            ]
+                                            []
                                         ]
-                                        []
+                                    , cell [ size All 1, offset All 1 ]
+                                        [ button [ onClick CreateLink ] [ text "submit link" ] ]
                                     ]
-                                , cell [ size All 1, offset All 1 ]
-                                    [ button [ onClick CreateLink ] [ text "submit link" ] ]
-                                ]
-                            , div []
-                                (List.map (\link -> div [] [ text link.href ])
-                                    model.links
+                                    (List.map (\link -> cell [ size All 4 ] [ text link.href ])
+                                        model.links
+                                    )
                                 )
                             ]
                         , drawer =

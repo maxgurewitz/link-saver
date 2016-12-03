@@ -4,7 +4,8 @@
   "description": "Link saver app.",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --port 3000 --open"
+    "start": "webpack-dev-server --port 3000 --open",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Html exposing (text, programWithFlags, div, button, input, a)
+import Html exposing (text, programWithFlags, div, button, input, a, br)
 import Ports exposing (createLink, links, createUser, createUserResponse, logOut, logOutResponse, deleteLink)
 import Types exposing (..)
 import Html.Events exposing (onInput, onClick)
@@ -8,10 +8,11 @@ import Html
 import Html.Attributes exposing (placeholder, style, target, href)
 import Material
 import Material.Layout as Layout
-import Material.Grid exposing (grid, cell, size, offset, Device(..))
+import Material.List as MList
 import Material.Snackbar as Snackbar
 import Material.Helpers exposing (map1st, map2nd)
 import Material.Icon as Icon
+import Material.Options as MOpts
 
 
 emptyLogin =
@@ -71,28 +72,30 @@ view model =
                                 ]
                             ]
                         , main =
-                            [ grid []
-                                (List.append
-                                    [ cell [ size All 2 ]
-                                        [ input
-                                            [ style [ ( "width", "100%" ) ]
-                                            , onInput SetLinkInputText
-                                            ]
-                                            []
-                                        ]
-                                    , cell [ size All 1, offset All 1 ]
-                                        [ button [ onClick CreateLink ] [ text "submit link" ] ]
+                            [ br [] []
+                            , div [ style [ ( "textAlign", "center" ) ] ]
+                                [ input
+                                    [ style []
+                                    , onInput SetLinkInputText
                                     ]
-                                    (List.map
-                                        (\link ->
-                                            let
-                                                linkHref =
-                                                    if String.contains "//" link.href then
-                                                        link.href
-                                                    else
-                                                        "//" ++ link.href
-                                            in
-                                                [ cell [ size All 2 ]
+                                    []
+                                , button [ onClick CreateLink ] [ text "submit link" ]
+                                ]
+                            , MList.ul
+                                [ (MOpts.css "maxWidth" "50em")
+                                , (MOpts.css "margin" "0 auto")
+                                ]
+                                (List.map
+                                    (\link ->
+                                        let
+                                            linkHref =
+                                                if String.contains "//" link.href then
+                                                    link.href
+                                                else
+                                                    "//" ++ link.href
+                                        in
+                                            [ MList.li []
+                                                [ MList.content []
                                                     [ div
                                                         [ onClick <| DeleteLink link.guid
                                                         , style
@@ -109,12 +112,12 @@ view model =
                                                         ]
                                                         [ Icon.view "subdirectory_arrow_right" [ Icon.size24 ] ]
                                                     ]
-                                                , cell [ size All 2 ] [ text link.href ]
+                                                , MList.content2 [] [ text link.href ]
                                                 ]
-                                        )
-                                        model.links
-                                        |> List.concat
+                                            ]
                                     )
+                                    model.links
+                                    |> List.concat
                                 )
                             ]
                         , drawer =

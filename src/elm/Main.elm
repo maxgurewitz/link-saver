@@ -85,25 +85,32 @@ view model =
                                     ]
                                     (List.map
                                         (\link ->
-                                            [ cell [ size All 2 ]
-                                                [ div
-                                                    [ onClick <| DeleteLink link.guid
-                                                    , style
-                                                        [ ( "display", "inline-block" )
-                                                        , ( "marginRight", "1.5em" )
+                                            let
+                                                linkHref =
+                                                    if String.contains "//" link.href then
+                                                        link.href
+                                                    else
+                                                        "//" ++ link.href
+                                            in
+                                                [ cell [ size All 2 ]
+                                                    [ div
+                                                        [ onClick <| DeleteLink link.guid
+                                                        , style
+                                                            [ ( "display", "inline-block" )
+                                                            , ( "marginRight", "1.5em" )
+                                                            ]
                                                         ]
+                                                        [ Icon.view "delete" [ Icon.size24 ]
+                                                        ]
+                                                    , a
+                                                        [ target "_blank"
+                                                        , href linkHref
+                                                        , style [ ( "display", "inline-block" ) ]
+                                                        ]
+                                                        [ Icon.view "subdirectory_arrow_right" [ Icon.size24 ] ]
                                                     ]
-                                                    [ Icon.view "delete" [ Icon.size24 ]
-                                                    ]
-                                                , a
-                                                    [ target "_blank"
-                                                    , href link.href
-                                                    , style [ ( "display", "inline-block" ) ]
-                                                    ]
-                                                    [ Icon.view "subdirectory_arrow_right" [ Icon.size24 ] ]
+                                                , cell [ size All 2 ] [ text link.href ]
                                                 ]
-                                            , cell [ size All 2 ] [ text link.href ]
-                                            ]
                                         )
                                         model.links
                                         |> List.concat
@@ -202,7 +209,9 @@ update msg model =
                 cmd =
                     model.session
                         |> defaultLoggedOut Cmd.none
-                            (\{ linkInputText, uid } -> createLink { href = linkInputText, uid = uid })
+                            (\{ linkInputText, uid } ->
+                                createLink { href = linkInputText, uid = uid }
+                            )
             in
                 ( model, cmd )
 

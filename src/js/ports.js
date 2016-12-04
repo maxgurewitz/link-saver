@@ -7,6 +7,7 @@ function logOut(uid, app) {
   firebase.auth().signOut().then(function() {
     if (refs.linksRef) {
       refs.linksRef.off();
+      refs.linksRef = null;
     }
 
     app.ports.logOutResponse.send(null);
@@ -32,6 +33,12 @@ function createUser(loginForm, app) {
     .catch(function(err) {
       app.ports.createUserResponse.send({ err: err.message || "", ok: null });
     });
+}
+
+function deleteLink(guid, app) {
+  if (refs.linksRef) {
+    refs.linksRef.child(guid).remove();
+  }
 }
 
 function createLink(payload) {
@@ -75,6 +82,7 @@ module.exports = {
   receive: {
     createLink: createLink,
     createUser: createUser,
+    deleteLink: deleteLink,
     logOut: logOut
   },
   send: [

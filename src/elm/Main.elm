@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (text, programWithFlags, div, button, input, a)
-import Ports exposing (createLink, links, createUser, createUserResponse, logOut, logOutResponse)
+import Ports exposing (createLink, links, createUser, createUserResponse, logOut, logOutResponse, deleteLink)
 import Types exposing (..)
 import Html.Events exposing (onInput, onClick)
 import Html
@@ -85,14 +85,24 @@ view model =
                                     ]
                                     (List.map
                                         (\link ->
-                                            [ cell [ size All 2 ] [ text link.href ]
-                                            , cell [ size All 2 ]
-                                                [ a
+                                            [ cell [ size All 2 ]
+                                                [ div
+                                                    [ onClick <| DeleteLink link.guid
+                                                    , style
+                                                        [ ( "display", "inline-block" )
+                                                        , ( "marginRight", "1.5em" )
+                                                        ]
+                                                    ]
+                                                    [ Icon.view "delete" [ Icon.size24 ]
+                                                    ]
+                                                , a
                                                     [ target "_blank"
                                                     , href link.href
+                                                    , style [ ( "display", "inline-block" ) ]
                                                     ]
                                                     [ Icon.view "subdirectory_arrow_right" [ Icon.size24 ] ]
                                                 ]
+                                            , cell [ size All 2 ] [ text link.href ]
                                             ]
                                         )
                                         model.links
@@ -154,6 +164,9 @@ defaultLoggedOut defaultLoggedOut loggedInMapper session =
 
 update msg model =
     case msg of
+        DeleteLink guid ->
+            ( model, deleteLink guid )
+
         Snack snackMsg ->
             Snackbar.update snackMsg model.snackbar
                 |> mapSnackbarTuple model

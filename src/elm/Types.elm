@@ -23,6 +23,7 @@ type alias LoggedInModel =
     { email : String
     , uid : String
     , linkInputText : String
+    , linkInputValidation : Maybe String
     }
 
 

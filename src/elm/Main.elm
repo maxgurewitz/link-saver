@@ -9,6 +9,7 @@ import Task
 import Time
 import Html.Attributes exposing (placeholder, style, target, href)
 import Material
+import Material.Textfield as Textfield
 import Material.Layout as Layout
 import Material.List as MList
 import Material.Snackbar as Snackbar
@@ -28,7 +29,12 @@ init { user } =
             user
                 |> Maybe.map
                     (\{ email, uid } ->
-                        LoggedIn { email = email, linkInputText = "", uid = uid }
+                        LoggedIn
+                            { email = email
+                            , linkInputText = ""
+                            , uid = uid
+                            , linkInputValidation = Nothing
+                            }
                     )
                 |> Maybe.withDefault emptyLogin
 
@@ -81,11 +87,15 @@ view model =
                             [ br [] []
                             , form [ onSubmit CreateLink ]
                                 [ div [ style [ ( "textAlign", "center" ) ] ]
-                                    [ input
-                                        [ style []
-                                        , onInput SetLinkInputText
+                                    [ Textfield.render Mdl
+                                        [ 4 ]
+                                        model.mdl
+                                        [ Textfield.label "w/error checking"
+                                        , loggedIn.linkInputValidation
+                                            |> Maybe.map Textfield.error
+                                            |> Maybe.withDefault MOpts.nop
+                                        , Textfield.onInput SetLinkInputText
                                         ]
-                                        []
                                     , button [ onClick CreateLink ] [ text "submit link" ]
                                     ]
                                 ]
@@ -231,7 +241,17 @@ update msg model =
                     model.session
                         |> mapLoggedIn
                             (\loggedInModel ->
-                                { loggedInModel | linkInputText = linkInputText }
+                                let
+                                    linkInputValidation =
+                                        if linkInputText == "foo" then
+                                            Nothing
+                                        else
+                                            Just "input must be foo"
+                                in
+                                    { loggedInModel
+                                        | linkInputText = linkInputText
+                                        , linkInputValidation = linkInputValidation
+                                    }
                             )
             in
                 ( { model | session = session }, Cmd.none )
@@ -241,8 +261,10 @@ update msg model =
                 cmd =
                     model.session
                         |> defaultLoggedOut Cmd.none
-                            (\{ linkInputText, uid } ->
-                                createLink { href = linkInputText, uid = uid }
+                            (\{ linkInputText, uid, linkInputValidation } ->
+                                linkInputValidation
+                                    |> Maybe.map (always Cmd.none)
+                                    |> Maybe.withDefault (createLink { href = linkInputText, uid = uid })
                             )
             in
                 ( model, cmd )
@@ -291,6 +313,7 @@ update msg model =
                                     LoggedIn
                                         { email = loginForm.email
                                         , linkInputText = ""
+                                        , linkInputValidation = Nothing
                                         , uid = uid
                                         }
                               }

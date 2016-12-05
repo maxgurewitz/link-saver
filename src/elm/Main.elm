@@ -1,10 +1,12 @@
 module Main exposing (..)
 
 import Html exposing (text, programWithFlags, div, button, input, a, br)
-import Ports exposing (createLink, links, createUser, createUserResponse, logOut, logOutResponse, deleteLink)
+import Ports exposing (createLink, links, createUser, createUserResponse, logOut, logOutResponse, deleteLink, updateLink)
 import Types exposing (..)
 import Html.Events exposing (onInput, onClick)
 import Html
+import Task
+import Time
 import Html.Attributes exposing (placeholder, style, target, href)
 import Material
 import Material.Layout as Layout
@@ -53,6 +55,10 @@ mapSnackbarTuple model tuple =
     tuple
         |> map1st (\s -> { model | snackbar = s })
         |> map2nd (Cmd.map Snack)
+
+
+setClickedAt link =
+    Timestamp (\timestamp -> ClickedAt link timestamp)
 
 
 view model =
@@ -109,6 +115,7 @@ view model =
                                                         [ target "_blank"
                                                         , href linkHref
                                                         , style [ ( "display", "inline-block" ) ]
+                                                        , onClick <| setClickedAt link
                                                         ]
                                                         [ Icon.view "subdirectory_arrow_right" [ Icon.size24 ] ]
                                                     ]
@@ -174,12 +181,22 @@ defaultLoggedOut defaultLoggedOut loggedInMapper session =
 
 update msg model =
     case msg of
+        Timestamp msgr ->
+            ( model, Task.perform msgr Time.now )
+
         DeleteLink guid ->
             ( model, deleteLink guid )
 
         Snack snackMsg ->
             Snackbar.update snackMsg model.snackbar
                 |> mapSnackbarTuple model
+
+        ClickedAt link timestamp ->
+            let
+                newLink =
+                    { link | clickedAt = round timestamp }
+            in
+                ( model, updateLink newLink )
 
         SetLoginForm loginForm ->
             let

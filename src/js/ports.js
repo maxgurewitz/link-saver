@@ -1,5 +1,6 @@
 var firebase = require('firebase/app');
 var Promise = firebase.Promise;
+var xtend = require('xtend');
 
 var refs = {};
 
@@ -41,10 +42,22 @@ function deleteLink(guid, app) {
   }
 }
 
+function updateLink(link, app) {
+  if (refs.linksRef) {
+    var newLink = xtend(link);
+    delete newLink.guid;
+
+    refs.linksRef.child(link.guid).set(newLink);
+  }
+}
+
 function createLink(payload) {
+  var now = Date.now();
+
   firebase.database().ref('links/' + payload.uid).push().set({
     href: payload.href,
-    timestamp: Date.now()
+    clickedAt: 0,
+    timestamp: now
   });
 }
 
@@ -62,10 +75,21 @@ function linkChanges(app, uid) {
       return {
         guid: guid,
         href: link.href,
+        clickedAt: link.clickedAt || 0,
         timestamp: link.timestamp
       };
     }).sort(function(link1, link2) {
-      return link1.timestamp < link2.timestamp ? 1 : -1;
+      let val;
+
+      if (link1.clickedAt < link2.clickedAt) {
+        val = 1;
+      } else if (link1.clickedAt > link2.clickedAt) {
+        val = -1;
+      } else {
+        val = (link1.timestamp < link2.timestamp) ? 1 : -1;
+      }
+
+      return val;
     });
 
     app.ports.links.send(links);
@@ -83,7 +107,8 @@ module.exports = {
     createLink: createLink,
     createUser: createUser,
     deleteLink: deleteLink,
-    logOut: logOut
+    logOut: logOut,
+    updateLink: updateLink
   },
   send: [
     linkChangesFromUser

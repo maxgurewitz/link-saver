@@ -1,12 +1,14 @@
 module Types exposing (..)
 
 import Material
+import Time exposing (Time)
 import Material.Snackbar as Snackbar
 
 
 type alias Link =
     { href : String
     , timestamp : Int
+    , clickedAt : Int
     , guid : String
     }
 
@@ -60,6 +62,8 @@ type Msg
     | SetLoginForm LoginForm
     | CreateLink
     | DeleteLink String
+    | Timestamp (Time -> Msg)
+    | ClickedAt Link Time
     | LogIn
     | LogOut
     | LogOutResponse (Maybe String)

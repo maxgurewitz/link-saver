@@ -16,6 +16,9 @@ port logOut : String -> Cmd msg
 port deleteLink : String -> Cmd msg
 
 
+port updateLink : Link -> Cmd msg
+
+
 port createUserResponse : (ResultRecord String String -> msg) -> Sub msg
 
 

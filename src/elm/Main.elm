@@ -119,7 +119,17 @@ view model =
                                                         ]
                                                         [ Icon.view "subdirectory_arrow_right" [ Icon.size24 ] ]
                                                     ]
-                                                , MList.content2 [] [ text link.href ]
+                                                , MList.content2 []
+                                                    [ div
+                                                        [ style
+                                                            [ ( "overflow", "hidden" )
+                                                            , ( "textOverflow", "ellipsis" )
+                                                            , ( "width", "50vw" )
+                                                            , ( "whiteSpace", "nowrap" )
+                                                            ]
+                                                        ]
+                                                        [ text link.href ]
+                                                    ]
                                                 ]
                                             ]
                                     )

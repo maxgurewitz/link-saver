@@ -1,9 +1,9 @@
 module Main exposing (..)
 
-import Html exposing (text, programWithFlags, div, button, input, a, br)
+import Html exposing (text, programWithFlags, div, button, input, a, br, form)
 import Ports exposing (createLink, links, createUser, createUserResponse, logOut, logOutResponse, deleteLink, updateLink)
 import Types exposing (..)
-import Html.Events exposing (onInput, onClick)
+import Html.Events exposing (onInput, onClick, onSubmit)
 import Html
 import Task
 import Time
@@ -79,13 +79,15 @@ view model =
                             ]
                         , main =
                             [ br [] []
-                            , div [ style [ ( "textAlign", "center" ) ] ]
-                                [ input
-                                    [ style []
-                                    , onInput SetLinkInputText
+                            , form [ onSubmit CreateLink ]
+                                [ div [ style [ ( "textAlign", "center" ) ] ]
+                                    [ input
+                                        [ style []
+                                        , onInput SetLinkInputText
+                                        ]
+                                        []
+                                    , button [ onClick CreateLink ] [ text "submit link" ]
                                     ]
-                                    []
-                                , button [ onClick CreateLink ] [ text "submit link" ]
                                 ]
                             , MList.ul
                                 [ (MOpts.css "maxWidth" "50em")

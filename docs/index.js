@@ -15200,165 +15200,121 @@
 			return {button: a, textfield: b, menu: c, snackbar: d, layout: e, toggles: f, tooltip: g, tabs: h};
 		});
 
-	var _MichaelCombs28$elm_mdl$Material_Grid$clip = F3(
-		function (lower, upper, k) {
+	var _MichaelCombs28$elm_mdl$Material_List$action2 = _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-list__item-secondary-action');
+	var _MichaelCombs28$elm_mdl$Material_List$info2 = function (options) {
+		return _MichaelCombs28$elm_mdl$Material_Options$span(
+			{
+				ctor: '::',
+				_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-list__item-secondary-info'),
+				_1: options
+			});
+	};
+	var _MichaelCombs28$elm_mdl$Material_List$content2 = function (options) {
+		return _MichaelCombs28$elm_mdl$Material_Options$span(
+			{
+				ctor: '::',
+				_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-list__item-secondary-content'),
+				_1: options
+			});
+	};
+	var _MichaelCombs28$elm_mdl$Material_List$subtitle = function (options) {
+		return _MichaelCombs28$elm_mdl$Material_Options$span(
+			{
+				ctor: '::',
+				_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-list__item-sub-title'),
+				_1: options
+			});
+	};
+	var _MichaelCombs28$elm_mdl$Material_List$body = function (options) {
+		return _MichaelCombs28$elm_mdl$Material_Options$span(
+			{
+				ctor: '::',
+				_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-list__item-text-body'),
+				_1: options
+			});
+	};
+	var _MichaelCombs28$elm_mdl$Material_List$icon = F2(
+		function (i, options) {
 			return A2(
-				_elm_lang$core$Basics$max,
-				lower,
-				A2(_elm_lang$core$Basics$min, k, upper));
+				_MichaelCombs28$elm_mdl$Material_Icon$view,
+				i,
+				{
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-list__item-icon'),
+					_1: options
+				});
 		});
-	var _MichaelCombs28$elm_mdl$Material_Grid$stretch = _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-cell--stretch');
-	var _MichaelCombs28$elm_mdl$Material_Grid$align = function (a) {
-		var _p0 = a;
-		switch (_p0.ctor) {
-			case 'Top':
-				return _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-cell--top');
-			case 'Middle':
-				return _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-cell--middle');
-			default:
-				return _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-cell--bottom');
-		}
-	};
-	var _MichaelCombs28$elm_mdl$Material_Grid$suffix = function (device) {
-		var _p1 = device;
-		switch (_p1.ctor) {
-			case 'All':
-				return '';
-			case 'Desktop':
-				return '-desktop';
-			case 'Tablet':
-				return '-tablet';
-			default:
-				return '-phone';
-		}
-	};
-	var _MichaelCombs28$elm_mdl$Material_Grid$size = F2(
-		function (device, k) {
-			var c = function () {
-				var _p2 = device;
-				switch (_p2.ctor) {
-					case 'All':
-						return A3(_MichaelCombs28$elm_mdl$Material_Grid$clip, 1, 12, k);
-					case 'Desktop':
-						return A3(_MichaelCombs28$elm_mdl$Material_Grid$clip, 1, 12, k);
-					case 'Tablet':
-						return A3(_MichaelCombs28$elm_mdl$Material_Grid$clip, 1, 8, k);
-					default:
-						return A3(_MichaelCombs28$elm_mdl$Material_Grid$clip, 1, 4, k);
-				}
-			}();
-			return _MichaelCombs28$elm_mdl$Material_Options$cs(
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					'mdl-cell--',
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Basics$toString(c),
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							'-col',
-							_MichaelCombs28$elm_mdl$Material_Grid$suffix(device)))));
+	var _MichaelCombs28$elm_mdl$Material_List$avatar = _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-list__item-avatar');
+	var _MichaelCombs28$elm_mdl$Material_List$avatarImage = F2(
+		function (src, options) {
+			return A4(
+				_MichaelCombs28$elm_mdl$Material_Options$styled_,
+				_elm_lang$html$Html$img,
+				{ctor: '::', _0: _MichaelCombs28$elm_mdl$Material_List$avatar, _1: options},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$src(src),
+					_1: {ctor: '[]'}
+				},
+				{ctor: '[]'});
 		});
-	var _MichaelCombs28$elm_mdl$Material_Grid$offset = F2(
-		function (device, k) {
-			var c = function () {
-				var _p3 = device;
-				switch (_p3.ctor) {
-					case 'All':
-						return A3(_MichaelCombs28$elm_mdl$Material_Grid$clip, 1, 11, k);
-					case 'Desktop':
-						return A3(_MichaelCombs28$elm_mdl$Material_Grid$clip, 1, 11, k);
-					case 'Tablet':
-						return A3(_MichaelCombs28$elm_mdl$Material_Grid$clip, 1, 7, k);
-					default:
-						return A3(_MichaelCombs28$elm_mdl$Material_Grid$clip, 1, 3, k);
-				}
-			}();
-			return _MichaelCombs28$elm_mdl$Material_Options$cs(
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					'mdl-cell--',
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Basics$toString(c),
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							'-offset',
-							_MichaelCombs28$elm_mdl$Material_Grid$suffix(device)))));
-		});
-	var _MichaelCombs28$elm_mdl$Material_Grid$hide = function (device) {
-		return _MichaelCombs28$elm_mdl$Material_Options$cs(
-			function () {
-				var _p4 = device;
-				if (_p4.ctor === 'All') {
-					return '';
-				} else {
-					return A2(
-						_elm_lang$core$Basics_ops['++'],
-						'mdl-cell--hide-',
-						_MichaelCombs28$elm_mdl$Material_Grid$suffix(device));
-				}
-			}());
-	};
-	var _MichaelCombs28$elm_mdl$Material_Grid$order = F2(
-		function (device, n) {
-			return _MichaelCombs28$elm_mdl$Material_Options$cs(
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					'mdl-cell--order-',
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Basics$toString(
-							A3(_MichaelCombs28$elm_mdl$Material_Grid$clip, 1, 12, n)),
-						_MichaelCombs28$elm_mdl$Material_Grid$suffix(device))));
-		});
-	var _MichaelCombs28$elm_mdl$Material_Grid$grid = F2(
-		function (styling, cells) {
+	var _MichaelCombs28$elm_mdl$Material_List$avatarIcon = F2(
+		function (i, options) {
 			return A2(
 				_MichaelCombs28$elm_mdl$Material_Options$div,
 				{
 					ctor: '::',
-					_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-grid'),
-					_1: styling
-				},
-				A2(
-					_elm_lang$core$List$map,
-					function (_p5) {
-						var _p6 = _p5;
-						return _p6._0;
-					},
-					cells));
-		});
-	var _MichaelCombs28$elm_mdl$Material_Grid$maxWidth = function (w) {
-		return A2(_MichaelCombs28$elm_mdl$Material_Options$css, 'max-width', w);
-	};
-	var _MichaelCombs28$elm_mdl$Material_Grid$noSpacing = _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-grid--no-spacing');
-	var _MichaelCombs28$elm_mdl$Material_Grid$Phone = {ctor: 'Phone'};
-	var _MichaelCombs28$elm_mdl$Material_Grid$Tablet = {ctor: 'Tablet'};
-	var _MichaelCombs28$elm_mdl$Material_Grid$Desktop = {ctor: 'Desktop'};
-	var _MichaelCombs28$elm_mdl$Material_Grid$All = {ctor: 'All'};
-	var _MichaelCombs28$elm_mdl$Material_Grid$Cell = function (a) {
-		return {ctor: 'Cell', _0: a};
-	};
-	var _MichaelCombs28$elm_mdl$Material_Grid$cell = F2(
-		function (styling, elms) {
-			return _MichaelCombs28$elm_mdl$Material_Grid$Cell(
-				A2(
-					_MichaelCombs28$elm_mdl$Material_Options$div,
-					{
+					_0: _MichaelCombs28$elm_mdl$Material_Options$center,
+					_1: {
 						ctor: '::',
-						_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-cell'),
-						_1: styling
-					},
-					elms));
+						_0: _MichaelCombs28$elm_mdl$Material_Options$many(options),
+						_1: {
+							ctor: '::',
+							_0: _MichaelCombs28$elm_mdl$Material_List$avatar,
+							_1: {ctor: '[]'}
+						}
+					}
+				},
+				{
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Icon$i(i),
+					_1: {ctor: '[]'}
+				});
 		});
-	var _MichaelCombs28$elm_mdl$Material_Grid$Bottom = {ctor: 'Bottom'};
-	var _MichaelCombs28$elm_mdl$Material_Grid$Middle = {ctor: 'Middle'};
-	var _MichaelCombs28$elm_mdl$Material_Grid$Top = {ctor: 'Top'};
+	var _MichaelCombs28$elm_mdl$Material_List$content = function (options) {
+		return _MichaelCombs28$elm_mdl$Material_Options$span(
+			{
+				ctor: '::',
+				_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-list__item-primary-content'),
+				_1: options
+			});
+	};
+	var _MichaelCombs28$elm_mdl$Material_List$withSubtitle = _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-list__item--two-line');
+	var _MichaelCombs28$elm_mdl$Material_List$withBody = _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-list__item--three-line');
+	var _MichaelCombs28$elm_mdl$Material_List$li = function (options) {
+		return A2(
+			_MichaelCombs28$elm_mdl$Material_Options$styled,
+			_elm_lang$html$Html$li,
+			{
+				ctor: '::',
+				_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-list__item'),
+				_1: options
+			});
+	};
+	var _MichaelCombs28$elm_mdl$Material_List$ul = function (options) {
+		return A2(
+			_MichaelCombs28$elm_mdl$Material_Options$styled,
+			_elm_lang$html$Html$ul,
+			{
+				ctor: '::',
+				_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-list'),
+				_1: options
+			});
+	};
 
-	var _user$project$Types$Link = F3(
-		function (a, b, c) {
-			return {href: a, timestamp: b, guid: c};
+	var _user$project$Types$Link = F4(
+		function (a, b, c, d) {
+			return {href: a, timestamp: b, clickedAt: c, guid: d};
 		});
 	var _user$project$Types$User = F2(
 		function (a, b) {
@@ -15403,6 +15359,16 @@
 	};
 	var _user$project$Types$LogOut = {ctor: 'LogOut'};
 	var _user$project$Types$LogIn = {ctor: 'LogIn'};
+	var _user$project$Types$ClickedAt = F2(
+		function (a, b) {
+			return {ctor: 'ClickedAt', _0: a, _1: b};
+		});
+	var _user$project$Types$Timestamp = function (a) {
+		return {ctor: 'Timestamp', _0: a};
+	};
+	var _user$project$Types$DeleteLink = function (a) {
+		return {ctor: 'DeleteLink', _0: a};
+	};
 	var _user$project$Types$CreateLink = {ctor: 'CreateLink'};
 	var _user$project$Types$SetLoginForm = function (a) {
 		return {ctor: 'SetLoginForm', _0: a};
@@ -15428,6 +15394,16 @@
 		'logOut',
 		function (v) {
 			return v;
+		});
+	var _user$project$Ports$deleteLink = _elm_lang$core$Native_Platform.outgoingPort(
+		'deleteLink',
+		function (v) {
+			return v;
+		});
+	var _user$project$Ports$updateLink = _elm_lang$core$Native_Platform.outgoingPort(
+		'updateLink',
+		function (v) {
+			return {href: v.href, timestamp: v.timestamp, clickedAt: v.clickedAt, guid: v.guid};
 		});
 	var _user$project$Ports$createUserResponse = _elm_lang$core$Native_Platform.incomingPort(
 		'createUserResponse',
@@ -15490,11 +15466,16 @@
 						function (timestamp) {
 							return A2(
 								_elm_lang$core$Json_Decode$andThen,
-								function (guid) {
-									return _elm_lang$core$Json_Decode$succeed(
-										{href: href, timestamp: timestamp, guid: guid});
+								function (clickedAt) {
+									return A2(
+										_elm_lang$core$Json_Decode$andThen,
+										function (guid) {
+											return _elm_lang$core$Json_Decode$succeed(
+												{href: href, timestamp: timestamp, clickedAt: clickedAt, guid: guid});
+										},
+										A2(_elm_lang$core$Json_Decode$field, 'guid', _elm_lang$core$Json_Decode$string));
 								},
-								A2(_elm_lang$core$Json_Decode$field, 'guid', _elm_lang$core$Json_Decode$string));
+								A2(_elm_lang$core$Json_Decode$field, 'clickedAt', _elm_lang$core$Json_Decode$int));
 						},
 						A2(_elm_lang$core$Json_Decode$field, 'timestamp', _elm_lang$core$Json_Decode$int));
 				},
@@ -15527,6 +15508,12 @@
 				return session;
 			}
 		});
+	var _user$project$Main$setClickedAt = function (link) {
+		return _user$project$Types$Timestamp(
+			function (timestamp) {
+				return A2(_user$project$Types$ClickedAt, link, timestamp);
+			});
+	};
 	var _user$project$Main$view = function (model) {
 		var content = function () {
 			var _p2 = model.session;
@@ -15575,132 +15562,180 @@
 						main: {
 							ctor: '::',
 							_0: A2(
-								_MichaelCombs28$elm_mdl$Material_Grid$grid,
+								_elm_lang$html$Html$br,
 								{ctor: '[]'},
-								A2(
-									_elm_lang$core$List$append,
+								{ctor: '[]'}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$div,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$style(
+											{
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'textAlign', _1: 'center'},
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									},
 									{
 										ctor: '::',
 										_0: A2(
-											_MichaelCombs28$elm_mdl$Material_Grid$cell,
+											_elm_lang$html$Html$input,
 											{
 												ctor: '::',
-												_0: A2(_MichaelCombs28$elm_mdl$Material_Grid$size, _MichaelCombs28$elm_mdl$Material_Grid$All, 2),
-												_1: {ctor: '[]'}
-											},
-											{
-												ctor: '::',
-												_0: A2(
-													_elm_lang$html$Html$input,
-													{
-														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$style(
-															{
-																ctor: '::',
-																_0: {ctor: '_Tuple2', _0: 'width', _1: '100%'},
-																_1: {ctor: '[]'}
-															}),
-														_1: {
-															ctor: '::',
-															_0: _elm_lang$html$Html_Events$onInput(_user$project$Types$SetLinkInputText),
-															_1: {ctor: '[]'}
-														}
-													},
+												_0: _elm_lang$html$Html_Attributes$style(
 													{ctor: '[]'}),
-												_1: {ctor: '[]'}
-											}),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Events$onInput(_user$project$Types$SetLinkInputText),
+													_1: {ctor: '[]'}
+												}
+											},
+											{ctor: '[]'}),
 										_1: {
 											ctor: '::',
 											_0: A2(
-												_MichaelCombs28$elm_mdl$Material_Grid$cell,
+												_elm_lang$html$Html$button,
 												{
 													ctor: '::',
-													_0: A2(_MichaelCombs28$elm_mdl$Material_Grid$size, _MichaelCombs28$elm_mdl$Material_Grid$All, 1),
-													_1: {
-														ctor: '::',
-														_0: A2(_MichaelCombs28$elm_mdl$Material_Grid$offset, _MichaelCombs28$elm_mdl$Material_Grid$All, 1),
-														_1: {ctor: '[]'}
-													}
+													_0: _elm_lang$html$Html_Events$onClick(_user$project$Types$CreateLink),
+													_1: {ctor: '[]'}
 												},
 												{
 													ctor: '::',
-													_0: A2(
-														_elm_lang$html$Html$button,
-														{
-															ctor: '::',
-															_0: _elm_lang$html$Html_Events$onClick(_user$project$Types$CreateLink),
-															_1: {ctor: '[]'}
-														},
-														{
-															ctor: '::',
-															_0: _elm_lang$html$Html$text('submit link'),
-															_1: {ctor: '[]'}
-														}),
+													_0: _elm_lang$html$Html$text('submit link'),
 													_1: {ctor: '[]'}
 												}),
 											_1: {ctor: '[]'}
 										}
-									},
-									_elm_lang$core$List$concat(
-										A2(
-											_elm_lang$core$List$map,
-											function (link) {
-												return {
-													ctor: '::',
-													_0: A2(
-														_MichaelCombs28$elm_mdl$Material_Grid$cell,
-														{
-															ctor: '::',
-															_0: A2(_MichaelCombs28$elm_mdl$Material_Grid$size, _MichaelCombs28$elm_mdl$Material_Grid$All, 2),
-															_1: {ctor: '[]'}
-														},
-														{
-															ctor: '::',
-															_0: _elm_lang$html$Html$text(link.href),
-															_1: {ctor: '[]'}
-														}),
-													_1: {
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_MichaelCombs28$elm_mdl$Material_List$ul,
+										{
+											ctor: '::',
+											_0: A2(_MichaelCombs28$elm_mdl$Material_Options$css, 'maxWidth', '50em'),
+											_1: {
+												ctor: '::',
+												_0: A2(_MichaelCombs28$elm_mdl$Material_Options$css, 'margin', '0 auto'),
+												_1: {ctor: '[]'}
+											}
+										},
+										_elm_lang$core$List$concat(
+											A2(
+												_elm_lang$core$List$map,
+												function (link) {
+													var linkHref = A2(_elm_lang$core$String$contains, '//', link.href) ? link.href : A2(_elm_lang$core$Basics_ops['++'], '//', link.href);
+													return {
 														ctor: '::',
 														_0: A2(
-															_MichaelCombs28$elm_mdl$Material_Grid$cell,
-															{
-																ctor: '::',
-																_0: A2(_MichaelCombs28$elm_mdl$Material_Grid$size, _MichaelCombs28$elm_mdl$Material_Grid$All, 2),
-																_1: {ctor: '[]'}
-															},
+															_MichaelCombs28$elm_mdl$Material_List$li,
+															{ctor: '[]'},
 															{
 																ctor: '::',
 																_0: A2(
-																	_elm_lang$html$Html$a,
-																	{
-																		ctor: '::',
-																		_0: _elm_lang$html$Html_Attributes$target('_blank'),
-																		_1: {
-																			ctor: '::',
-																			_0: _elm_lang$html$Html_Attributes$href(link.href),
-																			_1: {ctor: '[]'}
-																		}
-																	},
+																	_MichaelCombs28$elm_mdl$Material_List$content,
+																	{ctor: '[]'},
 																	{
 																		ctor: '::',
 																		_0: A2(
-																			_MichaelCombs28$elm_mdl$Material_Icon$view,
-																			'subdirectory_arrow_right',
+																			_elm_lang$html$Html$div,
 																			{
 																				ctor: '::',
-																				_0: _MichaelCombs28$elm_mdl$Material_Icon$size24,
+																				_0: _elm_lang$html$Html_Events$onClick(
+																					_user$project$Types$DeleteLink(link.guid)),
+																				_1: {
+																					ctor: '::',
+																					_0: _elm_lang$html$Html_Attributes$style(
+																						{
+																							ctor: '::',
+																							_0: {ctor: '_Tuple2', _0: 'display', _1: 'inline-block'},
+																							_1: {
+																								ctor: '::',
+																								_0: {ctor: '_Tuple2', _0: 'marginRight', _1: '1.5em'},
+																								_1: {ctor: '[]'}
+																							}
+																						}),
+																					_1: {ctor: '[]'}
+																				}
+																			},
+																			{
+																				ctor: '::',
+																				_0: A2(
+																					_MichaelCombs28$elm_mdl$Material_Icon$view,
+																					'delete',
+																					{
+																						ctor: '::',
+																						_0: _MichaelCombs28$elm_mdl$Material_Icon$size24,
+																						_1: {ctor: '[]'}
+																					}),
 																				_1: {ctor: '[]'}
 																			}),
-																		_1: {ctor: '[]'}
+																		_1: {
+																			ctor: '::',
+																			_0: A2(
+																				_elm_lang$html$Html$a,
+																				{
+																					ctor: '::',
+																					_0: _elm_lang$html$Html_Attributes$target('_blank'),
+																					_1: {
+																						ctor: '::',
+																						_0: _elm_lang$html$Html_Attributes$href(linkHref),
+																						_1: {
+																							ctor: '::',
+																							_0: _elm_lang$html$Html_Attributes$style(
+																								{
+																									ctor: '::',
+																									_0: {ctor: '_Tuple2', _0: 'display', _1: 'inline-block'},
+																									_1: {ctor: '[]'}
+																								}),
+																							_1: {
+																								ctor: '::',
+																								_0: _elm_lang$html$Html_Events$onClick(
+																									_user$project$Main$setClickedAt(link)),
+																								_1: {ctor: '[]'}
+																							}
+																						}
+																					}
+																				},
+																				{
+																					ctor: '::',
+																					_0: A2(
+																						_MichaelCombs28$elm_mdl$Material_Icon$view,
+																						'subdirectory_arrow_right',
+																						{
+																							ctor: '::',
+																							_0: _MichaelCombs28$elm_mdl$Material_Icon$size24,
+																							_1: {ctor: '[]'}
+																						}),
+																					_1: {ctor: '[]'}
+																				}),
+																			_1: {ctor: '[]'}
+																		}
 																	}),
-																_1: {ctor: '[]'}
+																_1: {
+																	ctor: '::',
+																	_0: A2(
+																		_MichaelCombs28$elm_mdl$Material_List$content2,
+																		{ctor: '[]'},
+																		{
+																			ctor: '::',
+																			_0: _elm_lang$html$Html$text(link.href),
+																			_1: {ctor: '[]'}
+																		}),
+																	_1: {ctor: '[]'}
+																}
 															}),
 														_1: {ctor: '[]'}
-													}
-												};
-											},
-											model.links)))),
-							_1: {ctor: '[]'}
+													};
+												},
+												model.links))),
+									_1: {ctor: '[]'}
+								}
+							}
 						},
 						drawer: {ctor: '[]'},
 						tabs: {
@@ -15875,11 +15910,34 @@
 		function (msg, model) {
 			var _p8 = msg;
 			switch (_p8.ctor) {
+				case 'Timestamp':
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: A2(_elm_lang$core$Task$perform, _p8._0, _elm_lang$core$Time$now)
+					};
+				case 'DeleteLink':
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _user$project$Ports$deleteLink(_p8._0)
+					};
 				case 'Snack':
 					return A2(
 						_user$project$Main$mapSnackbarTuple,
 						model,
 						A2(_MichaelCombs28$elm_mdl$Material_Snackbar$update, _p8._0, model.snackbar));
+				case 'ClickedAt':
+					var newLink = _elm_lang$core$Native_Utils.update(
+						_p8._0,
+						{
+							clickedAt: _elm_lang$core$Basics$round(_p8._1)
+						});
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _user$project$Ports$updateLink(newLink)
+					};
 				case 'SetLoginForm':
 					var newModel = function () {
 						var _p9 = model.session;
@@ -16103,6 +16161,7 @@
 
 	var firebase = __webpack_require__(2);
 	var Promise = firebase.Promise;
+	var xtend = __webpack_require__(7);
 
 	var refs = {};
 
@@ -16110,6 +16169,7 @@
 	  firebase.auth().signOut().then(function() {
 	    if (refs.linksRef) {
 	      refs.linksRef.off();
+	      refs.linksRef = null;
 	    }
 
 	    app.ports.logOutResponse.send(null);
@@ -16137,10 +16197,28 @@
 	    });
 	}
 
+	function deleteLink(guid, app) {
+	  if (refs.linksRef) {
+	    refs.linksRef.child(guid).remove();
+	  }
+	}
+
+	function updateLink(link, app) {
+	  if (refs.linksRef) {
+	    var newLink = xtend(link);
+	    delete newLink.guid;
+
+	    refs.linksRef.child(link.guid).set(newLink);
+	  }
+	}
+
 	function createLink(payload) {
+	  var now = Date.now();
+
 	  firebase.database().ref('links/' + payload.uid).push().set({
 	    href: payload.href,
-	    timestamp: Date.now()
+	    clickedAt: 0,
+	    timestamp: now
 	  });
 	}
 
@@ -16158,10 +16236,21 @@
 	      return {
 	        guid: guid,
 	        href: link.href,
+	        clickedAt: link.clickedAt || 0,
 	        timestamp: link.timestamp
 	      };
 	    }).sort(function(link1, link2) {
-	      return link1.timestamp < link2.timestamp ? 1 : -1;
+	      let val;
+
+	      if (link1.clickedAt < link2.clickedAt) {
+	        val = 1;
+	      } else if (link1.clickedAt > link2.clickedAt) {
+	        val = -1;
+	      } else {
+	        val = (link1.timestamp < link2.timestamp) ? 1 : -1;
+	      }
+
+	      return val;
 	    });
 
 	    app.ports.links.send(links);
@@ -16178,12 +16267,39 @@
 	  receive: {
 	    createLink: createLink,
 	    createUser: createUser,
-	    logOut: logOut
+	    deleteLink: deleteLink,
+	    logOut: logOut,
+	    updateLink: updateLink
 	  },
 	  send: [
 	    linkChangesFromUser
 	  ]
 	};
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	module.exports = extend
+
+	var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+	function extend() {
+	    var target = {}
+
+	    for (var i = 0; i < arguments.length; i++) {
+	        var source = arguments[i]
+
+	        for (var key in source) {
+	            if (hasOwnProperty.call(source, key)) {
+	                target[key] = source[key]
+	            }
+	        }
+	    }
+
+	    return target
+	}
 
 
 /***/ }

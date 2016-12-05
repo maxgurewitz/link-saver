@@ -79,7 +79,7 @@ function linkChanges(app, uid) {
         timestamp: link.timestamp
       };
     }).sort(function(link1, link2) {
-      let val;
+      var val;
 
       if (link1.clickedAt < link2.clickedAt) {
         val = 1;

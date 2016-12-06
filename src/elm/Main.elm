@@ -16,10 +16,15 @@ import Material.Snackbar as Snackbar
 import Material.Helpers exposing (map1st, map2nd)
 import Material.Icon as Icon
 import Material.Options as MOpts
+import Regex exposing (regex, contains)
 
 
 emptyLogin =
     LoggedOut { email = "", password = "" }
+
+
+linkRgx =
+    regex "(http(s)?:\\/\\/.)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)"
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -90,7 +95,7 @@ view model =
                                     [ Textfield.render Mdl
                                         [ 4 ]
                                         model.mdl
-                                        [ Textfield.label "w/error checking"
+                                        [ Textfield.label "enter link"
                                         , loggedIn.linkInputValidation
                                             |> Maybe.map Textfield.error
                                             |> Maybe.withDefault MOpts.nop
@@ -243,10 +248,10 @@ update msg model =
                             (\loggedInModel ->
                                 let
                                     linkInputValidation =
-                                        if linkInputText == "foo" then
+                                        if contains linkRgx linkInputText then
                                             Nothing
                                         else
-                                            Just "input must be foo"
+                                            Just "Must provide a valid link"
                                 in
                                     { loggedInModel
                                         | linkInputText = linkInputText

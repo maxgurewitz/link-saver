@@ -4,9 +4,11 @@ import Html exposing (text, programWithFlags, div, button, input, a, br, form)
 import Ports exposing (createLink, links, createUser, createUserResponse, logOut, logOutResponse, deleteLink, updateLink)
 import Types exposing (..)
 import Html.Events exposing (onInput, onClick, onSubmit)
+import Debug
 import Html
 import Task
 import Time
+import List.Extra exposing (find)
 import Html.Attributes exposing (placeholder, style, target, href)
 import Material
 import Material.Textfield as Textfield
@@ -90,7 +92,17 @@ view model =
                             ]
                         , main =
                             [ br [] []
-                            , form [ onSubmit CreateLink ]
+                              -- , form [ onSubmit CreateLink ]
+                            , form
+                                [ onSubmit CreateLink
+                                  -- (\e ->
+                                  --     let
+                                  --         _ =
+                                  --             Debug.log "e" e
+                                  --     in
+                                  --         CreateLink
+                                  -- )
+                                ]
                                 [ div [ style [ ( "textAlign", "center" ) ] ]
                                     [ Textfield.render Mdl
                                         [ 4 ]
@@ -101,7 +113,9 @@ view model =
                                             |> Maybe.withDefault MOpts.nop
                                         , Textfield.onInput SetLinkInputText
                                         ]
-                                    , button [ onClick CreateLink ] [ text "submit link" ]
+                                      -- , button [ onClick CreateLink ] [ text "submit link" ]
+                                      -- FIXME delete button is resulting in double click
+                                    , button [] [ text "submit link" ]
                                     ]
                                 ]
                             , MList.ul
@@ -263,13 +277,22 @@ update msg model =
 
         CreateLink ->
             let
+                _ =
+                    Debug.log "creating lin" 1
+
                 cmd =
                     model.session
                         |> defaultLoggedOut Cmd.none
                             (\{ linkInputText, uid, linkInputValidation } ->
-                                linkInputValidation
-                                    |> Maybe.map (always Cmd.none)
-                                    |> Maybe.withDefault (createLink { href = linkInputText, uid = uid })
+                                let
+                                    validInputTextCmd =
+                                        (find (\link -> link.href == linkInputText) model.links)
+                                            |> Maybe.map (\link -> Task.perform setClickedAt (Task.succeed link))
+                                            |> Maybe.withDefault (createLink { href = linkInputText, uid = uid })
+                                in
+                                    linkInputValidation
+                                        |> Maybe.map (always Cmd.none)
+                                        |> Maybe.withDefault validInputTextCmd
                             )
             in
                 ( model, cmd )

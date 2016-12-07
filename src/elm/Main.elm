@@ -20,10 +20,25 @@ import Material.Icon as Icon
 import Material.Options as MOpts
 import Regex exposing (regex, contains)
 import Json.Decode as Json
+import Material.Button as Button
 
 
 emptyLogin =
     LoggedOut { email = "", password = "" }
+
+
+standardButton model attrs contents =
+    Button.render Mdl
+        [ 0 ]
+        model.mdl
+        (List.concat
+            [ attrs
+            , [ Button.raised
+              , MOpts.css "margin" "1em"
+              ]
+            ]
+        )
+        contents
 
 
 linkRgx =
@@ -87,6 +102,48 @@ setClickedAt link =
     Timestamp (\timestamp -> ClickedAt link timestamp)
 
 
+linkView model link =
+    let
+        linkHref =
+            if String.contains "//" link.href then
+                link.href
+            else
+                "//" ++ link.href
+    in
+        [ MList.li []
+            [ MList.content []
+                [ div
+                    [ onClick <| DeleteLink link.guid
+                    , style
+                        [ ( "display", "inline-block" )
+                        , ( "marginRight", "1.5em" )
+                        ]
+                    ]
+                    [ Icon.view "delete" [ Icon.size24 ]
+                    ]
+                , a
+                    [ target "_blank"
+                    , href linkHref
+                    , style [ ( "display", "inline-block" ) ]
+                    , onClick <| setClickedAt link
+                    ]
+                    [ Icon.view "subdirectory_arrow_right" [ Icon.size24 ] ]
+                ]
+            , MList.content2 []
+                [ div
+                    [ style
+                        [ ( "overflow", "hidden" )
+                        , ( "textOverflow", "ellipsis" )
+                        , ( "width", "50vw" )
+                        , ( "whiteSpace", "nowrap" )
+                        ]
+                    ]
+                    [ text link.href ]
+                ]
+            ]
+        ]
+
+
 view model =
     let
         content =
@@ -100,73 +157,44 @@ view model =
                             [ Layout.row []
                                 [ text loggedIn.email
                                 , Layout.spacer
-                                , button [ onClick LogOut ] [ text "sign out" ]
+                                , standardButton model
+                                    [ Button.onClick LogOut
+                                    , Button.accent
+                                    ]
+                                    [ text "sign out" ]
                                 ]
                             ]
                         , main =
                             [ br [] []
-                            , div [ style [ ( "textAlign", "center" ) ] ]
-                                [ Textfield.render Mdl
-                                    [ 4 ]
-                                    model.mdl
-                                    [ Textfield.label "enter link"
-                                    , loggedIn.linkInputValidation
-                                        |> Maybe.map Textfield.error
-                                        |> Maybe.withDefault MOpts.nop
-                                    , Textfield.onInput SetLinkInputText
-                                    , onEnterTextfield CreateLink
+                            , div
+                                [ style
+                                    [ ( "maxWidth", "50em" )
+                                    , ( "margin", "0 auto" )
                                     ]
-                                , button [ onClick CreateLink ] [ text "submit link" ]
                                 ]
-                            , MList.ul
-                                [ (MOpts.css "maxWidth" "50em")
-                                , (MOpts.css "margin" "0 auto")
-                                ]
-                                (List.map
-                                    (\link ->
-                                        let
-                                            linkHref =
-                                                if String.contains "//" link.href then
-                                                    link.href
-                                                else
-                                                    "//" ++ link.href
-                                        in
-                                            [ MList.li []
-                                                [ MList.content []
-                                                    [ div
-                                                        [ onClick <| DeleteLink link.guid
-                                                        , style
-                                                            [ ( "display", "inline-block" )
-                                                            , ( "marginRight", "1.5em" )
-                                                            ]
-                                                        ]
-                                                        [ Icon.view "delete" [ Icon.size24 ]
-                                                        ]
-                                                    , a
-                                                        [ target "_blank"
-                                                        , href linkHref
-                                                        , style [ ( "display", "inline-block" ) ]
-                                                        , onClick <| setClickedAt link
-                                                        ]
-                                                        [ Icon.view "subdirectory_arrow_right" [ Icon.size24 ] ]
-                                                    ]
-                                                , MList.content2 []
-                                                    [ div
-                                                        [ style
-                                                            [ ( "overflow", "hidden" )
-                                                            , ( "textOverflow", "ellipsis" )
-                                                            , ( "width", "50vw" )
-                                                            , ( "whiteSpace", "nowrap" )
-                                                            ]
-                                                        ]
-                                                        [ text link.href ]
-                                                    ]
-                                                ]
-                                            ]
+                                [ div
+                                    [ style [ ( "textAlign", "center" ) ]
+                                    ]
+                                    [ Textfield.render Mdl
+                                        [ 4 ]
+                                        model.mdl
+                                        [ Textfield.label "enter link"
+                                        , loggedIn.linkInputValidation
+                                            |> Maybe.map Textfield.error
+                                            |> Maybe.withDefault MOpts.nop
+                                        , Textfield.onInput SetLinkInputText
+                                        , onEnterTextfield CreateLink
+                                        ]
+                                    , standardButton model
+                                        [ Button.onClick CreateLink ]
+                                        [ text "submit link" ]
+                                    ]
+                                , MList.ul []
+                                    (List.map (linkView model)
+                                        model.links
+                                        |> List.concat
                                     )
-                                    model.links
-                                    |> List.concat
-                                )
+                                ]
                             ]
                         , drawer =
                             []
@@ -262,7 +290,7 @@ update msg model =
                             (\loggedInModel ->
                                 let
                                     linkInputValidation =
-                                        if contains linkRgx linkInputText then
+                                        if (contains linkRgx linkInputText) && (linkInputText /= "") then
                                             Nothing
                                         else
                                             Just "Must provide a valid link"
@@ -277,9 +305,6 @@ update msg model =
 
         CreateLink ->
             let
-                _ =
-                    Debug.log "creating lin" 1
-
                 cmd =
                     model.session
                         |> defaultLoggedOut Cmd.none
@@ -290,9 +315,12 @@ update msg model =
                                             |> Maybe.map (\link -> Task.perform setClickedAt (Task.succeed link))
                                             |> Maybe.withDefault (createLink { href = linkInputText, uid = uid })
                                 in
-                                    linkInputValidation
-                                        |> Maybe.map (always Cmd.none)
-                                        |> Maybe.withDefault validInputTextCmd
+                                    if linkInputText == "" then
+                                        Cmd.none
+                                    else
+                                        linkInputValidation
+                                            |> Maybe.map (always Cmd.none)
+                                            |> Maybe.withDefault validInputTextCmd
                             )
             in
                 ( model, cmd )

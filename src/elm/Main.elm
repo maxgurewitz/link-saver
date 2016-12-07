@@ -229,6 +229,7 @@ view model =
                                     model.mdl
                                     [ Textfield.label "email"
                                     , Textfield.floatingLabel
+                                    , onEnterTextfield LogIn
                                     , Textfield.text_
                                     , Textfield.onInput (\email -> SetLoginForm { loginForm | email = email })
                                     ]
@@ -241,6 +242,7 @@ view model =
                                     [ 1 ]
                                     model.mdl
                                     [ Textfield.label "password"
+                                    , onEnterTextfield LogIn
                                     , Textfield.floatingLabel
                                     , Textfield.password
                                     , Textfield.onInput (\password -> SetLoginForm { loginForm | password = password })

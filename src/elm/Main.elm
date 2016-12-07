@@ -9,6 +9,7 @@ import Html
 import Task
 import Time
 import List.Extra exposing (find)
+import Material.Typography as Typo
 import Html.Attributes exposing (placeholder, style, target, href)
 import Material
 import Material.Textfield as Textfield
@@ -21,15 +22,16 @@ import Material.Options as MOpts
 import Regex exposing (regex, contains)
 import Json.Decode as Json
 import Material.Button as Button
+import Material.Grid exposing (grid, cell, size, Device(..))
 
 
 emptyLogin =
     LoggedOut { email = "", password = "" }
 
 
-standardButton model attrs contents =
+standardButton index model attrs contents =
     Button.render Mdl
-        [ 0 ]
+        [ index ]
         model.mdl
         (List.concat
             [ attrs
@@ -157,7 +159,8 @@ view model =
                             [ Layout.row []
                                 [ text loggedIn.email
                                 , Layout.spacer
-                                , standardButton model
+                                , standardButton 0
+                                    model
                                     [ Button.onClick LogOut
                                     , Button.accent
                                     ]
@@ -176,7 +179,7 @@ view model =
                                     [ style [ ( "textAlign", "center" ) ]
                                     ]
                                     [ Textfield.render Mdl
-                                        [ 4 ]
+                                        [ 2 ]
                                         model.mdl
                                         [ Textfield.label "enter link"
                                         , loggedIn.linkInputValidation
@@ -185,7 +188,8 @@ view model =
                                         , Textfield.onInput SetLinkInputText
                                         , onEnterTextfield CreateLink
                                         ]
-                                    , standardButton model
+                                    , standardButton 1
+                                        model
                                         [ Button.onClick CreateLink ]
                                         [ text "submit link" ]
                                     ]
@@ -202,23 +206,57 @@ view model =
                         }
 
                 LoggedOut loginForm ->
-                    div []
-                        [ Layout.row []
-                            [ div []
-                                [ input
-                                    [ placeholder "email"
-                                    , onInput (\email -> SetLoginForm { loginForm | email = email })
-                                    , style [ ( "display", "block" ) ]
-                                    ]
-                                    []
-                                , input
-                                    [ placeholder "password"
-                                    , style [ ( "display", "block" ) ]
-                                    , onInput (\password -> SetLoginForm { loginForm | password = password })
-                                    ]
-                                    []
+                    MOpts.styled div
+                        [ Typo.center ]
+                        [ grid [ MOpts.center ]
+                            [ cell
+                                [ size All 12
+                                , size Tablet 8
+                                , size Phone 4
                                 ]
-                            , button [ onClick LogIn ] [ text "register/login" ]
+                                [ MOpts.styled div
+                                    [ Typo.display3
+                                    ]
+                                    [ text "Link Saver"
+                                    ]
+                                ]
+                            , cell
+                                [ size All 2
+                                , size Phone 4
+                                ]
+                                [ Textfield.render Mdl
+                                    [ 0 ]
+                                    model.mdl
+                                    [ Textfield.label "email"
+                                    , Textfield.floatingLabel
+                                    , Textfield.text_
+                                    , Textfield.onInput (\email -> SetLoginForm { loginForm | email = email })
+                                    ]
+                                ]
+                            , cell
+                                [ size All 2
+                                , size Phone 4
+                                ]
+                                [ Textfield.render Mdl
+                                    [ 1 ]
+                                    model.mdl
+                                    [ Textfield.label "password"
+                                    , Textfield.floatingLabel
+                                    , Textfield.password
+                                    , Textfield.onInput (\password -> SetLoginForm { loginForm | password = password })
+                                    ]
+                                ]
+                            , cell
+                                [ size All 2
+                                , size Phone 4
+                                ]
+                                [ div [ style [ ( "textAlign", "center" ) ] ]
+                                    [ standardButton 2
+                                        model
+                                        [ Button.onClick LogIn ]
+                                        [ text "register/login" ]
+                                    ]
+                                ]
                             ]
                         ]
     in

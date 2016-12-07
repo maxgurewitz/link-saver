@@ -3,7 +3,7 @@ module Main exposing (..)
 import Html exposing (text, programWithFlags, div, button, input, a, br, form)
 import Ports exposing (createLink, links, createUser, createUserResponse, logOut, logOutResponse, deleteLink, updateLink)
 import Types exposing (..)
-import Html.Events exposing (onInput, onClick, onSubmit)
+import Html.Events exposing (onInput, onClick, onSubmit, keyCode)
 import Debug
 import Html
 import Task
@@ -19,6 +19,7 @@ import Material.Helpers exposing (map1st, map2nd)
 import Material.Icon as Icon
 import Material.Options as MOpts
 import Regex exposing (regex, contains)
+import Json.Decode as Json
 
 
 emptyLogin =
@@ -27,6 +28,18 @@ emptyLogin =
 
 linkRgx =
     regex "(http(s)?:\\/\\/.)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)"
+
+
+onEnterTextfield : Msg -> Textfield.Property Msg
+onEnterTextfield msg =
+    let
+        isEnter code =
+            if code == 13 then
+                Json.succeed msg
+            else
+                Json.fail "not ENTER"
+    in
+        Textfield.on "keydown" (Json.andThen isEnter keyCode)
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -92,31 +105,18 @@ view model =
                             ]
                         , main =
                             [ br [] []
-                              -- , form [ onSubmit CreateLink ]
-                            , form
-                                [ onSubmit CreateLink
-                                  -- (\e ->
-                                  --     let
-                                  --         _ =
-                                  --             Debug.log "e" e
-                                  --     in
-                                  --         CreateLink
-                                  -- )
-                                ]
-                                [ div [ style [ ( "textAlign", "center" ) ] ]
-                                    [ Textfield.render Mdl
-                                        [ 4 ]
-                                        model.mdl
-                                        [ Textfield.label "enter link"
-                                        , loggedIn.linkInputValidation
-                                            |> Maybe.map Textfield.error
-                                            |> Maybe.withDefault MOpts.nop
-                                        , Textfield.onInput SetLinkInputText
-                                        ]
-                                      -- , button [ onClick CreateLink ] [ text "submit link" ]
-                                      -- FIXME delete button is resulting in double click
-                                    , button [] [ text "submit link" ]
+                            , div [ style [ ( "textAlign", "center" ) ] ]
+                                [ Textfield.render Mdl
+                                    [ 4 ]
+                                    model.mdl
+                                    [ Textfield.label "enter link"
+                                    , loggedIn.linkInputValidation
+                                        |> Maybe.map Textfield.error
+                                        |> Maybe.withDefault MOpts.nop
+                                    , Textfield.onInput SetLinkInputText
+                                    , onEnterTextfield CreateLink
                                     ]
+                                , button [ onClick CreateLink ] [ text "submit link" ]
                                 ]
                             , MList.ul
                                 [ (MOpts.css "maxWidth" "50em")

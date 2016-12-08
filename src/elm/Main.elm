@@ -330,7 +330,7 @@ update msg model =
                             (\loggedInModel ->
                                 let
                                     linkInputValidation =
-                                        if (contains linkRgx linkInputText) && (linkInputText /= "") then
+                                        if (contains linkRgx linkInputText) || linkInputText == "" then
                                             Nothing
                                         else
                                             Just "Must provide a valid link"

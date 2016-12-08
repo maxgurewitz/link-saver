@@ -52,8 +52,6 @@ function updateLink(link, app) {
 }
 
 function createLink(payload) {
-  // FIXME duplicates
-  console.log('loc1', payload);
   var now = Date.now();
 
   firebase.database().ref('links/' + payload.uid).push().set({

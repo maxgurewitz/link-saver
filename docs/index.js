@@ -17615,17 +17615,21 @@
 														_0: _MichaelCombs28$elm_mdl$Material_Textfield$floatingLabel,
 														_1: {
 															ctor: '::',
-															_0: _MichaelCombs28$elm_mdl$Material_Textfield$text_,
+															_0: _user$project$Main$onEnterTextfield(_user$project$Types$LogIn),
 															_1: {
 																ctor: '::',
-																_0: _MichaelCombs28$elm_mdl$Material_Textfield$onInput(
-																	function (email) {
-																		return _user$project$Types$SetLoginForm(
-																			_elm_lang$core$Native_Utils.update(
-																				_p4,
-																				{email: email}));
-																	}),
-																_1: {ctor: '[]'}
+																_0: _MichaelCombs28$elm_mdl$Material_Textfield$text_,
+																_1: {
+																	ctor: '::',
+																	_0: _MichaelCombs28$elm_mdl$Material_Textfield$onInput(
+																		function (email) {
+																			return _user$project$Types$SetLoginForm(
+																				_elm_lang$core$Native_Utils.update(
+																					_p4,
+																					{email: email}));
+																		}),
+																	_1: {ctor: '[]'}
+																}
 															}
 														}
 													}
@@ -17661,20 +17665,24 @@
 														_0: _MichaelCombs28$elm_mdl$Material_Textfield$label('password'),
 														_1: {
 															ctor: '::',
-															_0: _MichaelCombs28$elm_mdl$Material_Textfield$floatingLabel,
+															_0: _user$project$Main$onEnterTextfield(_user$project$Types$LogIn),
 															_1: {
 																ctor: '::',
-																_0: _MichaelCombs28$elm_mdl$Material_Textfield$password,
+																_0: _MichaelCombs28$elm_mdl$Material_Textfield$floatingLabel,
 																_1: {
 																	ctor: '::',
-																	_0: _MichaelCombs28$elm_mdl$Material_Textfield$onInput(
-																		function (password) {
-																			return _user$project$Types$SetLoginForm(
-																				_elm_lang$core$Native_Utils.update(
-																					_p4,
-																					{password: password}));
-																		}),
-																	_1: {ctor: '[]'}
+																	_0: _MichaelCombs28$elm_mdl$Material_Textfield$password,
+																	_1: {
+																		ctor: '::',
+																		_0: _MichaelCombs28$elm_mdl$Material_Textfield$onInput(
+																			function (password) {
+																				return _user$project$Types$SetLoginForm(
+																					_elm_lang$core$Native_Utils.update(
+																						_p4,
+																						{password: password}));
+																			}),
+																		_1: {ctor: '[]'}
+																	}
 																}
 															}
 														}
@@ -17835,7 +17843,7 @@
 					var session = A2(
 						_user$project$Main$mapLoggedIn,
 						function (loggedInModel) {
-							var linkInputValidation = (A2(_elm_lang$core$Regex$contains, _user$project$Main$linkRgx, _p11) && (!_elm_lang$core$Native_Utils.eq(_p11, ''))) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just('Must provide a valid link');
+							var linkInputValidation = (A2(_elm_lang$core$Regex$contains, _user$project$Main$linkRgx, _p11) || _elm_lang$core$Native_Utils.eq(_p11, '')) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just('Must provide a valid link');
 							return _elm_lang$core$Native_Utils.update(
 								loggedInModel,
 								{linkInputText: _p11, linkInputValidation: linkInputValidation});
@@ -18109,8 +18117,6 @@
 	}
 
 	function createLink(payload) {
-	  // FIXME duplicates
-	  console.log('loc1', payload);
 	  var now = Date.now();
 
 	  firebase.database().ref('links/' + payload.uid).push().set({

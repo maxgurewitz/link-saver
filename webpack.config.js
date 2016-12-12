@@ -1,4 +1,18 @@
+const webpack = require('webpack');
 const elmPackage = require('./elm-package');
+
+const env = process.env.NODE_ENV;
+
+let plugins = [];
+
+if (env === 'production') {
+  plugins = plugins.concat([
+      new webpack.optimize.UglifyJsPlugin({
+        minimize:   true,
+        compressor: { warnings: false }
+      })
+  ]);
+}
 
 module.exports = {
   entry: './src/js/index.js',
@@ -28,5 +42,6 @@ module.exports = {
   devServer: {
     inline: true,
     stats: 'errors-only'
-  }
+  },
+  plugins
 };

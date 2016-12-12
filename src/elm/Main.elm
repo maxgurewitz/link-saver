@@ -6,8 +6,11 @@ import Types exposing (..)
 import Html.Events exposing (onInput, onClick, onSubmit, keyCode)
 import Debug
 import Html
+import Dict
 import Task
 import Time
+import Trie
+import Set
 import List.Extra exposing (find)
 import Material.Typography as Typo
 import Html.Attributes exposing (placeholder, style, target, href)
@@ -77,9 +80,11 @@ init { user } =
 
         initialModel =
             { links = []
+            , renderedLinks = []
             , session = session
             , mdl = Material.model
             , snackbar = Snackbar.model
+            , trie = Trie.empty
             }
     in
         ( initialModel, Cmd.none )
@@ -179,6 +184,12 @@ view model =
                                     [ style [ ( "textAlign", "center" ) ]
                                     ]
                                     [ Textfield.render Mdl
+                                        [ 3 ]
+                                        model.mdl
+                                        [ Textfield.label "search"
+                                        , Textfield.onInput Search
+                                        ]
+                                    , Textfield.render Mdl
                                         [ 2 ]
                                         model.mdl
                                         [ Textfield.label "enter link"
@@ -195,7 +206,7 @@ view model =
                                     ]
                                 , MList.ul []
                                     (List.map (linkView model)
-                                        model.links
+                                        model.renderedLinks
                                         |> List.concat
                                     )
                                 ]
@@ -290,6 +301,23 @@ defaultLoggedOut defaultLoggedOut loggedInMapper session =
 
 update msg model =
     case msg of
+        Search query ->
+            let
+                renderedLinks =
+                    if query == "" then
+                        model.links
+                    else
+                        Trie.expand (String.toLower query) model.trie
+                            |> List.map
+                                (\href ->
+                                    Trie.get href model.trie
+                                        |> Maybe.withDefault Dict.empty
+                                        |> Dict.values
+                                )
+                            |> List.concat
+            in
+                ( { model | renderedLinks = renderedLinks }, Cmd.none )
+
         Timestamp msgr ->
             ( model, Task.perform msgr Time.now )
 
@@ -320,7 +348,29 @@ update msg model =
                 ( newModel, Cmd.none )
 
         SetLinks links ->
-            ( { model | links = links }, Cmd.none )
+            let
+                trie =
+                    List.foldl
+                        (\link memo ->
+                            { memo
+                                | trie =
+                                    Trie.add ( toString memo.count, link )
+                                        (String.toLower link.href)
+                                        memo.trie
+                                , count = memo.count + 1
+                            }
+                        )
+                        { trie = Trie.empty, count = 0 }
+                        links
+                        |> .trie
+            in
+                ( { model
+                    | links = links
+                    , renderedLinks = links
+                    , trie = trie
+                  }
+                , Cmd.none
+                )
 
         SetLinkInputText linkInputText ->
             let

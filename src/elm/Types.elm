@@ -3,6 +3,7 @@ module Types exposing (..)
 import Material
 import Time exposing (Time)
 import Material.Snackbar as Snackbar
+import Trie exposing (Trie)
 
 
 type alias Link =
@@ -51,14 +52,17 @@ type alias Flags =
 
 type alias Model =
     { links : List Link
+    , renderedLinks : List Link
     , session : Session
     , mdl : Material.Model
+    , trie : Trie Link
     , snackbar : Snackbar.Model ()
     }
 
 
 type Msg
     = SetLinks (List Link)
+    | Search String
     | SetLinkInputText String
     | SetLoginForm LoginForm
     | CreateLink

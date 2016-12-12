@@ -3,7 +3,6 @@ module Types exposing (..)
 import Material
 import Time exposing (Time)
 import Material.Snackbar as Snackbar
-import Trie exposing (Trie)
 
 
 type alias Link =
@@ -55,7 +54,6 @@ type alias Model =
     , renderedLinks : List Link
     , session : Session
     , mdl : Material.Model
-    , trie : Trie Link
     , snackbar : Snackbar.Model ()
     }
 

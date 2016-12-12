@@ -9,7 +9,6 @@ import Html
 import Dict
 import Task
 import Time
-import Trie
 import Set
 import Material.Elevation as Elevation
 import List.Extra exposing (find)
@@ -85,7 +84,6 @@ init { user } =
             , session = session
             , mdl = Material.model
             , snackbar = Snackbar.model
-            , trie = Trie.empty
             }
     in
         ( initialModel, Cmd.none )
@@ -313,14 +311,8 @@ update msg model =
                     if query == "" then
                         model.links
                     else
-                        Trie.expand (String.toLower query) model.trie
-                            |> List.map
-                                (\href ->
-                                    Trie.get href model.trie
-                                        |> Maybe.withDefault Dict.empty
-                                        |> Dict.values
-                                )
-                            |> List.concat
+                        model.links
+                            |> List.filter (.href >> String.contains query)
             in
                 ( { model | renderedLinks = renderedLinks }, Cmd.none )
 
@@ -354,29 +346,12 @@ update msg model =
                 ( newModel, Cmd.none )
 
         SetLinks links ->
-            let
-                trie =
-                    List.foldl
-                        (\link memo ->
-                            { memo
-                                | trie =
-                                    Trie.add ( toString memo.count, link )
-                                        (String.toLower link.href)
-                                        memo.trie
-                                , count = memo.count + 1
-                            }
-                        )
-                        { trie = Trie.empty, count = 0 }
-                        links
-                        |> .trie
-            in
-                ( { model
-                    | links = links
-                    , renderedLinks = links
-                    , trie = trie
-                  }
-                , Cmd.none
-                )
+            ( { model
+                | links = links
+                , renderedLinks = links
+              }
+            , Cmd.none
+            )
 
         SetLinkInputText linkInputText ->
             let

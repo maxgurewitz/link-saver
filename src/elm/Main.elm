@@ -11,6 +11,7 @@ import Task
 import Time
 import Trie
 import Set
+import Material.Elevation as Elevation
 import List.Extra exposing (find)
 import Material.Typography as Typo
 import Html.Attributes exposing (placeholder, style, target, href)
@@ -117,7 +118,7 @@ linkView model link =
             else
                 "//" ++ link.href
     in
-        [ MList.li []
+        [ MList.li [ Elevation.e2 ]
             [ MList.content []
                 [ div
                     [ onClick <| DeleteLink link.guid
@@ -209,7 +210,7 @@ view model =
                                             [ text "submit link" ]
                                         ]
                                     ]
-                                , MList.ul []
+                                , MList.ul [ MOpts.css "margin-top" "0" ]
                                     (List.map (linkView model)
                                         model.renderedLinks
                                         |> List.concat

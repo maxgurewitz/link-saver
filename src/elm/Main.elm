@@ -124,7 +124,6 @@ linkView model index link =
                     [ index + 3 ]
                     model.mdl
                     [ Button.minifab
-                    , Button.colored
                     , Button.ripple
                     , Button.onClick <| DeleteLink link.guid
                     , MOpts.css "marginRight" "1.5em"

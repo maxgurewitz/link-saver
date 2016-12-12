@@ -15200,62 +15200,218 @@
 			return {button: a, textfield: b, menu: c, snackbar: d, layout: e, toggles: f, tooltip: g, tabs: h};
 		});
 
-	var _MichaelCombs28$elm_mdl$Material_Elevation$transition = function (duration) {
-		return A2(
-			_MichaelCombs28$elm_mdl$Material_Options$css,
-			'transition',
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				'box-shadow ',
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					_elm_lang$core$Basics$toString(duration),
-					'ms ease-in-out 0s')));
-	};
-	var _MichaelCombs28$elm_mdl$Material_Elevation$e0 = _MichaelCombs28$elm_mdl$Material_Options$nop;
-	var _MichaelCombs28$elm_mdl$Material_Elevation$shadow = function (z) {
+	var _MichaelCombs28$elm_mdl$Material_Color$text = function (_p0) {
+		var _p1 = _p0;
 		return _MichaelCombs28$elm_mdl$Material_Options$cs(
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				'mdl-shadow--',
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					_elm_lang$core$Basics$toString(z),
-					'dp')));
+			A2(_elm_lang$core$Basics_ops['++'], 'mdl-color-text--', _p1._0));
 	};
-	var _MichaelCombs28$elm_mdl$Material_Elevation$e2 = _MichaelCombs28$elm_mdl$Material_Elevation$shadow(2);
-	var _MichaelCombs28$elm_mdl$Material_Elevation$e3 = _MichaelCombs28$elm_mdl$Material_Elevation$shadow(3);
-	var _MichaelCombs28$elm_mdl$Material_Elevation$e4 = _MichaelCombs28$elm_mdl$Material_Elevation$shadow(4);
-	var _MichaelCombs28$elm_mdl$Material_Elevation$e6 = _MichaelCombs28$elm_mdl$Material_Elevation$shadow(6);
-	var _MichaelCombs28$elm_mdl$Material_Elevation$e8 = _MichaelCombs28$elm_mdl$Material_Elevation$shadow(8);
-	var _MichaelCombs28$elm_mdl$Material_Elevation$e16 = _MichaelCombs28$elm_mdl$Material_Elevation$shadow(16);
-	var _MichaelCombs28$elm_mdl$Material_Elevation$e24 = _MichaelCombs28$elm_mdl$Material_Elevation$shadow(24);
-	var _MichaelCombs28$elm_mdl$Material_Elevation$elevations = _elm_lang$core$Array$fromList(
+	var _MichaelCombs28$elm_mdl$Material_Color$background = function (_p2) {
+		var _p3 = _p2;
+		return _MichaelCombs28$elm_mdl$Material_Options$cs(
+			A2(_elm_lang$core$Basics_ops['++'], 'mdl-color--', _p3._0));
+	};
+	var _MichaelCombs28$elm_mdl$Material_Color$shadeName = function (shade) {
+		var _p4 = shade;
+		switch (_p4.ctor) {
+			case 'S50':
+				return '50';
+			case 'S100':
+				return '100';
+			case 'S200':
+				return '200';
+			case 'S300':
+				return '300';
+			case 'S400':
+				return '400';
+			case 'S500':
+				return '500';
+			case 'S600':
+				return '600';
+			case 'S700':
+				return '700';
+			case 'S800':
+				return '800';
+			case 'S900':
+				return '900';
+			case 'A100':
+				return 'A100';
+			case 'A200':
+				return 'A200';
+			case 'A400':
+				return 'A400';
+			default:
+				return 'A700';
+		}
+	};
+	var _MichaelCombs28$elm_mdl$Material_Color$hueName = function (color) {
+		var _p5 = color;
+		switch (_p5.ctor) {
+			case 'Indigo':
+				return 'indigo';
+			case 'Blue':
+				return 'blue';
+			case 'LightBlue':
+				return 'light-blue';
+			case 'Cyan':
+				return 'cyan';
+			case 'Teal':
+				return 'teal';
+			case 'Green':
+				return 'green';
+			case 'LightGreen':
+				return 'light-green';
+			case 'Lime':
+				return 'lime';
+			case 'Yellow':
+				return 'yellow';
+			case 'Amber':
+				return 'amber';
+			case 'Orange':
+				return 'orange';
+			case 'Brown':
+				return 'brown';
+			case 'BlueGrey':
+				return 'blue-grey';
+			case 'Grey':
+				return 'grey';
+			case 'DeepOrange':
+				return 'deep-orange';
+			case 'Red':
+				return 'red';
+			case 'Pink':
+				return 'pink';
+			case 'Purple':
+				return 'purple';
+			default:
+				return 'deep-purple';
+		}
+	};
+	var _MichaelCombs28$elm_mdl$Material_Color$scheme = F2(
+		function (primary, accent) {
+			var q = _elm_lang$core$String$map(
+				function (x) {
+					return _elm_lang$core$Native_Utils.eq(
+						x,
+						_elm_lang$core$Native_Utils.chr('-')) ? _elm_lang$core$Native_Utils.chr('_') : x;
+				});
+			var cssFile = function () {
+				var _p6 = accent;
+				switch (_p6.ctor) {
+					case 'Grey':
+						return '';
+					case 'Brown':
+						return '';
+					case 'BlueGrey':
+						return '';
+					default:
+						return A2(
+							_elm_lang$core$Basics_ops['++'],
+							'.',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								q(
+									_MichaelCombs28$elm_mdl$Material_Color$hueName(primary)),
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									'-',
+									q(
+										_MichaelCombs28$elm_mdl$Material_Color$hueName(accent)))));
+				}
+			}();
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'material',
+				A2(_elm_lang$core$Basics_ops['++'], cssFile, '.min.css'));
+		});
+	var _MichaelCombs28$elm_mdl$Material_Color$DeepPurple = {ctor: 'DeepPurple'};
+	var _MichaelCombs28$elm_mdl$Material_Color$Purple = {ctor: 'Purple'};
+	var _MichaelCombs28$elm_mdl$Material_Color$Pink = {ctor: 'Pink'};
+	var _MichaelCombs28$elm_mdl$Material_Color$Red = {ctor: 'Red'};
+	var _MichaelCombs28$elm_mdl$Material_Color$DeepOrange = {ctor: 'DeepOrange'};
+	var _MichaelCombs28$elm_mdl$Material_Color$Grey = {ctor: 'Grey'};
+	var _MichaelCombs28$elm_mdl$Material_Color$BlueGrey = {ctor: 'BlueGrey'};
+	var _MichaelCombs28$elm_mdl$Material_Color$Brown = {ctor: 'Brown'};
+	var _MichaelCombs28$elm_mdl$Material_Color$Orange = {ctor: 'Orange'};
+	var _MichaelCombs28$elm_mdl$Material_Color$Amber = {ctor: 'Amber'};
+	var _MichaelCombs28$elm_mdl$Material_Color$Yellow = {ctor: 'Yellow'};
+	var _MichaelCombs28$elm_mdl$Material_Color$Lime = {ctor: 'Lime'};
+	var _MichaelCombs28$elm_mdl$Material_Color$LightGreen = {ctor: 'LightGreen'};
+	var _MichaelCombs28$elm_mdl$Material_Color$Green = {ctor: 'Green'};
+	var _MichaelCombs28$elm_mdl$Material_Color$Teal = {ctor: 'Teal'};
+	var _MichaelCombs28$elm_mdl$Material_Color$Cyan = {ctor: 'Cyan'};
+	var _MichaelCombs28$elm_mdl$Material_Color$LightBlue = {ctor: 'LightBlue'};
+	var _MichaelCombs28$elm_mdl$Material_Color$Blue = {ctor: 'Blue'};
+	var _MichaelCombs28$elm_mdl$Material_Color$Indigo = {ctor: 'Indigo'};
+	var _MichaelCombs28$elm_mdl$Material_Color$hues = _elm_lang$core$Array$fromList(
 		{
 			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: _MichaelCombs28$elm_mdl$Material_Elevation$e0, _1: 0},
+			_0: _MichaelCombs28$elm_mdl$Material_Color$Indigo,
 			_1: {
 				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: _MichaelCombs28$elm_mdl$Material_Elevation$e2, _1: 2},
+				_0: _MichaelCombs28$elm_mdl$Material_Color$Blue,
 				_1: {
 					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: _MichaelCombs28$elm_mdl$Material_Elevation$e3, _1: 3},
+					_0: _MichaelCombs28$elm_mdl$Material_Color$LightBlue,
 					_1: {
 						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: _MichaelCombs28$elm_mdl$Material_Elevation$e4, _1: 4},
+						_0: _MichaelCombs28$elm_mdl$Material_Color$Cyan,
 						_1: {
 							ctor: '::',
-							_0: {ctor: '_Tuple2', _0: _MichaelCombs28$elm_mdl$Material_Elevation$e6, _1: 6},
+							_0: _MichaelCombs28$elm_mdl$Material_Color$Teal,
 							_1: {
 								ctor: '::',
-								_0: {ctor: '_Tuple2', _0: _MichaelCombs28$elm_mdl$Material_Elevation$e8, _1: 8},
+								_0: _MichaelCombs28$elm_mdl$Material_Color$Green,
 								_1: {
 									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: _MichaelCombs28$elm_mdl$Material_Elevation$e16, _1: 16},
+									_0: _MichaelCombs28$elm_mdl$Material_Color$LightGreen,
 									_1: {
 										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: _MichaelCombs28$elm_mdl$Material_Elevation$e24, _1: 24},
-										_1: {ctor: '[]'}
+										_0: _MichaelCombs28$elm_mdl$Material_Color$Lime,
+										_1: {
+											ctor: '::',
+											_0: _MichaelCombs28$elm_mdl$Material_Color$Yellow,
+											_1: {
+												ctor: '::',
+												_0: _MichaelCombs28$elm_mdl$Material_Color$Amber,
+												_1: {
+													ctor: '::',
+													_0: _MichaelCombs28$elm_mdl$Material_Color$Orange,
+													_1: {
+														ctor: '::',
+														_0: _MichaelCombs28$elm_mdl$Material_Color$Brown,
+														_1: {
+															ctor: '::',
+															_0: _MichaelCombs28$elm_mdl$Material_Color$BlueGrey,
+															_1: {
+																ctor: '::',
+																_0: _MichaelCombs28$elm_mdl$Material_Color$Grey,
+																_1: {
+																	ctor: '::',
+																	_0: _MichaelCombs28$elm_mdl$Material_Color$DeepOrange,
+																	_1: {
+																		ctor: '::',
+																		_0: _MichaelCombs28$elm_mdl$Material_Color$Red,
+																		_1: {
+																			ctor: '::',
+																			_0: _MichaelCombs28$elm_mdl$Material_Color$Pink,
+																			_1: {
+																				ctor: '::',
+																				_0: _MichaelCombs28$elm_mdl$Material_Color$Purple,
+																				_1: {
+																					ctor: '::',
+																					_0: _MichaelCombs28$elm_mdl$Material_Color$DeepPurple,
+																					_1: {ctor: '[]'}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
 									}
 								}
 							}
@@ -15264,6 +15420,165 @@
 				}
 			}
 		});
+	var _MichaelCombs28$elm_mdl$Material_Color$accentHues = _elm_lang$core$Array$fromList(
+		{
+			ctor: '::',
+			_0: _MichaelCombs28$elm_mdl$Material_Color$Indigo,
+			_1: {
+				ctor: '::',
+				_0: _MichaelCombs28$elm_mdl$Material_Color$Blue,
+				_1: {
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Color$LightBlue,
+					_1: {
+						ctor: '::',
+						_0: _MichaelCombs28$elm_mdl$Material_Color$Cyan,
+						_1: {
+							ctor: '::',
+							_0: _MichaelCombs28$elm_mdl$Material_Color$Teal,
+							_1: {
+								ctor: '::',
+								_0: _MichaelCombs28$elm_mdl$Material_Color$Green,
+								_1: {
+									ctor: '::',
+									_0: _MichaelCombs28$elm_mdl$Material_Color$LightGreen,
+									_1: {
+										ctor: '::',
+										_0: _MichaelCombs28$elm_mdl$Material_Color$Lime,
+										_1: {
+											ctor: '::',
+											_0: _MichaelCombs28$elm_mdl$Material_Color$Yellow,
+											_1: {
+												ctor: '::',
+												_0: _MichaelCombs28$elm_mdl$Material_Color$Amber,
+												_1: {
+													ctor: '::',
+													_0: _MichaelCombs28$elm_mdl$Material_Color$Orange,
+													_1: {
+														ctor: '::',
+														_0: _MichaelCombs28$elm_mdl$Material_Color$DeepOrange,
+														_1: {
+															ctor: '::',
+															_0: _MichaelCombs28$elm_mdl$Material_Color$Red,
+															_1: {
+																ctor: '::',
+																_0: _MichaelCombs28$elm_mdl$Material_Color$Pink,
+																_1: {
+																	ctor: '::',
+																	_0: _MichaelCombs28$elm_mdl$Material_Color$Purple,
+																	_1: {
+																		ctor: '::',
+																		_0: _MichaelCombs28$elm_mdl$Material_Color$DeepPurple,
+																		_1: {ctor: '[]'}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		});
+	var _MichaelCombs28$elm_mdl$Material_Color$A700 = {ctor: 'A700'};
+	var _MichaelCombs28$elm_mdl$Material_Color$A400 = {ctor: 'A400'};
+	var _MichaelCombs28$elm_mdl$Material_Color$A200 = {ctor: 'A200'};
+	var _MichaelCombs28$elm_mdl$Material_Color$A100 = {ctor: 'A100'};
+	var _MichaelCombs28$elm_mdl$Material_Color$S900 = {ctor: 'S900'};
+	var _MichaelCombs28$elm_mdl$Material_Color$S800 = {ctor: 'S800'};
+	var _MichaelCombs28$elm_mdl$Material_Color$S700 = {ctor: 'S700'};
+	var _MichaelCombs28$elm_mdl$Material_Color$S600 = {ctor: 'S600'};
+	var _MichaelCombs28$elm_mdl$Material_Color$S500 = {ctor: 'S500'};
+	var _MichaelCombs28$elm_mdl$Material_Color$S400 = {ctor: 'S400'};
+	var _MichaelCombs28$elm_mdl$Material_Color$S300 = {ctor: 'S300'};
+	var _MichaelCombs28$elm_mdl$Material_Color$S200 = {ctor: 'S200'};
+	var _MichaelCombs28$elm_mdl$Material_Color$S100 = {ctor: 'S100'};
+	var _MichaelCombs28$elm_mdl$Material_Color$S50 = {ctor: 'S50'};
+	var _MichaelCombs28$elm_mdl$Material_Color$shades = _elm_lang$core$Array$fromList(
+		{
+			ctor: '::',
+			_0: _MichaelCombs28$elm_mdl$Material_Color$S50,
+			_1: {
+				ctor: '::',
+				_0: _MichaelCombs28$elm_mdl$Material_Color$S100,
+				_1: {
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Color$S200,
+					_1: {
+						ctor: '::',
+						_0: _MichaelCombs28$elm_mdl$Material_Color$S300,
+						_1: {
+							ctor: '::',
+							_0: _MichaelCombs28$elm_mdl$Material_Color$S400,
+							_1: {
+								ctor: '::',
+								_0: _MichaelCombs28$elm_mdl$Material_Color$S500,
+								_1: {
+									ctor: '::',
+									_0: _MichaelCombs28$elm_mdl$Material_Color$S600,
+									_1: {
+										ctor: '::',
+										_0: _MichaelCombs28$elm_mdl$Material_Color$S700,
+										_1: {
+											ctor: '::',
+											_0: _MichaelCombs28$elm_mdl$Material_Color$S800,
+											_1: {
+												ctor: '::',
+												_0: _MichaelCombs28$elm_mdl$Material_Color$S900,
+												_1: {
+													ctor: '::',
+													_0: _MichaelCombs28$elm_mdl$Material_Color$A100,
+													_1: {
+														ctor: '::',
+														_0: _MichaelCombs28$elm_mdl$Material_Color$A200,
+														_1: {
+															ctor: '::',
+															_0: _MichaelCombs28$elm_mdl$Material_Color$A400,
+															_1: {
+																ctor: '::',
+																_0: _MichaelCombs28$elm_mdl$Material_Color$A700,
+																_1: {ctor: '[]'}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		});
+	var _MichaelCombs28$elm_mdl$Material_Color$C = function (a) {
+		return {ctor: 'C', _0: a};
+	};
+	var _MichaelCombs28$elm_mdl$Material_Color$color = F2(
+		function (hue, shade) {
+			return _MichaelCombs28$elm_mdl$Material_Color$C(
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_MichaelCombs28$elm_mdl$Material_Color$hueName(hue),
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'-',
+						_MichaelCombs28$elm_mdl$Material_Color$shadeName(shade))));
+		});
+	var _MichaelCombs28$elm_mdl$Material_Color$white = _MichaelCombs28$elm_mdl$Material_Color$C('white');
+	var _MichaelCombs28$elm_mdl$Material_Color$black = _MichaelCombs28$elm_mdl$Material_Color$C('black');
+	var _MichaelCombs28$elm_mdl$Material_Color$primary = _MichaelCombs28$elm_mdl$Material_Color$C('primary');
+	var _MichaelCombs28$elm_mdl$Material_Color$primaryDark = _MichaelCombs28$elm_mdl$Material_Color$C('primary-dark');
+	var _MichaelCombs28$elm_mdl$Material_Color$primaryContrast = _MichaelCombs28$elm_mdl$Material_Color$C('primary-contrast');
+	var _MichaelCombs28$elm_mdl$Material_Color$accent = _MichaelCombs28$elm_mdl$Material_Color$C('accent');
+	var _MichaelCombs28$elm_mdl$Material_Color$accentContrast = _MichaelCombs28$elm_mdl$Material_Color$C('accent-contrast');
 
 	//import Maybe, Native.List //
 
@@ -17029,357 +17344,6 @@
 	var _elm_community$list_extra$List_Extra$last = _elm_community$list_extra$List_Extra$foldl1(
 		_elm_lang$core$Basics$flip(_elm_lang$core$Basics$always));
 
-	var _rluiten$trie$TrieModel$expandCore = F3(
-		function (key, trie, keyList) {
-			var expandSub = F3(
-				function ($char, trie, foldList) {
-					return A3(
-						_rluiten$trie$TrieModel$expandCore,
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							key,
-							{
-								ctor: '::',
-								_0: $char,
-								_1: {ctor: '[]'}
-							}),
-						trie,
-						foldList);
-				});
-			var addRefKey = function (refValues) {
-				return (!_elm_lang$core$Dict$isEmpty(refValues)) ? {
-					ctor: '::',
-					_0: _elm_lang$core$String$concat(key),
-					_1: keyList
-				} : keyList;
-			};
-			var _p0 = trie;
-			switch (_p0.ctor) {
-				case 'EmptyTrie':
-					return keyList;
-				case 'ValNode':
-					return addRefKey(_p0._0);
-				case 'TrieNode':
-					return A3(_elm_lang$core$Dict$foldr, expandSub, keyList, _p0._0);
-				default:
-					var dirtyList = addRefKey(_p0._0._0);
-					return A3(_elm_lang$core$Dict$foldr, expandSub, dirtyList, _p0._0._1);
-			}
-		});
-	var _rluiten$trie$TrieModel$getValues = function (trie) {
-		var _p1 = trie;
-		switch (_p1.ctor) {
-			case 'EmptyTrie':
-				return _elm_lang$core$Maybe$Nothing;
-			case 'ValNode':
-				return _elm_lang$core$Maybe$Just(_p1._0);
-			case 'TrieNode':
-				return _elm_lang$core$Maybe$Nothing;
-			default:
-				return _elm_lang$core$Maybe$Just(_p1._0._0);
-		}
-	};
-	var _rluiten$trie$TrieModel$getNodeCore = F2(
-		function (key, trie) {
-			var _p2 = key;
-			if (_p2.ctor === '[]') {
-				return _elm_lang$core$Maybe$Just(trie);
-			} else {
-				var getTrie = function (trieDict) {
-					return A2(
-						_elm_lang$core$Maybe$andThen,
-						_rluiten$trie$TrieModel$getNodeCore(_p2._1),
-						A2(_elm_lang$core$Dict$get, _p2._0, trieDict));
-				};
-				var _p3 = trie;
-				switch (_p3.ctor) {
-					case 'EmptyTrie':
-						return _elm_lang$core$Maybe$Nothing;
-					case 'ValNode':
-						return _elm_lang$core$Maybe$Nothing;
-					case 'TrieNode':
-						return getTrie(_p3._0);
-					default:
-						return getTrie(_p3._0._1);
-				}
-			}
-		});
-	var _rluiten$trie$TrieModel$getNodeByStr = F2(
-		function (key, trie) {
-			return _elm_lang$core$List$isEmpty(key) ? _elm_lang$core$Maybe$Nothing : A2(_rluiten$trie$TrieModel$getNodeCore, key, trie);
-		});
-	var _rluiten$trie$TrieModel$hasByStr = F2(
-		function (key, trie) {
-			return function (_p4) {
-				return !_elm_lang$core$Dict$isEmpty(_p4);
-			}(
-				A2(
-					_elm_lang$core$Maybe$withDefault,
-					_elm_lang$core$Dict$empty,
-					A2(
-						_elm_lang$core$Maybe$andThen,
-						_rluiten$trie$TrieModel$getValues,
-						A2(_rluiten$trie$TrieModel$getNodeByStr, key, trie))));
-		});
-	var _rluiten$trie$TrieModel$getByStr = F2(
-		function (key, trie) {
-			return A2(
-				_elm_lang$core$Maybe$andThen,
-				_rluiten$trie$TrieModel$getValues,
-				A2(_rluiten$trie$TrieModel$getNodeByStr, key, trie));
-		});
-	var _rluiten$trie$TrieModel$valueCountByStr = F2(
-		function (key, trie) {
-			return _elm_lang$core$Dict$size(
-				A2(
-					_elm_lang$core$Maybe$withDefault,
-					_elm_lang$core$Dict$empty,
-					A2(_rluiten$trie$TrieModel$getByStr, key, trie)));
-		});
-	var _rluiten$trie$TrieModel$expandByStr = F2(
-		function (key, trie) {
-			var _p5 = A2(_rluiten$trie$TrieModel$getNodeByStr, key, trie);
-			if (_p5.ctor === 'Nothing') {
-				return {ctor: '[]'};
-			} else {
-				return A3(
-					_rluiten$trie$TrieModel$expandCore,
-					key,
-					_p5._0,
-					{ctor: '[]'});
-			}
-		});
-	var _rluiten$trie$TrieModel$toListString = function (str) {
-		return A2(
-			_elm_lang$core$List$map,
-			function (c) {
-				return _elm_lang$core$String$fromChar(c);
-			},
-			_elm_lang$core$String$toList(str));
-	};
-	var _rluiten$trie$TrieModel$getNode = F2(
-		function (key, trie) {
-			return A2(
-				_rluiten$trie$TrieModel$getNodeByStr,
-				_rluiten$trie$TrieModel$toListString(key),
-				trie);
-		});
-	var _rluiten$trie$TrieModel$has = F2(
-		function (key, trie) {
-			return A2(
-				_rluiten$trie$TrieModel$hasByStr,
-				_rluiten$trie$TrieModel$toListString(key),
-				trie);
-		});
-	var _rluiten$trie$TrieModel$get = F2(
-		function (key, trie) {
-			return A2(
-				_rluiten$trie$TrieModel$getByStr,
-				_rluiten$trie$TrieModel$toListString(key),
-				trie);
-		});
-	var _rluiten$trie$TrieModel$valueCount = F2(
-		function (key, trie) {
-			return _elm_lang$core$Dict$size(
-				A2(
-					_elm_lang$core$Maybe$withDefault,
-					_elm_lang$core$Dict$empty,
-					A2(_rluiten$trie$TrieModel$get, key, trie)));
-		});
-	var _rluiten$trie$TrieModel$expand = F2(
-		function (key, trie) {
-			return A2(
-				_rluiten$trie$TrieModel$expandByStr,
-				_rluiten$trie$TrieModel$toListString(key),
-				trie);
-		});
-	var _rluiten$trie$TrieModel$ValTrieNode = function (a) {
-		return {ctor: 'ValTrieNode', _0: a};
-	};
-	var _rluiten$trie$TrieModel$TrieNode = function (a) {
-		return {ctor: 'TrieNode', _0: a};
-	};
-	var _rluiten$trie$TrieModel$ValNode = function (a) {
-		return {ctor: 'ValNode', _0: a};
-	};
-	var _rluiten$trie$TrieModel$removeByStr = F3(
-		function (key, ref, trie) {
-			var _p6 = key;
-			if (_p6.ctor === '[]') {
-				var _p7 = trie;
-				switch (_p7.ctor) {
-					case 'EmptyTrie':
-						return trie;
-					case 'ValNode':
-						return _rluiten$trie$TrieModel$ValNode(
-							A2(_elm_lang$core$Dict$remove, ref, _p7._0));
-					case 'TrieNode':
-						return trie;
-					default:
-						return _rluiten$trie$TrieModel$ValTrieNode(
-							{
-								ctor: '_Tuple2',
-								_0: A2(_elm_lang$core$Dict$remove, ref, _p7._0._0),
-								_1: _p7._0._1
-							});
-				}
-			} else {
-				var _p10 = _p6._0;
-				var removeTrieDict = function (trieDict) {
-					var _p8 = A2(_elm_lang$core$Dict$get, _p10, trieDict);
-					if (_p8.ctor === 'Nothing') {
-						return trieDict;
-					} else {
-						return A3(
-							_elm_lang$core$Dict$insert,
-							_p10,
-							A3(_rluiten$trie$TrieModel$removeByStr, _p6._1, ref, _p8._0),
-							trieDict);
-					}
-				};
-				var _p9 = trie;
-				switch (_p9.ctor) {
-					case 'EmptyTrie':
-						return trie;
-					case 'ValNode':
-						return trie;
-					case 'TrieNode':
-						return _rluiten$trie$TrieModel$TrieNode(
-							removeTrieDict(_p9._0));
-					default:
-						return _rluiten$trie$TrieModel$ValTrieNode(
-							{
-								ctor: '_Tuple2',
-								_0: _p9._0._0,
-								_1: removeTrieDict(_p9._0._1)
-							});
-				}
-			}
-		});
-	var _rluiten$trie$TrieModel$remove = F3(
-		function (key, ref, trie) {
-			return A3(
-				_rluiten$trie$TrieModel$removeByStr,
-				_rluiten$trie$TrieModel$toListString(key),
-				ref,
-				trie);
-		});
-	var _rluiten$trie$TrieModel$EmptyTrie = {ctor: 'EmptyTrie'};
-	var _rluiten$trie$TrieModel$empty = _rluiten$trie$TrieModel$EmptyTrie;
-	var _rluiten$trie$TrieModel$isEmpty = function (trie) {
-		return _elm_lang$core$Native_Utils.eq(trie, _rluiten$trie$TrieModel$empty);
-	};
-	var _rluiten$trie$TrieModel$addByStr = F3(
-		function (_p11, key, trie) {
-			var _p12 = _p11;
-			var _p20 = _p12._1;
-			var _p19 = _p12._0;
-			var _p13 = key;
-			if (_p13.ctor === '[]') {
-				var _p14 = trie;
-				switch (_p14.ctor) {
-					case 'EmptyTrie':
-						return _rluiten$trie$TrieModel$ValNode(
-							A2(_elm_lang$core$Dict$singleton, _p19, _p20));
-					case 'ValNode':
-						return _rluiten$trie$TrieModel$ValNode(
-							A3(_elm_lang$core$Dict$insert, _p19, _p20, _p14._0));
-					case 'TrieNode':
-						return _rluiten$trie$TrieModel$ValTrieNode(
-							{
-								ctor: '_Tuple2',
-								_0: A2(_elm_lang$core$Dict$singleton, _p19, _p20),
-								_1: _p14._0
-							});
-					default:
-						return _rluiten$trie$TrieModel$ValTrieNode(
-							{
-								ctor: '_Tuple2',
-								_0: A3(_elm_lang$core$Dict$insert, _p19, _p20, _p14._0._0),
-								_1: _p14._0._1
-							});
-				}
-			} else {
-				var _p18 = _p13._1;
-				var _p17 = _p13._0;
-				var updateTrieDict = function (trieDict) {
-					var updatedSubTrie = A3(
-						_rluiten$trie$TrieModel$addByStr,
-						{ctor: '_Tuple2', _0: _p19, _1: _p20},
-						_p18,
-						A2(
-							_elm_lang$core$Maybe$withDefault,
-							_rluiten$trie$TrieModel$EmptyTrie,
-							A2(_elm_lang$core$Dict$get, _p17, trieDict)));
-					return A3(_elm_lang$core$Dict$insert, _p17, updatedSubTrie, trieDict);
-				};
-				var lazyNewTrieDict = function (_p15) {
-					return A2(
-						_elm_lang$core$Dict$singleton,
-						_p17,
-						A3(
-							_rluiten$trie$TrieModel$addByStr,
-							{ctor: '_Tuple2', _0: _p19, _1: _p20},
-							_p18,
-							_rluiten$trie$TrieModel$EmptyTrie));
-				};
-				var _p16 = trie;
-				switch (_p16.ctor) {
-					case 'EmptyTrie':
-						return _rluiten$trie$TrieModel$TrieNode(
-							lazyNewTrieDict(
-								{ctor: '_Tuple0'}));
-					case 'ValNode':
-						return _rluiten$trie$TrieModel$ValTrieNode(
-							{
-								ctor: '_Tuple2',
-								_0: _p16._0,
-								_1: lazyNewTrieDict(
-									{ctor: '_Tuple0'})
-							});
-					case 'TrieNode':
-						return _rluiten$trie$TrieModel$TrieNode(
-							updateTrieDict(_p16._0));
-					default:
-						return _rluiten$trie$TrieModel$ValTrieNode(
-							{
-								ctor: '_Tuple2',
-								_0: _p16._0._0,
-								_1: updateTrieDict(_p16._0._1)
-							});
-				}
-			}
-		});
-	var _rluiten$trie$TrieModel$add = F3(
-		function (refValues, key, trie) {
-			return A3(
-				_rluiten$trie$TrieModel$addByStr,
-				refValues,
-				_rluiten$trie$TrieModel$toListString(key),
-				trie);
-		});
-
-	var _rluiten$trie$Trie$expand = _rluiten$trie$TrieModel$expand;
-	var _rluiten$trie$Trie$valueCount = _rluiten$trie$TrieModel$valueCount;
-	var _rluiten$trie$Trie$getValues = _rluiten$trie$TrieModel$getValues;
-	var _rluiten$trie$Trie$get = _rluiten$trie$TrieModel$get;
-	var _rluiten$trie$Trie$has = _rluiten$trie$TrieModel$has;
-	var _rluiten$trie$Trie$getNode = _rluiten$trie$TrieModel$getNode;
-	var _rluiten$trie$Trie$remove = _rluiten$trie$TrieModel$remove;
-	var _rluiten$trie$Trie$toListString = function (str) {
-		return A2(
-			_elm_lang$core$List$map,
-			function (c) {
-				return _elm_lang$core$String$fromChar(c);
-			},
-			_elm_lang$core$String$toList(str));
-	};
-	var _rluiten$trie$Trie$add = _rluiten$trie$TrieModel$add;
-	var _rluiten$trie$Trie$empty = _rluiten$trie$TrieModel$empty;
-	var _rluiten$trie$Trie$isEmpty = function (trie) {
-		return _elm_lang$core$Native_Utils.eq(trie, _rluiten$trie$Trie$empty);
-	};
-
 	var _user$project$Types$Link = F4(
 		function (a, b, c, d) {
 			return {href: a, timestamp: b, clickedAt: c, guid: d};
@@ -17403,9 +17367,9 @@
 	var _user$project$Types$Flags = function (a) {
 		return {user: a};
 	};
-	var _user$project$Types$Model = F6(
-		function (a, b, c, d, e, f) {
-			return {links: a, renderedLinks: b, session: c, mdl: d, trie: e, snackbar: f};
+	var _user$project$Types$Model = F4(
+		function (a, b, c, d) {
+			return {links: a, session: b, mdl: c, snackbar: d};
 		});
 	var _user$project$Types$LoggedOut = function (a) {
 		return {ctor: 'LoggedOut', _0: a};
@@ -17443,9 +17407,6 @@
 	};
 	var _user$project$Types$SetLinkInputText = function (a) {
 		return {ctor: 'SetLinkInputText', _0: a};
-	};
-	var _user$project$Types$Search = function (a) {
-		return {ctor: 'Search', _0: a};
 	};
 	var _user$project$Types$SetLinks = function (a) {
 		return {ctor: 'SetLinks', _0: a};
@@ -17585,18 +17546,14 @@
 				return A2(_user$project$Types$ClickedAt, link, timestamp);
 			});
 	};
-	var _user$project$Main$linkView = F3(
-		function (model, index, link) {
+	var _user$project$Main$linkView = F2(
+		function (model, link) {
 			var linkHref = A2(_elm_lang$core$String$contains, '//', link.href) ? link.href : A2(_elm_lang$core$Basics_ops['++'], '//', link.href);
 			return {
 				ctor: '::',
 				_0: A2(
 					_MichaelCombs28$elm_mdl$Material_List$li,
-					{
-						ctor: '::',
-						_0: _MichaelCombs28$elm_mdl$Material_Elevation$e2,
-						_1: {ctor: '[]'}
-					},
+					{ctor: '[]'},
 					{
 						ctor: '::',
 						_0: A2(
@@ -17604,36 +17561,37 @@
 							{ctor: '[]'},
 							{
 								ctor: '::',
-								_0: A5(
-									_MichaelCombs28$elm_mdl$Material_Button$render,
-									_user$project$Types$Mdl,
+								_0: A2(
+									_elm_lang$html$Html$div,
 									{
 										ctor: '::',
-										_0: index + 3,
-										_1: {ctor: '[]'}
-									},
-									model.mdl,
-									{
-										ctor: '::',
-										_0: _MichaelCombs28$elm_mdl$Material_Button$minifab,
+										_0: _elm_lang$html$Html_Events$onClick(
+											_user$project$Types$DeleteLink(link.guid)),
 										_1: {
 											ctor: '::',
-											_0: _MichaelCombs28$elm_mdl$Material_Button$ripple,
-											_1: {
-												ctor: '::',
-												_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(
-													_user$project$Types$DeleteLink(link.guid)),
-												_1: {
+											_0: _elm_lang$html$Html_Attributes$style(
+												{
 													ctor: '::',
-													_0: A2(_MichaelCombs28$elm_mdl$Material_Options$css, 'marginRight', '1.5em'),
-													_1: {ctor: '[]'}
-												}
-											}
+													_0: {ctor: '_Tuple2', _0: 'display', _1: 'inline-block'},
+													_1: {
+														ctor: '::',
+														_0: {ctor: '_Tuple2', _0: 'marginRight', _1: '1.5em'},
+														_1: {ctor: '[]'}
+													}
+												}),
+											_1: {ctor: '[]'}
 										}
 									},
 									{
 										ctor: '::',
-										_0: _MichaelCombs28$elm_mdl$Material_Icon$i('delete'),
+										_0: A2(
+											_MichaelCombs28$elm_mdl$Material_Icon$view,
+											'delete',
+											{
+												ctor: '::',
+												_0: _MichaelCombs28$elm_mdl$Material_Icon$size24,
+												_1: {ctor: '[]'}
+											}),
 										_1: {ctor: '[]'}
 									}),
 								_1: {
@@ -17698,7 +17656,7 @@
 														_0: {ctor: '_Tuple2', _0: 'textOverflow', _1: 'ellipsis'},
 														_1: {
 															ctor: '::',
-															_0: {ctor: '_Tuple2', _0: 'max-width', _1: '50vw'},
+															_0: {ctor: '_Tuple2', _0: 'width', _1: '50vw'},
 															_1: {
 																ctor: '::',
 																_0: {ctor: '_Tuple2', _0: 'whiteSpace', _1: 'nowrap'},
@@ -17856,15 +17814,11 @@
 										_0: _elm_lang$html$Html_Attributes$style(
 											{
 												ctor: '::',
-												_0: {ctor: '_Tuple2', _0: 'maxWidth', _1: '90vw'},
+												_0: {ctor: '_Tuple2', _0: 'maxWidth', _1: '50em'},
 												_1: {
 													ctor: '::',
 													_0: {ctor: '_Tuple2', _0: 'margin', _1: '0 auto'},
-													_1: {
-														ctor: '::',
-														_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
-														_1: {ctor: '[]'}
-													}
+													_1: {ctor: '[]'}
 												}
 											}),
 										_1: {ctor: '[]'}
@@ -17872,138 +17826,77 @@
 									{
 										ctor: '::',
 										_0: A2(
-											_MichaelCombs28$elm_mdl$Material_Grid$grid,
-											{ctor: '[]'},
+											_elm_lang$html$Html$div,
 											{
 												ctor: '::',
-												_0: A2(
-													_MichaelCombs28$elm_mdl$Material_Grid$cell,
+												_0: _elm_lang$html$Html_Attributes$style(
 													{
 														ctor: '::',
-														_0: A2(_MichaelCombs28$elm_mdl$Material_Grid$size, _MichaelCombs28$elm_mdl$Material_Grid$Desktop, 4),
+														_0: {ctor: '_Tuple2', _0: 'textAlign', _1: 'center'},
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											},
+											{
+												ctor: '::',
+												_0: A4(
+													_MichaelCombs28$elm_mdl$Material_Textfield$render,
+													_user$project$Types$Mdl,
+													{
+														ctor: '::',
+														_0: 2,
+														_1: {ctor: '[]'}
+													},
+													model.mdl,
+													{
+														ctor: '::',
+														_0: _MichaelCombs28$elm_mdl$Material_Textfield$label('enter link'),
 														_1: {
 															ctor: '::',
-															_0: A2(_MichaelCombs28$elm_mdl$Material_Grid$size, _MichaelCombs28$elm_mdl$Material_Grid$Tablet, 3),
-															_1: {ctor: '[]'}
-														}
-													},
-													{
-														ctor: '::',
-														_0: A4(
-															_MichaelCombs28$elm_mdl$Material_Textfield$render,
-															_user$project$Types$Mdl,
-															{
+															_0: A2(
+																_elm_lang$core$Maybe$withDefault,
+																_MichaelCombs28$elm_mdl$Material_Options$nop,
+																A2(_elm_lang$core$Maybe$map, _MichaelCombs28$elm_mdl$Material_Textfield$error, _p3.linkInputValidation)),
+															_1: {
 																ctor: '::',
-																_0: 3,
-																_1: {ctor: '[]'}
-															},
-															model.mdl,
-															{
-																ctor: '::',
-																_0: _MichaelCombs28$elm_mdl$Material_Textfield$label('search'),
+																_0: _MichaelCombs28$elm_mdl$Material_Textfield$onInput(_user$project$Types$SetLinkInputText),
 																_1: {
 																	ctor: '::',
-																	_0: _MichaelCombs28$elm_mdl$Material_Textfield$onInput(_user$project$Types$Search),
+																	_0: _user$project$Main$onEnterTextfield(_user$project$Types$CreateLink),
 																	_1: {ctor: '[]'}
 																}
-															}),
-														_1: {ctor: '[]'}
+															}
+														}
 													}),
 												_1: {
 													ctor: '::',
-													_0: A2(
-														_MichaelCombs28$elm_mdl$Material_Grid$cell,
+													_0: A4(
+														_user$project$Main$standardButton,
+														1,
+														model,
 														{
 															ctor: '::',
-															_0: A2(_MichaelCombs28$elm_mdl$Material_Grid$size, _MichaelCombs28$elm_mdl$Material_Grid$Desktop, 4),
-															_1: {
-																ctor: '::',
-																_0: A2(_MichaelCombs28$elm_mdl$Material_Grid$size, _MichaelCombs28$elm_mdl$Material_Grid$Tablet, 3),
-																_1: {ctor: '[]'}
-															}
+															_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(_user$project$Types$CreateLink),
+															_1: {ctor: '[]'}
 														},
 														{
 															ctor: '::',
-															_0: A4(
-																_MichaelCombs28$elm_mdl$Material_Textfield$render,
-																_user$project$Types$Mdl,
-																{
-																	ctor: '::',
-																	_0: 2,
-																	_1: {ctor: '[]'}
-																},
-																model.mdl,
-																{
-																	ctor: '::',
-																	_0: _MichaelCombs28$elm_mdl$Material_Textfield$label('enter link'),
-																	_1: {
-																		ctor: '::',
-																		_0: A2(
-																			_elm_lang$core$Maybe$withDefault,
-																			_MichaelCombs28$elm_mdl$Material_Options$nop,
-																			A2(_elm_lang$core$Maybe$map, _MichaelCombs28$elm_mdl$Material_Textfield$error, _p3.linkInputValidation)),
-																		_1: {
-																			ctor: '::',
-																			_0: _MichaelCombs28$elm_mdl$Material_Textfield$onInput(_user$project$Types$SetLinkInputText),
-																			_1: {
-																				ctor: '::',
-																				_0: _user$project$Main$onEnterTextfield(_user$project$Types$CreateLink),
-																				_1: {ctor: '[]'}
-																			}
-																		}
-																	}
-																}),
+															_0: _elm_lang$html$Html$text('submit link'),
 															_1: {ctor: '[]'}
 														}),
-													_1: {
-														ctor: '::',
-														_0: A2(
-															_MichaelCombs28$elm_mdl$Material_Grid$cell,
-															{
-																ctor: '::',
-																_0: A2(_MichaelCombs28$elm_mdl$Material_Grid$size, _MichaelCombs28$elm_mdl$Material_Grid$Desktop, 4),
-																_1: {
-																	ctor: '::',
-																	_0: A2(_MichaelCombs28$elm_mdl$Material_Grid$size, _MichaelCombs28$elm_mdl$Material_Grid$Tablet, 2),
-																	_1: {ctor: '[]'}
-																}
-															},
-															{
-																ctor: '::',
-																_0: A4(
-																	_user$project$Main$standardButton,
-																	1,
-																	model,
-																	{
-																		ctor: '::',
-																		_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(_user$project$Types$CreateLink),
-																		_1: {ctor: '[]'}
-																	},
-																	{
-																		ctor: '::',
-																		_0: _elm_lang$html$Html$text('submit link'),
-																		_1: {ctor: '[]'}
-																	}),
-																_1: {ctor: '[]'}
-															}),
-														_1: {ctor: '[]'}
-													}
+													_1: {ctor: '[]'}
 												}
 											}),
 										_1: {
 											ctor: '::',
 											_0: A2(
 												_MichaelCombs28$elm_mdl$Material_List$ul,
-												{
-													ctor: '::',
-													_0: A2(_MichaelCombs28$elm_mdl$Material_Options$css, 'margin-top', '0'),
-													_1: {ctor: '[]'}
-												},
+												{ctor: '[]'},
 												_elm_lang$core$List$concat(
 													A2(
-														_elm_lang$core$List$indexedMap,
+														_elm_lang$core$List$map,
 														_user$project$Main$linkView(model),
-														model.renderedLinks))),
+														model.links))),
 											_1: {ctor: '[]'}
 										}
 									}),
@@ -18265,11 +18158,9 @@
 				_p6.user));
 		var initialModel = {
 			links: {ctor: '[]'},
-			renderedLinks: {ctor: '[]'},
 			session: session,
 			mdl: _MichaelCombs28$elm_mdl$Material$model,
-			snackbar: _MichaelCombs28$elm_mdl$Material_Snackbar$model,
-			trie: _rluiten$trie$Trie$empty
+			snackbar: _MichaelCombs28$elm_mdl$Material_Snackbar$model
 		};
 		return {ctor: '_Tuple2', _0: initialModel, _1: _elm_lang$core$Platform_Cmd$none};
 	};
@@ -18277,29 +18168,6 @@
 		function (msg, model) {
 			var _p9 = msg;
 			switch (_p9.ctor) {
-				case 'Search':
-					var _p10 = _p9._0;
-					var renderedLinks = _elm_lang$core$Native_Utils.eq(_p10, '') ? model.links : _elm_lang$core$List$concat(
-						A2(
-							_elm_lang$core$List$map,
-							function (href) {
-								return _elm_lang$core$Dict$values(
-									A2(
-										_elm_lang$core$Maybe$withDefault,
-										_elm_lang$core$Dict$empty,
-										A2(_rluiten$trie$Trie$get, href, model.trie)));
-							},
-							A2(
-								_rluiten$trie$Trie$expand,
-								_elm_lang$core$String$toLower(_p10),
-								model.trie)));
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{renderedLinks: renderedLinks}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
 				case 'Timestamp':
 					return {
 						ctor: '_Tuple2',
@@ -18330,8 +18198,8 @@
 					};
 				case 'SetLoginForm':
 					var newModel = function () {
-						var _p11 = model.session;
-						if (_p11.ctor === 'LoggedOut') {
+						var _p10 = model.session;
+						if (_p10.ctor === 'LoggedOut') {
 							return _elm_lang$core$Native_Utils.update(
 								model,
 								{
@@ -18343,47 +18211,22 @@
 					}();
 					return {ctor: '_Tuple2', _0: newModel, _1: _elm_lang$core$Platform_Cmd$none};
 				case 'SetLinks':
-					var _p12 = _p9._0;
-					var trie = function (_) {
-						return _.trie;
-					}(
-						A3(
-							_elm_lang$core$List$foldl,
-							F2(
-								function (link, memo) {
-									return _elm_lang$core$Native_Utils.update(
-										memo,
-										{
-											trie: A3(
-												_rluiten$trie$Trie$add,
-												{
-													ctor: '_Tuple2',
-													_0: _elm_lang$core$Basics$toString(memo.count),
-													_1: link
-												},
-												_elm_lang$core$String$toLower(link.href),
-												memo.trie),
-											count: memo.count + 1
-										});
-								}),
-							{trie: _rluiten$trie$Trie$empty, count: 0},
-							_p12));
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{links: _p12, renderedLinks: _p12, trie: trie}),
+							{links: _p9._0}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'SetLinkInputText':
-					var _p13 = _p9._0;
+					var _p11 = _p9._0;
 					var session = A2(
 						_user$project$Main$mapLoggedIn,
 						function (loggedInModel) {
-							var linkInputValidation = (A2(_elm_lang$core$Regex$contains, _user$project$Main$linkRgx, _p13) || _elm_lang$core$Native_Utils.eq(_p13, '')) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just('Must provide a valid link');
+							var linkInputValidation = (A2(_elm_lang$core$Regex$contains, _user$project$Main$linkRgx, _p11) || _elm_lang$core$Native_Utils.eq(_p11, '')) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just('must enter valid link');
 							return _elm_lang$core$Native_Utils.update(
 								loggedInModel,
-								{linkInputText: _p13, linkInputValidation: linkInputValidation});
+								{linkInputText: _p11, linkInputValidation: linkInputValidation});
 						},
 						model.session);
 					return {
@@ -18397,13 +18240,13 @@
 					var cmd = A3(
 						_user$project$Main$defaultLoggedOut,
 						_elm_lang$core$Platform_Cmd$none,
-						function (_p14) {
-							var _p15 = _p14;
-							var _p16 = _p15.linkInputText;
+						function (_p12) {
+							var _p13 = _p12;
+							var _p14 = _p13.linkInputText;
 							var validInputTextCmd = A2(
 								_elm_lang$core$Maybe$withDefault,
 								_user$project$Ports$createLink(
-									{href: _p16, uid: _p15.uid}),
+									{href: _p14, uid: _p13.uid}),
 								A2(
 									_elm_lang$core$Maybe$map,
 									function (link) {
@@ -18415,24 +18258,24 @@
 									A2(
 										_elm_community$list_extra$List_Extra$find,
 										function (link) {
-											return _elm_lang$core$Native_Utils.eq(link.href, _p16);
+											return _elm_lang$core$Native_Utils.eq(link.href, _p14);
 										},
 										model.links)));
-							return _elm_lang$core$Native_Utils.eq(_p16, '') ? _elm_lang$core$Platform_Cmd$none : A2(
+							return _elm_lang$core$Native_Utils.eq(_p14, '') ? _elm_lang$core$Platform_Cmd$none : A2(
 								_elm_lang$core$Maybe$withDefault,
 								validInputTextCmd,
 								A2(
 									_elm_lang$core$Maybe$map,
 									_elm_lang$core$Basics$always(_elm_lang$core$Platform_Cmd$none),
-									_p15.linkInputValidation));
+									_p13.linkInputValidation));
 						},
 						model.session);
 					return {ctor: '_Tuple2', _0: model, _1: cmd};
 				case 'LogIn':
 					var cmd = function () {
-						var _p17 = model.session;
-						if (_p17.ctor === 'LoggedOut') {
-							return _user$project$Ports$createUser(_p17._0);
+						var _p15 = model.session;
+						if (_p15.ctor === 'LoggedOut') {
+							return _user$project$Ports$createUser(_p15._0);
 						} else {
 							return _elm_lang$core$Platform_Cmd$none;
 						}
@@ -18440,16 +18283,16 @@
 					return {ctor: '_Tuple2', _0: model, _1: cmd};
 				case 'LogOut':
 					var cmd = function () {
-						var _p18 = model.session;
-						if (_p18.ctor === 'LoggedIn') {
-							return _user$project$Ports$logOut(_p18._0.uid);
+						var _p16 = model.session;
+						if (_p16.ctor === 'LoggedIn') {
+							return _user$project$Ports$logOut(_p16._0.uid);
 						} else {
 							return _elm_lang$core$Platform_Cmd$none;
 						}
 					}();
 					return {ctor: '_Tuple2', _0: model, _1: cmd};
 				case 'LogOutResponse':
-					var _p19 = _elm_lang$core$Maybe$map(
+					var _p17 = _elm_lang$core$Maybe$map(
 						function (str) {
 							return A2(_elm_lang$core$Debug$log, 'log out error', str);
 						});
@@ -18463,18 +18306,18 @@
 				case 'Mdl':
 					return A2(_MichaelCombs28$elm_mdl$Material$update, _p9._0, model);
 				default:
-					var _p20 = model.session;
-					if (_p20.ctor === 'LoggedOut') {
-						var _p22 = _p20._0;
-						var _p21 = _p9._0;
-						if (_p21.ctor === 'Ok') {
+					var _p18 = model.session;
+					if (_p18.ctor === 'LoggedOut') {
+						var _p20 = _p18._0;
+						var _p19 = _p9._0;
+						if (_p19.ctor === 'Ok') {
 							return {
 								ctor: '_Tuple2',
 								_0: _elm_lang$core$Native_Utils.update(
 									model,
 									{
 										session: _user$project$Types$LoggedIn(
-											{email: _p22.email, linkInputText: '', linkInputValidation: _elm_lang$core$Maybe$Nothing, uid: _p21._0})
+											{email: _p20.email, linkInputText: '', linkInputValidation: _elm_lang$core$Maybe$Nothing, uid: _p19._0})
 									}),
 								_1: _elm_lang$core$Platform_Cmd$none
 							};
@@ -18482,11 +18325,11 @@
 							return A3(
 								_user$project$Main$addSnackbar,
 								'ERROR',
-								_p21._0,
+								_p19._0,
 								_elm_lang$core$Native_Utils.update(
 									model,
 									{
-										session: _user$project$Types$LoggedOut(_p22)
+										session: _user$project$Types$LoggedOut(_p20)
 									}));
 						}
 					} else {
@@ -18506,9 +18349,9 @@
 						_1: {
 							ctor: '::',
 							_0: _user$project$Ports$createUserResponse(
-								function (_p23) {
+								function (_p21) {
 									return _user$project$Types$CreateUserResponse(
-										A2(_user$project$Main$resultFromRecord, '', _p23));
+										A2(_user$project$Main$resultFromRecord, '', _p21));
 								}),
 							_1: {
 								ctor: '::',

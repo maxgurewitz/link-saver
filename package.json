@@ -30,7 +30,6 @@
   },
   "dependencies": {
     "firebase": "^3.6.1",
-    "uuid": "^3.0.0",
     "xtend": "^4.0.1"
   }
 }

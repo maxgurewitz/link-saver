@@ -178,31 +178,36 @@ view model =
                                 [ style
                                     [ ( "maxWidth", "50em" )
                                     , ( "margin", "0 auto" )
+                                    , ( "text-align", "center" )
                                     ]
                                 ]
-                                [ div
-                                    [ style [ ( "textAlign", "center" ) ]
-                                    ]
-                                    [ Textfield.render Mdl
-                                        [ 3 ]
-                                        model.mdl
-                                        [ Textfield.label "search"
-                                        , Textfield.onInput Search
+                                [ grid []
+                                    [ cell [ size Desktop 4, size Tablet 3 ]
+                                        [ Textfield.render Mdl
+                                            [ 3 ]
+                                            model.mdl
+                                            [ Textfield.label "search"
+                                            , Textfield.onInput Search
+                                            ]
                                         ]
-                                    , Textfield.render Mdl
-                                        [ 2 ]
-                                        model.mdl
-                                        [ Textfield.label "enter link"
-                                        , loggedIn.linkInputValidation
-                                            |> Maybe.map Textfield.error
-                                            |> Maybe.withDefault MOpts.nop
-                                        , Textfield.onInput SetLinkInputText
-                                        , onEnterTextfield CreateLink
+                                    , cell [ size Desktop 4, size Tablet 3 ]
+                                        [ Textfield.render Mdl
+                                            [ 2 ]
+                                            model.mdl
+                                            [ Textfield.label "enter link"
+                                            , loggedIn.linkInputValidation
+                                                |> Maybe.map Textfield.error
+                                                |> Maybe.withDefault MOpts.nop
+                                            , Textfield.onInput SetLinkInputText
+                                            , onEnterTextfield CreateLink
+                                            ]
                                         ]
-                                    , standardButton 1
-                                        model
-                                        [ Button.onClick CreateLink ]
-                                        [ text "submit link" ]
+                                    , cell [ size Desktop 4, size Tablet 2 ]
+                                        [ standardButton 1
+                                            model
+                                            [ Button.onClick CreateLink ]
+                                            [ text "submit link" ]
+                                        ]
                                     ]
                                 , MList.ul []
                                     (List.map (linkView model)

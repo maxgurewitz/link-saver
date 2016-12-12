@@ -110,7 +110,7 @@ setClickedAt link =
     Timestamp (\timestamp -> ClickedAt link timestamp)
 
 
-linkView model link =
+linkView model index link =
     let
         linkHref =
             if String.contains "//" link.href then
@@ -120,15 +120,16 @@ linkView model link =
     in
         [ MList.li [ Elevation.e2 ]
             [ MList.content []
-                [ div
-                    [ onClick <| DeleteLink link.guid
-                    , style
-                        [ ( "display", "inline-block" )
-                        , ( "marginRight", "1.5em" )
-                        ]
+                [ Button.render Mdl
+                    [ index + 3 ]
+                    model.mdl
+                    [ Button.minifab
+                    , Button.colored
+                    , Button.ripple
+                    , Button.onClick <| DeleteLink link.guid
+                    , MOpts.css "marginRight" "1.5em"
                     ]
-                    [ Icon.view "delete" [ Icon.size24 ]
-                    ]
+                    [ Icon.i "delete" ]
                 , a
                     [ target "_blank"
                     , href linkHref
@@ -142,7 +143,7 @@ linkView model link =
                     [ style
                         [ ( "overflow", "hidden" )
                         , ( "textOverflow", "ellipsis" )
-                        , ( "width", "50vw" )
+                        , ( "max-width", "50vw" )
                         , ( "whiteSpace", "nowrap" )
                         ]
                     ]
@@ -177,7 +178,7 @@ view model =
                             [ br [] []
                             , div
                                 [ style
-                                    [ ( "maxWidth", "50em" )
+                                    [ ( "maxWidth", "90vw" )
                                     , ( "margin", "0 auto" )
                                     , ( "text-align", "center" )
                                     ]
@@ -211,7 +212,7 @@ view model =
                                         ]
                                     ]
                                 , MList.ul [ MOpts.css "margin-top" "0" ]
-                                    (List.map (linkView model)
+                                    (List.indexedMap (linkView model)
                                         model.renderedLinks
                                         |> List.concat
                                     )

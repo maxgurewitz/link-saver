@@ -17029,357 +17029,6 @@
 	var _elm_community$list_extra$List_Extra$last = _elm_community$list_extra$List_Extra$foldl1(
 		_elm_lang$core$Basics$flip(_elm_lang$core$Basics$always));
 
-	var _rluiten$trie$TrieModel$expandCore = F3(
-		function (key, trie, keyList) {
-			var expandSub = F3(
-				function ($char, trie, foldList) {
-					return A3(
-						_rluiten$trie$TrieModel$expandCore,
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							key,
-							{
-								ctor: '::',
-								_0: $char,
-								_1: {ctor: '[]'}
-							}),
-						trie,
-						foldList);
-				});
-			var addRefKey = function (refValues) {
-				return (!_elm_lang$core$Dict$isEmpty(refValues)) ? {
-					ctor: '::',
-					_0: _elm_lang$core$String$concat(key),
-					_1: keyList
-				} : keyList;
-			};
-			var _p0 = trie;
-			switch (_p0.ctor) {
-				case 'EmptyTrie':
-					return keyList;
-				case 'ValNode':
-					return addRefKey(_p0._0);
-				case 'TrieNode':
-					return A3(_elm_lang$core$Dict$foldr, expandSub, keyList, _p0._0);
-				default:
-					var dirtyList = addRefKey(_p0._0._0);
-					return A3(_elm_lang$core$Dict$foldr, expandSub, dirtyList, _p0._0._1);
-			}
-		});
-	var _rluiten$trie$TrieModel$getValues = function (trie) {
-		var _p1 = trie;
-		switch (_p1.ctor) {
-			case 'EmptyTrie':
-				return _elm_lang$core$Maybe$Nothing;
-			case 'ValNode':
-				return _elm_lang$core$Maybe$Just(_p1._0);
-			case 'TrieNode':
-				return _elm_lang$core$Maybe$Nothing;
-			default:
-				return _elm_lang$core$Maybe$Just(_p1._0._0);
-		}
-	};
-	var _rluiten$trie$TrieModel$getNodeCore = F2(
-		function (key, trie) {
-			var _p2 = key;
-			if (_p2.ctor === '[]') {
-				return _elm_lang$core$Maybe$Just(trie);
-			} else {
-				var getTrie = function (trieDict) {
-					return A2(
-						_elm_lang$core$Maybe$andThen,
-						_rluiten$trie$TrieModel$getNodeCore(_p2._1),
-						A2(_elm_lang$core$Dict$get, _p2._0, trieDict));
-				};
-				var _p3 = trie;
-				switch (_p3.ctor) {
-					case 'EmptyTrie':
-						return _elm_lang$core$Maybe$Nothing;
-					case 'ValNode':
-						return _elm_lang$core$Maybe$Nothing;
-					case 'TrieNode':
-						return getTrie(_p3._0);
-					default:
-						return getTrie(_p3._0._1);
-				}
-			}
-		});
-	var _rluiten$trie$TrieModel$getNodeByStr = F2(
-		function (key, trie) {
-			return _elm_lang$core$List$isEmpty(key) ? _elm_lang$core$Maybe$Nothing : A2(_rluiten$trie$TrieModel$getNodeCore, key, trie);
-		});
-	var _rluiten$trie$TrieModel$hasByStr = F2(
-		function (key, trie) {
-			return function (_p4) {
-				return !_elm_lang$core$Dict$isEmpty(_p4);
-			}(
-				A2(
-					_elm_lang$core$Maybe$withDefault,
-					_elm_lang$core$Dict$empty,
-					A2(
-						_elm_lang$core$Maybe$andThen,
-						_rluiten$trie$TrieModel$getValues,
-						A2(_rluiten$trie$TrieModel$getNodeByStr, key, trie))));
-		});
-	var _rluiten$trie$TrieModel$getByStr = F2(
-		function (key, trie) {
-			return A2(
-				_elm_lang$core$Maybe$andThen,
-				_rluiten$trie$TrieModel$getValues,
-				A2(_rluiten$trie$TrieModel$getNodeByStr, key, trie));
-		});
-	var _rluiten$trie$TrieModel$valueCountByStr = F2(
-		function (key, trie) {
-			return _elm_lang$core$Dict$size(
-				A2(
-					_elm_lang$core$Maybe$withDefault,
-					_elm_lang$core$Dict$empty,
-					A2(_rluiten$trie$TrieModel$getByStr, key, trie)));
-		});
-	var _rluiten$trie$TrieModel$expandByStr = F2(
-		function (key, trie) {
-			var _p5 = A2(_rluiten$trie$TrieModel$getNodeByStr, key, trie);
-			if (_p5.ctor === 'Nothing') {
-				return {ctor: '[]'};
-			} else {
-				return A3(
-					_rluiten$trie$TrieModel$expandCore,
-					key,
-					_p5._0,
-					{ctor: '[]'});
-			}
-		});
-	var _rluiten$trie$TrieModel$toListString = function (str) {
-		return A2(
-			_elm_lang$core$List$map,
-			function (c) {
-				return _elm_lang$core$String$fromChar(c);
-			},
-			_elm_lang$core$String$toList(str));
-	};
-	var _rluiten$trie$TrieModel$getNode = F2(
-		function (key, trie) {
-			return A2(
-				_rluiten$trie$TrieModel$getNodeByStr,
-				_rluiten$trie$TrieModel$toListString(key),
-				trie);
-		});
-	var _rluiten$trie$TrieModel$has = F2(
-		function (key, trie) {
-			return A2(
-				_rluiten$trie$TrieModel$hasByStr,
-				_rluiten$trie$TrieModel$toListString(key),
-				trie);
-		});
-	var _rluiten$trie$TrieModel$get = F2(
-		function (key, trie) {
-			return A2(
-				_rluiten$trie$TrieModel$getByStr,
-				_rluiten$trie$TrieModel$toListString(key),
-				trie);
-		});
-	var _rluiten$trie$TrieModel$valueCount = F2(
-		function (key, trie) {
-			return _elm_lang$core$Dict$size(
-				A2(
-					_elm_lang$core$Maybe$withDefault,
-					_elm_lang$core$Dict$empty,
-					A2(_rluiten$trie$TrieModel$get, key, trie)));
-		});
-	var _rluiten$trie$TrieModel$expand = F2(
-		function (key, trie) {
-			return A2(
-				_rluiten$trie$TrieModel$expandByStr,
-				_rluiten$trie$TrieModel$toListString(key),
-				trie);
-		});
-	var _rluiten$trie$TrieModel$ValTrieNode = function (a) {
-		return {ctor: 'ValTrieNode', _0: a};
-	};
-	var _rluiten$trie$TrieModel$TrieNode = function (a) {
-		return {ctor: 'TrieNode', _0: a};
-	};
-	var _rluiten$trie$TrieModel$ValNode = function (a) {
-		return {ctor: 'ValNode', _0: a};
-	};
-	var _rluiten$trie$TrieModel$removeByStr = F3(
-		function (key, ref, trie) {
-			var _p6 = key;
-			if (_p6.ctor === '[]') {
-				var _p7 = trie;
-				switch (_p7.ctor) {
-					case 'EmptyTrie':
-						return trie;
-					case 'ValNode':
-						return _rluiten$trie$TrieModel$ValNode(
-							A2(_elm_lang$core$Dict$remove, ref, _p7._0));
-					case 'TrieNode':
-						return trie;
-					default:
-						return _rluiten$trie$TrieModel$ValTrieNode(
-							{
-								ctor: '_Tuple2',
-								_0: A2(_elm_lang$core$Dict$remove, ref, _p7._0._0),
-								_1: _p7._0._1
-							});
-				}
-			} else {
-				var _p10 = _p6._0;
-				var removeTrieDict = function (trieDict) {
-					var _p8 = A2(_elm_lang$core$Dict$get, _p10, trieDict);
-					if (_p8.ctor === 'Nothing') {
-						return trieDict;
-					} else {
-						return A3(
-							_elm_lang$core$Dict$insert,
-							_p10,
-							A3(_rluiten$trie$TrieModel$removeByStr, _p6._1, ref, _p8._0),
-							trieDict);
-					}
-				};
-				var _p9 = trie;
-				switch (_p9.ctor) {
-					case 'EmptyTrie':
-						return trie;
-					case 'ValNode':
-						return trie;
-					case 'TrieNode':
-						return _rluiten$trie$TrieModel$TrieNode(
-							removeTrieDict(_p9._0));
-					default:
-						return _rluiten$trie$TrieModel$ValTrieNode(
-							{
-								ctor: '_Tuple2',
-								_0: _p9._0._0,
-								_1: removeTrieDict(_p9._0._1)
-							});
-				}
-			}
-		});
-	var _rluiten$trie$TrieModel$remove = F3(
-		function (key, ref, trie) {
-			return A3(
-				_rluiten$trie$TrieModel$removeByStr,
-				_rluiten$trie$TrieModel$toListString(key),
-				ref,
-				trie);
-		});
-	var _rluiten$trie$TrieModel$EmptyTrie = {ctor: 'EmptyTrie'};
-	var _rluiten$trie$TrieModel$empty = _rluiten$trie$TrieModel$EmptyTrie;
-	var _rluiten$trie$TrieModel$isEmpty = function (trie) {
-		return _elm_lang$core$Native_Utils.eq(trie, _rluiten$trie$TrieModel$empty);
-	};
-	var _rluiten$trie$TrieModel$addByStr = F3(
-		function (_p11, key, trie) {
-			var _p12 = _p11;
-			var _p20 = _p12._1;
-			var _p19 = _p12._0;
-			var _p13 = key;
-			if (_p13.ctor === '[]') {
-				var _p14 = trie;
-				switch (_p14.ctor) {
-					case 'EmptyTrie':
-						return _rluiten$trie$TrieModel$ValNode(
-							A2(_elm_lang$core$Dict$singleton, _p19, _p20));
-					case 'ValNode':
-						return _rluiten$trie$TrieModel$ValNode(
-							A3(_elm_lang$core$Dict$insert, _p19, _p20, _p14._0));
-					case 'TrieNode':
-						return _rluiten$trie$TrieModel$ValTrieNode(
-							{
-								ctor: '_Tuple2',
-								_0: A2(_elm_lang$core$Dict$singleton, _p19, _p20),
-								_1: _p14._0
-							});
-					default:
-						return _rluiten$trie$TrieModel$ValTrieNode(
-							{
-								ctor: '_Tuple2',
-								_0: A3(_elm_lang$core$Dict$insert, _p19, _p20, _p14._0._0),
-								_1: _p14._0._1
-							});
-				}
-			} else {
-				var _p18 = _p13._1;
-				var _p17 = _p13._0;
-				var updateTrieDict = function (trieDict) {
-					var updatedSubTrie = A3(
-						_rluiten$trie$TrieModel$addByStr,
-						{ctor: '_Tuple2', _0: _p19, _1: _p20},
-						_p18,
-						A2(
-							_elm_lang$core$Maybe$withDefault,
-							_rluiten$trie$TrieModel$EmptyTrie,
-							A2(_elm_lang$core$Dict$get, _p17, trieDict)));
-					return A3(_elm_lang$core$Dict$insert, _p17, updatedSubTrie, trieDict);
-				};
-				var lazyNewTrieDict = function (_p15) {
-					return A2(
-						_elm_lang$core$Dict$singleton,
-						_p17,
-						A3(
-							_rluiten$trie$TrieModel$addByStr,
-							{ctor: '_Tuple2', _0: _p19, _1: _p20},
-							_p18,
-							_rluiten$trie$TrieModel$EmptyTrie));
-				};
-				var _p16 = trie;
-				switch (_p16.ctor) {
-					case 'EmptyTrie':
-						return _rluiten$trie$TrieModel$TrieNode(
-							lazyNewTrieDict(
-								{ctor: '_Tuple0'}));
-					case 'ValNode':
-						return _rluiten$trie$TrieModel$ValTrieNode(
-							{
-								ctor: '_Tuple2',
-								_0: _p16._0,
-								_1: lazyNewTrieDict(
-									{ctor: '_Tuple0'})
-							});
-					case 'TrieNode':
-						return _rluiten$trie$TrieModel$TrieNode(
-							updateTrieDict(_p16._0));
-					default:
-						return _rluiten$trie$TrieModel$ValTrieNode(
-							{
-								ctor: '_Tuple2',
-								_0: _p16._0._0,
-								_1: updateTrieDict(_p16._0._1)
-							});
-				}
-			}
-		});
-	var _rluiten$trie$TrieModel$add = F3(
-		function (refValues, key, trie) {
-			return A3(
-				_rluiten$trie$TrieModel$addByStr,
-				refValues,
-				_rluiten$trie$TrieModel$toListString(key),
-				trie);
-		});
-
-	var _rluiten$trie$Trie$expand = _rluiten$trie$TrieModel$expand;
-	var _rluiten$trie$Trie$valueCount = _rluiten$trie$TrieModel$valueCount;
-	var _rluiten$trie$Trie$getValues = _rluiten$trie$TrieModel$getValues;
-	var _rluiten$trie$Trie$get = _rluiten$trie$TrieModel$get;
-	var _rluiten$trie$Trie$has = _rluiten$trie$TrieModel$has;
-	var _rluiten$trie$Trie$getNode = _rluiten$trie$TrieModel$getNode;
-	var _rluiten$trie$Trie$remove = _rluiten$trie$TrieModel$remove;
-	var _rluiten$trie$Trie$toListString = function (str) {
-		return A2(
-			_elm_lang$core$List$map,
-			function (c) {
-				return _elm_lang$core$String$fromChar(c);
-			},
-			_elm_lang$core$String$toList(str));
-	};
-	var _rluiten$trie$Trie$add = _rluiten$trie$TrieModel$add;
-	var _rluiten$trie$Trie$empty = _rluiten$trie$TrieModel$empty;
-	var _rluiten$trie$Trie$isEmpty = function (trie) {
-		return _elm_lang$core$Native_Utils.eq(trie, _rluiten$trie$Trie$empty);
-	};
-
 	var _user$project$Types$Link = F4(
 		function (a, b, c, d) {
 			return {href: a, timestamp: b, clickedAt: c, guid: d};
@@ -17403,9 +17052,9 @@
 	var _user$project$Types$Flags = function (a) {
 		return {user: a};
 	};
-	var _user$project$Types$Model = F6(
-		function (a, b, c, d, e, f) {
-			return {links: a, renderedLinks: b, session: c, mdl: d, trie: e, snackbar: f};
+	var _user$project$Types$Model = F5(
+		function (a, b, c, d, e) {
+			return {links: a, renderedLinks: b, session: c, mdl: d, snackbar: e};
 		});
 	var _user$project$Types$LoggedOut = function (a) {
 		return {ctor: 'LoggedOut', _0: a};
@@ -18268,8 +17917,7 @@
 			renderedLinks: {ctor: '[]'},
 			session: session,
 			mdl: _MichaelCombs28$elm_mdl$Material$model,
-			snackbar: _MichaelCombs28$elm_mdl$Material_Snackbar$model,
-			trie: _rluiten$trie$Trie$empty
+			snackbar: _MichaelCombs28$elm_mdl$Material_Snackbar$model
 		};
 		return {ctor: '_Tuple2', _0: initialModel, _1: _elm_lang$core$Platform_Cmd$none};
 	};
@@ -18278,21 +17926,18 @@
 			var _p9 = msg;
 			switch (_p9.ctor) {
 				case 'Search':
-					var _p10 = _p9._0;
-					var renderedLinks = _elm_lang$core$Native_Utils.eq(_p10, '') ? model.links : _elm_lang$core$List$concat(
-						A2(
-							_elm_lang$core$List$map,
-							function (href) {
-								return _elm_lang$core$Dict$values(
-									A2(
-										_elm_lang$core$Maybe$withDefault,
-										_elm_lang$core$Dict$empty,
-										A2(_rluiten$trie$Trie$get, href, model.trie)));
-							},
-							A2(
-								_rluiten$trie$Trie$expand,
-								_elm_lang$core$String$toLower(_p10),
-								model.trie)));
+					var _p11 = _p9._0;
+					var renderedLinks = _elm_lang$core$Native_Utils.eq(_p11, '') ? model.links : A2(
+						_elm_lang$core$List$filter,
+						function (_p10) {
+							return A2(
+								_elm_lang$core$String$contains,
+								_p11,
+								function (_) {
+									return _.href;
+								}(_p10));
+						},
+						model.links);
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -18330,8 +17975,8 @@
 					};
 				case 'SetLoginForm':
 					var newModel = function () {
-						var _p11 = model.session;
-						if (_p11.ctor === 'LoggedOut') {
+						var _p12 = model.session;
+						if (_p12.ctor === 'LoggedOut') {
 							return _elm_lang$core$Native_Utils.update(
 								model,
 								{
@@ -18343,47 +17988,23 @@
 					}();
 					return {ctor: '_Tuple2', _0: newModel, _1: _elm_lang$core$Platform_Cmd$none};
 				case 'SetLinks':
-					var _p12 = _p9._0;
-					var trie = function (_) {
-						return _.trie;
-					}(
-						A3(
-							_elm_lang$core$List$foldl,
-							F2(
-								function (link, memo) {
-									return _elm_lang$core$Native_Utils.update(
-										memo,
-										{
-											trie: A3(
-												_rluiten$trie$Trie$add,
-												{
-													ctor: '_Tuple2',
-													_0: _elm_lang$core$Basics$toString(memo.count),
-													_1: link
-												},
-												_elm_lang$core$String$toLower(link.href),
-												memo.trie),
-											count: memo.count + 1
-										});
-								}),
-							{trie: _rluiten$trie$Trie$empty, count: 0},
-							_p12));
+					var _p13 = _p9._0;
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{links: _p12, renderedLinks: _p12, trie: trie}),
+							{links: _p13, renderedLinks: _p13}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'SetLinkInputText':
-					var _p13 = _p9._0;
+					var _p14 = _p9._0;
 					var session = A2(
 						_user$project$Main$mapLoggedIn,
 						function (loggedInModel) {
-							var linkInputValidation = (A2(_elm_lang$core$Regex$contains, _user$project$Main$linkRgx, _p13) || _elm_lang$core$Native_Utils.eq(_p13, '')) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just('Must provide a valid link');
+							var linkInputValidation = (A2(_elm_lang$core$Regex$contains, _user$project$Main$linkRgx, _p14) || _elm_lang$core$Native_Utils.eq(_p14, '')) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just('Must provide a valid link');
 							return _elm_lang$core$Native_Utils.update(
 								loggedInModel,
-								{linkInputText: _p13, linkInputValidation: linkInputValidation});
+								{linkInputText: _p14, linkInputValidation: linkInputValidation});
 						},
 						model.session);
 					return {
@@ -18397,13 +18018,13 @@
 					var cmd = A3(
 						_user$project$Main$defaultLoggedOut,
 						_elm_lang$core$Platform_Cmd$none,
-						function (_p14) {
-							var _p15 = _p14;
-							var _p16 = _p15.linkInputText;
+						function (_p15) {
+							var _p16 = _p15;
+							var _p17 = _p16.linkInputText;
 							var validInputTextCmd = A2(
 								_elm_lang$core$Maybe$withDefault,
 								_user$project$Ports$createLink(
-									{href: _p16, uid: _p15.uid}),
+									{href: _p17, uid: _p16.uid}),
 								A2(
 									_elm_lang$core$Maybe$map,
 									function (link) {
@@ -18415,24 +18036,24 @@
 									A2(
 										_elm_community$list_extra$List_Extra$find,
 										function (link) {
-											return _elm_lang$core$Native_Utils.eq(link.href, _p16);
+											return _elm_lang$core$Native_Utils.eq(link.href, _p17);
 										},
 										model.links)));
-							return _elm_lang$core$Native_Utils.eq(_p16, '') ? _elm_lang$core$Platform_Cmd$none : A2(
+							return _elm_lang$core$Native_Utils.eq(_p17, '') ? _elm_lang$core$Platform_Cmd$none : A2(
 								_elm_lang$core$Maybe$withDefault,
 								validInputTextCmd,
 								A2(
 									_elm_lang$core$Maybe$map,
 									_elm_lang$core$Basics$always(_elm_lang$core$Platform_Cmd$none),
-									_p15.linkInputValidation));
+									_p16.linkInputValidation));
 						},
 						model.session);
 					return {ctor: '_Tuple2', _0: model, _1: cmd};
 				case 'LogIn':
 					var cmd = function () {
-						var _p17 = model.session;
-						if (_p17.ctor === 'LoggedOut') {
-							return _user$project$Ports$createUser(_p17._0);
+						var _p18 = model.session;
+						if (_p18.ctor === 'LoggedOut') {
+							return _user$project$Ports$createUser(_p18._0);
 						} else {
 							return _elm_lang$core$Platform_Cmd$none;
 						}
@@ -18440,16 +18061,16 @@
 					return {ctor: '_Tuple2', _0: model, _1: cmd};
 				case 'LogOut':
 					var cmd = function () {
-						var _p18 = model.session;
-						if (_p18.ctor === 'LoggedIn') {
-							return _user$project$Ports$logOut(_p18._0.uid);
+						var _p19 = model.session;
+						if (_p19.ctor === 'LoggedIn') {
+							return _user$project$Ports$logOut(_p19._0.uid);
 						} else {
 							return _elm_lang$core$Platform_Cmd$none;
 						}
 					}();
 					return {ctor: '_Tuple2', _0: model, _1: cmd};
 				case 'LogOutResponse':
-					var _p19 = _elm_lang$core$Maybe$map(
+					var _p20 = _elm_lang$core$Maybe$map(
 						function (str) {
 							return A2(_elm_lang$core$Debug$log, 'log out error', str);
 						});
@@ -18463,18 +18084,18 @@
 				case 'Mdl':
 					return A2(_MichaelCombs28$elm_mdl$Material$update, _p9._0, model);
 				default:
-					var _p20 = model.session;
-					if (_p20.ctor === 'LoggedOut') {
-						var _p22 = _p20._0;
-						var _p21 = _p9._0;
-						if (_p21.ctor === 'Ok') {
+					var _p21 = model.session;
+					if (_p21.ctor === 'LoggedOut') {
+						var _p23 = _p21._0;
+						var _p22 = _p9._0;
+						if (_p22.ctor === 'Ok') {
 							return {
 								ctor: '_Tuple2',
 								_0: _elm_lang$core$Native_Utils.update(
 									model,
 									{
 										session: _user$project$Types$LoggedIn(
-											{email: _p22.email, linkInputText: '', linkInputValidation: _elm_lang$core$Maybe$Nothing, uid: _p21._0})
+											{email: _p23.email, linkInputText: '', linkInputValidation: _elm_lang$core$Maybe$Nothing, uid: _p22._0})
 									}),
 								_1: _elm_lang$core$Platform_Cmd$none
 							};
@@ -18482,11 +18103,11 @@
 							return A3(
 								_user$project$Main$addSnackbar,
 								'ERROR',
-								_p21._0,
+								_p22._0,
 								_elm_lang$core$Native_Utils.update(
 									model,
 									{
-										session: _user$project$Types$LoggedOut(_p22)
+										session: _user$project$Types$LoggedOut(_p23)
 									}));
 						}
 					} else {
@@ -18506,9 +18127,9 @@
 						_1: {
 							ctor: '::',
 							_0: _user$project$Ports$createUserResponse(
-								function (_p23) {
+								function (_p24) {
 									return _user$project$Types$CreateUserResponse(
-										A2(_user$project$Main$resultFromRecord, '', _p23));
+										A2(_user$project$Main$resultFromRecord, '', _p24));
 								}),
 							_1: {
 								ctor: '::',

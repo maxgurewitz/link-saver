@@ -55,24 +55,42 @@ type Page
     | CreateFilterPage
 
 
+type alias Filter =
+    { icon : String
+    , color : String
+    , clickedAt : String
+    , name : String
+    , timestamp : String
+    }
+
+
+type alias BaseModel model =
+    { model
+        | session : Session
+    }
+
+
 type alias Model =
+    BaseModel Sessionless
+
+
+type alias Sessionless =
     { links : List Link
     , renderedLinks : List Link
-    , session : Session
     , mdl : Material.Model
     , snackbar : Snackbar.Model ()
     , page : Page
+    }
+
+
+type alias BaseLoggedInModel model =
+    { model
+        | sessionData : SessionData
     }
 
 
 type alias LoggedInModel =
-    { links : List Link
-    , renderedLinks : List Link
-    , sessionData : SessionData
-    , mdl : Material.Model
-    , snackbar : Snackbar.Model ()
-    , page : Page
-    }
+    BaseLoggedInModel Sessionless
 
 
 type Msg

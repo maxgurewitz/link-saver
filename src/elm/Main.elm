@@ -84,6 +84,7 @@ init { user } =
             , session = session
             , mdl = Material.model
             , snackbar = Snackbar.model
+            , page = HomePage
             }
     in
         ( initialModel, Cmd.none )
@@ -150,75 +151,98 @@ linkView model index link =
         ]
 
 
+homePageView model =
+    let
+        { sessionData } =
+            model
+    in
+        Layout.render Mdl
+            model.mdl
+            [ Layout.fixedHeader
+            ]
+            { header =
+                [ Layout.row []
+                    [ text sessionData.email
+                    , Layout.spacer
+                    , standardButton 0
+                        model
+                        [ Button.onClick LogOut
+                        , Button.accent
+                        ]
+                        [ text "sign out" ]
+                    ]
+                ]
+            , main =
+                [ br [] []
+                , div
+                    [ style
+                        [ ( "maxWidth", "90vw" )
+                        , ( "margin", "0 auto" )
+                        , ( "text-align", "center" )
+                        ]
+                    ]
+                    [ grid []
+                        [ cell [ size Desktop 4, size Tablet 3 ]
+                            [ Textfield.render Mdl
+                                [ 3 ]
+                                model.mdl
+                                [ Textfield.label "search"
+                                , Textfield.onInput Search
+                                ]
+                            ]
+                        , cell [ size Desktop 4, size Tablet 3 ]
+                            [ Textfield.render Mdl
+                                [ 2 ]
+                                model.mdl
+                                [ Textfield.label "enter link"
+                                , sessionData.linkInputValidation
+                                    |> Maybe.map Textfield.error
+                                    |> Maybe.withDefault MOpts.nop
+                                , Textfield.onInput SetLinkInputText
+                                , onEnterTextfield CreateLink
+                                ]
+                            ]
+                        , cell [ size Desktop 4, size Tablet 2 ]
+                            [ standardButton 1
+                                model
+                                [ Button.onClick CreateLink ]
+                                [ text "submit link" ]
+                            ]
+                        ]
+                    , MList.ul [ MOpts.css "margin-top" "0" ]
+                        (List.indexedMap (linkView model)
+                            model.renderedLinks
+                            |> List.concat
+                        )
+                    ]
+                ]
+            , drawer =
+                []
+            , tabs = ( [], [] )
+            }
+
+
 view model =
     let
         content =
             case model.session of
-                LoggedIn loggedIn ->
-                    Layout.render Mdl
-                        model.mdl
-                        [ Layout.fixedHeader
-                        ]
-                        { header =
-                            [ Layout.row []
-                                [ text loggedIn.email
-                                , Layout.spacer
-                                , standardButton 0
-                                    model
-                                    [ Button.onClick LogOut
-                                    , Button.accent
-                                    ]
-                                    [ text "sign out" ]
-                                ]
-                            ]
-                        , main =
-                            [ br [] []
-                            , div
-                                [ style
-                                    [ ( "maxWidth", "90vw" )
-                                    , ( "margin", "0 auto" )
-                                    , ( "text-align", "center" )
-                                    ]
-                                ]
-                                [ grid []
-                                    [ cell [ size Desktop 4, size Tablet 3 ]
-                                        [ Textfield.render Mdl
-                                            [ 3 ]
-                                            model.mdl
-                                            [ Textfield.label "search"
-                                            , Textfield.onInput Search
-                                            ]
-                                        ]
-                                    , cell [ size Desktop 4, size Tablet 3 ]
-                                        [ Textfield.render Mdl
-                                            [ 2 ]
-                                            model.mdl
-                                            [ Textfield.label "enter link"
-                                            , loggedIn.linkInputValidation
-                                                |> Maybe.map Textfield.error
-                                                |> Maybe.withDefault MOpts.nop
-                                            , Textfield.onInput SetLinkInputText
-                                            , onEnterTextfield CreateLink
-                                            ]
-                                        ]
-                                    , cell [ size Desktop 4, size Tablet 2 ]
-                                        [ standardButton 1
-                                            model
-                                            [ Button.onClick CreateLink ]
-                                            [ text "submit link" ]
-                                        ]
-                                    ]
-                                , MList.ul [ MOpts.css "margin-top" "0" ]
-                                    (List.indexedMap (linkView model)
-                                        model.renderedLinks
-                                        |> List.concat
-                                    )
-                                ]
-                            ]
-                        , drawer =
-                            []
-                        , tabs = ( [], [] )
-                        }
+                LoggedIn sessionData ->
+                    let
+                        loggedInModel =
+                            { sessionData = sessionData
+                            , links = model.links
+                            , renderedLinks = model.renderedLinks
+                            , mdl = model.mdl
+                            , snackbar = model.snackbar
+                            , page = model.page
+                            }
+                    in
+                        case model.page of
+                            HomePage ->
+                                homePageView loggedInModel
+
+                            _ ->
+                                homePageView loggedInModel
 
                 LoggedOut loginForm ->
                     MOpts.styled div
@@ -283,7 +307,7 @@ view model =
             ]
 
 
-mapLoggedIn : (LoggedInModel -> LoggedInModel) -> Session -> Session
+mapLoggedIn : (SessionData -> SessionData) -> Session -> Session
 mapLoggedIn mapper session =
     case session of
         LoggedIn loggedInModel ->
@@ -293,7 +317,7 @@ mapLoggedIn mapper session =
             session
 
 
-defaultLoggedOut : a -> (LoggedInModel -> a) -> Session -> a
+defaultLoggedOut : a -> (SessionData -> a) -> Session -> a
 defaultLoggedOut defaultLoggedOut loggedInMapper session =
     case session of
         LoggedIn loggedInModel ->

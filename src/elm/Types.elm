@@ -19,7 +19,7 @@ type alias User =
     }
 
 
-type alias LoggedInModel =
+type alias SessionData =
     { email : String
     , uid : String
     , linkInputText : String
@@ -40,7 +40,7 @@ type alias LoginForm =
 
 
 type Session
-    = LoggedIn LoggedInModel
+    = LoggedIn SessionData
     | LoggedOut LoginForm
 
 
@@ -49,12 +49,29 @@ type alias Flags =
     }
 
 
+type Page
+    = HomePage
+    | SelectFilterPage
+    | CreateFilterPage
+
+
 type alias Model =
     { links : List Link
     , renderedLinks : List Link
     , session : Session
     , mdl : Material.Model
     , snackbar : Snackbar.Model ()
+    , page : Page
+    }
+
+
+type alias LoggedInModel =
+    { links : List Link
+    , renderedLinks : List Link
+    , sessionData : SessionData
+    , mdl : Material.Model
+    , snackbar : Snackbar.Model ()
+    , page : Page
     }
 
 

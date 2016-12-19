@@ -3,6 +3,9 @@ module Types exposing (..)
 import Material
 import Time exposing (Time)
 import Material.Snackbar as Snackbar
+import Material.Color exposing (Color)
+import Html exposing (Html)
+import Array exposing (Array)
 
 
 type alias Link =
@@ -57,10 +60,15 @@ type Page
 
 type alias Filter =
     { icon : String
-    , color : String
-    , clickedAt : String
+    , color : Color
     , name : String
-    , timestamp : String
+    , timestamp : Int
+    }
+
+
+type alias RenderedFilter =
+    { filter : Filter
+    , isSelected : Bool
     }
 
 
@@ -80,6 +88,7 @@ type alias Sessionless =
     , mdl : Material.Model
     , snackbar : Snackbar.Model ()
     , page : Page
+    , filters : Array RenderedFilter
     }
 
 
@@ -93,16 +102,22 @@ type alias LoggedInModel =
     BaseLoggedInModel Sessionless
 
 
+type alias LoggedInView =
+    LoggedInModel -> Html Msg
+
+
 type Msg
     = SetLinks (List Link)
     | Search String
     | SetLinkInputText String
     | SetLoginForm LoginForm
     | CreateLink
+    | ToggleFilter Int
     | DeleteLink String
     | Timestamp (Time -> Msg)
     | ClickedAt Link Time
     | LogIn
+    | ChangePage Page
     | LogOut
     | LogOutResponse (Maybe String)
     | CreateUserResponse (Result String String)

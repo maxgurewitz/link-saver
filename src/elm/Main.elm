@@ -21,11 +21,14 @@ import Material.List as MList
 import Material.Snackbar as Snackbar
 import Material.Helpers exposing (map1st, map2nd)
 import Material.Icon as Icon
+import Material.Toggles as Toggles
 import Material.Options as MOpts
 import Regex exposing (regex, contains)
 import Json.Decode as Json
 import Material.Button as Button
 import Material.Grid exposing (grid, cell, size, Device(..))
+import Material.Color as Color
+import Array
 
 
 emptyLogin =
@@ -78,6 +81,16 @@ init { user } =
                     )
                 |> Maybe.withDefault emptyLogin
 
+        filters =
+            [ { timestamp = 1482088371823
+              , color = Color.black
+              , icon = "nature_people"
+              , name = "outdoors"
+              }
+            ]
+                |> List.map (\filter -> { isSelected = False, filter = filter })
+                |> Array.fromList
+
         initialModel =
             { links = []
             , renderedLinks = []
@@ -85,6 +98,7 @@ init { user } =
             , mdl = Material.model
             , snackbar = Snackbar.model
             , page = HomePage
+            , filters = filters
             }
     in
         ( initialModel, Cmd.none )
@@ -217,9 +231,52 @@ homePageView model =
                     ]
                 ]
             , drawer =
-                []
+                [ Layout.navigation []
+                    [ Layout.row []
+                        [ Layout.link
+                            [ Layout.onClick <| ChangePage SelectFilterPage
+                            ]
+                            [ text "filters" ]
+                        ]
+                    ]
+                ]
             , tabs = ( [], [] )
             }
+
+
+filterToHtml mdl index renderedFilter =
+    let
+        checkbox =
+            Toggles.checkbox Mdl
+                [ index ]
+                mdl
+                [ Toggles.onClick <| ToggleFilter index
+                , Toggles.ripple
+                , Toggles.value renderedFilter.isSelected
+                ]
+                []
+    in
+        div []
+            [ checkbox
+            , text renderedFilter.filter.name
+            ]
+
+
+selectFilterView : LoggedInView
+selectFilterView model =
+    div []
+        [ button [ onClick <| ChangePage HomePage ] [ text "back" ]
+        , text "filters"
+        , div []
+            (Array.indexedMap (filterToHtml model.mdl) model.filters
+                |> Array.toList
+            )
+        ]
+
+
+createFilterView : LoggedInView
+createFilterView model =
+    div [] []
 
 
 view model =
@@ -235,14 +292,18 @@ view model =
                             , mdl = model.mdl
                             , snackbar = model.snackbar
                             , page = model.page
+                            , filters = model.filters
                             }
                     in
                         case model.page of
                             HomePage ->
                                 homePageView loggedInModel
 
-                            _ ->
-                                homePageView loggedInModel
+                            SelectFilterPage ->
+                                selectFilterView loggedInModel
+
+                            CreateFilterPage ->
+                                createFilterView loggedInModel
 
                 LoggedOut loginForm ->
                     MOpts.styled div
@@ -329,6 +390,28 @@ defaultLoggedOut defaultLoggedOut loggedInMapper session =
 
 update msg model =
     case msg of
+        ToggleFilter index ->
+            let
+                filters =
+                    model.filters
+                        |> Array.get index
+                        |> Maybe.map
+                            (\renderedFilter ->
+                                let
+                                    updatedFilter =
+                                        { renderedFilter
+                                            | isSelected = not renderedFilter.isSelected
+                                        }
+                                in
+                                    Array.set index updatedFilter model.filters
+                            )
+                        |> Maybe.withDefault model.filters
+            in
+                ( { model | filters = filters }, Cmd.none )
+
+        ChangePage page ->
+            ( { model | page = page }, Cmd.none )
+
         Search query ->
             let
                 renderedLinks =

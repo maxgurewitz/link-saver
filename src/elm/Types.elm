@@ -6,6 +6,7 @@ import Material.Snackbar as Snackbar
 import Material.Color exposing (Color)
 import Html exposing (Html)
 import Array exposing (Array)
+import Dict exposing (Dict)
 
 
 type alias Link =
@@ -66,12 +67,6 @@ type alias Filter =
     }
 
 
-type alias RenderedFilter =
-    { filter : Filter
-    , isSelected : Bool
-    }
-
-
 type alias BaseModel model =
     { model
         | session : Session
@@ -86,9 +81,10 @@ type alias Sessionless =
     { links : List Link
     , renderedLinks : List Link
     , mdl : Material.Model
+    , selectedFilters : Dict String Bool
     , snackbar : Snackbar.Model ()
     , page : Page
-    , filters : Array RenderedFilter
+    , filters : List Filter
     }
 
 
@@ -112,7 +108,7 @@ type Msg
     | SetLinkInputText String
     | SetLoginForm LoginForm
     | CreateLink
-    | ToggleFilter Int
+    | ToggleFilter String
     | DeleteLink String
     | Timestamp (Time -> Msg)
     | ClickedAt Link Time

@@ -28,7 +28,7 @@ import Json.Decode as Json
 import Material.Button as Button
 import Material.Grid exposing (grid, cell, size, Device(..))
 import Material.Color as Color
-import Array
+import Dict
 
 
 emptyLogin =
@@ -88,11 +88,10 @@ init { user } =
               , name = "outdoors"
               }
             ]
-                |> List.map (\filter -> { isSelected = False, filter = filter })
-                |> Array.fromList
 
         initialModel =
             { links = []
+            , selectedFilters = Dict.empty
             , renderedLinks = []
             , session = session
             , mdl = Material.model
@@ -244,21 +243,26 @@ homePageView model =
             }
 
 
-filterToHtml mdl index renderedFilter =
+filterToHtml mdl selectedFilters index filter =
     let
+        isSelected =
+            selectedFilters
+                |> Dict.get filter.name
+                |> Maybe.withDefault False
+
         checkbox =
             Toggles.checkbox Mdl
                 [ index ]
                 mdl
-                [ Toggles.onClick <| ToggleFilter index
+                [ Toggles.onClick <| ToggleFilter filter.name
                 , Toggles.ripple
-                , Toggles.value renderedFilter.isSelected
+                , Toggles.value isSelected
                 ]
                 []
     in
         div []
             [ checkbox
-            , text renderedFilter.filter.name
+            , text filter.name
             ]
 
 
@@ -268,9 +272,9 @@ selectFilterView model =
         [ button [ onClick <| ChangePage HomePage ] [ text "back" ]
         , text "filters"
         , div []
-            (Array.indexedMap (filterToHtml model.mdl) model.filters
-                |> Array.toList
-            )
+            (List.indexedMap (filterToHtml model.mdl model.selectedFilters) model.filters)
+          -- FIXME: add filter persistence
+        , button [] [ text "new filter" ]
         ]
 
 
@@ -293,6 +297,7 @@ view model =
                             , snackbar = model.snackbar
                             , page = model.page
                             , filters = model.filters
+                            , selectedFilters = model.selectedFilters
                             }
                     in
                         case model.page of
@@ -390,24 +395,21 @@ defaultLoggedOut defaultLoggedOut loggedInMapper session =
 
 update msg model =
     case msg of
-        ToggleFilter index ->
+        ToggleFilter filterName ->
             let
-                filters =
-                    model.filters
-                        |> Array.get index
-                        |> Maybe.map
-                            (\renderedFilter ->
-                                let
-                                    updatedFilter =
-                                        { renderedFilter
-                                            | isSelected = not renderedFilter.isSelected
-                                        }
-                                in
-                                    Array.set index updatedFilter model.filters
-                            )
-                        |> Maybe.withDefault model.filters
+                selectedFilters =
+                    model.selectedFilters
+                        |> Dict.get filterName
+                        |> (\maybeIsSelected ->
+                                case maybeIsSelected of
+                                    Just isSelected ->
+                                        Dict.remove filterName model.selectedFilters
+
+                                    Nothing ->
+                                        Dict.insert filterName True model.selectedFilters
+                           )
             in
-                ( { model | filters = filters }, Cmd.none )
+                ( { model | selectedFilters = selectedFilters }, Cmd.none )
 
         ChangePage page ->
             ( { model | page = page }, Cmd.none )

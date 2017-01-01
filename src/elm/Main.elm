@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (text, programWithFlags, div, button, input, a, br, form)
-import Ports exposing (createLink, links, createUser, createUserResponse, logOut, logOutResponse, deleteLink, updateLink)
+import Ports exposing (createLink, links, createUser, createUserResponse, logOut, logOutResponse, deleteLink, updateLink, createFilter)
 import Types exposing (..)
 import Html.Events exposing (onInput, onClick, onSubmit, keyCode)
 import Debug
@@ -96,6 +96,7 @@ init { user } =
             , renderedLinks = []
             , linkInputText = ""
             , linkInputValidation = Nothing
+            , filterInputText = ""
             , session = session
             , mdl = Material.model
             , snackbar = Snackbar.model
@@ -288,7 +289,8 @@ createFilterView model =
     div []
         [ button [ onClick <| ChangePage SelectFilterPage ] [ text "back" ]
         , text "create filter"
-        , button [] [ text "save" ]
+        , input [ onInput SetFilterInputText ] []
+        , button [ onClick CreateFilter ] [ text "save" ]
         ]
 
 
@@ -304,6 +306,7 @@ view model =
                             , renderedLinks = model.renderedLinks
                             , linkInputText = model.linkInputText
                             , linkInputValidation = model.linkInputValidation
+                            , filterInputText = model.filterInputText
                             , mdl = model.mdl
                             , snackbar = model.snackbar
                             , page = model.page
@@ -406,6 +409,9 @@ defaultLoggedOut defaultLoggedOut loggedInMapper session =
 
 update msg model =
     case msg of
+        SetFilterInputText filterInputText ->
+            ( { model | filterInputText = filterInputText }, Cmd.none )
+
         ToggleFilter filterName ->
             let
                 selectedFilters =
@@ -487,6 +493,25 @@ update msg model =
                   }
                 , Cmd.none
                 )
+
+        CreateFilter ->
+            let
+                cmd =
+                    case model.session of
+                        LoggedIn { uid } ->
+                            createFilter
+                                { uid = uid
+                                , values =
+                                    { color = "blue"
+                                    , icon = "TODO"
+                                    , name = model.filterInputText
+                                    }
+                                }
+
+                        _ ->
+                            Cmd.none
+            in
+                ( model, cmd )
 
         CreateLink ->
             let

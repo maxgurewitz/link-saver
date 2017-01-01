@@ -98,6 +98,7 @@ type alias Sessionless =
     , filters : List Filter
     , linkInputText : String
     , linkInputValidation : Maybe String
+    , filterInputText : String
     }
 
 
@@ -119,8 +120,10 @@ type Msg
     = SetLinks (List Link)
     | Search String
     | SetLinkInputText String
+    | SetFilterInputText String
     | SetLoginForm LoginForm
     | CreateLink
+    | CreateFilter
     | ToggleFilter String
     | DeleteLink String
     | Timestamp (Time -> Msg)

@@ -74,9 +74,7 @@ init { user } =
                     (\{ email, uid } ->
                         LoggedIn
                             { email = email
-                            , linkInputText = ""
                             , uid = uid
-                            , linkInputValidation = Nothing
                             }
                     )
                 |> Maybe.withDefault emptyLogin
@@ -96,6 +94,8 @@ init { user } =
             { links = []
             , selectedFilters = Dict.empty
             , renderedLinks = []
+            , linkInputText = ""
+            , linkInputValidation = Nothing
             , session = session
             , mdl = Material.model
             , snackbar = Snackbar.model
@@ -211,7 +211,7 @@ homePageView model =
                                 [ 2 ]
                                 model.mdl
                                 [ Textfield.label "enter link"
-                                , sessionData.linkInputValidation
+                                , model.linkInputValidation
                                     |> Maybe.map Textfield.error
                                     |> Maybe.withDefault MOpts.nop
                                 , Textfield.onInput SetLinkInputText
@@ -302,6 +302,8 @@ view model =
                             { sessionData = sessionData
                             , links = model.links
                             , renderedLinks = model.renderedLinks
+                            , linkInputText = model.linkInputText
+                            , linkInputValidation = model.linkInputValidation
                             , mdl = model.mdl
                             , snackbar = model.snackbar
                             , page = model.page
@@ -473,41 +475,35 @@ update msg model =
 
         SetLinkInputText linkInputText ->
             let
-                session =
-                    model.session
-                        |> mapLoggedIn
-                            (\loggedInModel ->
-                                let
-                                    linkInputValidation =
-                                        if (contains linkRgx linkInputText) || linkInputText == "" then
-                                            Nothing
-                                        else
-                                            Just "Must provide a valid link"
-                                in
-                                    { loggedInModel
-                                        | linkInputText = linkInputText
-                                        , linkInputValidation = linkInputValidation
-                                    }
-                            )
+                linkInputValidation =
+                    if (contains linkRgx linkInputText) || linkInputText == "" then
+                        Nothing
+                    else
+                        Just "Must provide a valid link"
             in
-                ( { model | session = session }, Cmd.none )
+                ( { model
+                    | linkInputValidation = linkInputValidation
+                    , linkInputText = linkInputText
+                  }
+                , Cmd.none
+                )
 
         CreateLink ->
             let
                 cmd =
                     model.session
                         |> defaultLoggedOut Cmd.none
-                            (\{ linkInputText, uid, linkInputValidation } ->
+                            (\{ uid } ->
                                 let
                                     validInputTextCmd =
-                                        (find (\link -> link.href == linkInputText) model.links)
+                                        (find (\link -> link.href == model.linkInputText) model.links)
                                             |> Maybe.map (\link -> Task.perform setClickedAt (Task.succeed link))
-                                            |> Maybe.withDefault (createLink { href = linkInputText, uid = uid })
+                                            |> Maybe.withDefault (createLink { href = model.linkInputText, uid = uid })
                                 in
-                                    if linkInputText == "" then
+                                    if model.linkInputText == "" then
                                         Cmd.none
                                     else
-                                        linkInputValidation
+                                        model.linkInputValidation
                                             |> Maybe.map (always Cmd.none)
                                             |> Maybe.withDefault validInputTextCmd
                             )
@@ -557,8 +553,6 @@ update msg model =
                                 | session =
                                     LoggedIn
                                         { email = loginForm.email
-                                        , linkInputText = ""
-                                        , linkInputValidation = Nothing
                                         , uid = uid
                                         }
                               }

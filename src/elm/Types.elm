@@ -25,8 +25,6 @@ type alias User =
 type alias SessionData =
     { email : String
     , uid : String
-    , linkInputText : String
-    , linkInputValidation : Maybe String
     }
 
 
@@ -98,6 +96,8 @@ type alias Sessionless =
     , snackbar : Snackbar.Model ()
     , page : Page
     , filters : List Filter
+    , linkInputText : String
+    , linkInputValidation : Maybe String
     }
 
 

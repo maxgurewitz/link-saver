@@ -279,13 +279,17 @@ selectFilterView model =
         , text "filters"
         , div []
             (List.indexedMap (filterToHtml model.mdl model.selectedFilters) model.filters)
-        , button [] [ text "new filter" ]
+        , button [ onClick <| ChangePage CreateFilterPage ] [ text "new filter" ]
         ]
 
 
 createFilterView : LoggedInView
 createFilterView model =
-    div [] []
+    div []
+        [ button [ onClick <| ChangePage SelectFilterPage ] [ text "back" ]
+        , text "create filter"
+        , button [] [ text "save" ]
+        ]
 
 
 view model =

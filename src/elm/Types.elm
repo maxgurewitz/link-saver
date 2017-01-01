@@ -3,7 +3,6 @@ module Types exposing (..)
 import Material
 import Time exposing (Time)
 import Material.Snackbar as Snackbar
-import Material.Color exposing (Color)
 import Html exposing (Html)
 import Array exposing (Array)
 import Dict exposing (Dict)
@@ -60,11 +59,25 @@ type Page
 
 
 type alias Filter =
-    { icon : String
-    , color : Color
-    , name : String
+    { values : FilterValues
     , timestamp : Int
+    , guid : String
     }
+
+
+type alias FilterValues =
+    { icon : String
+    , color : String
+    , name : String
+    }
+
+
+type alias FilterPayload =
+    { values : FilterValues, uid : String }
+
+
+type alias WithGuid extension =
+    { extension | guid : String }
 
 
 type alias BaseModel model =

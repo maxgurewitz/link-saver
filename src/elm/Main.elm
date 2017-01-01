@@ -82,10 +82,13 @@ init { user } =
                 |> Maybe.withDefault emptyLogin
 
         filters =
-            [ { timestamp = 1482088371823
-              , color = Color.black
-              , icon = "nature_people"
-              , name = "outdoors"
+            [ { values =
+                    { color = "black"
+                    , icon = "nature_people"
+                    , name = "outdoors"
+                    }
+              , timestamp = 1482088371823
+              , guid = "abc"
               }
             ]
 
@@ -245,16 +248,19 @@ homePageView model =
 
 filterToHtml mdl selectedFilters index filter =
     let
+        { name } =
+            filter.values
+
         isSelected =
             selectedFilters
-                |> Dict.get filter.name
+                |> Dict.get name
                 |> Maybe.withDefault False
 
         checkbox =
             Toggles.checkbox Mdl
-                [ index ]
+                [ 0, index ]
                 mdl
-                [ Toggles.onClick <| ToggleFilter filter.name
+                [ Toggles.onClick <| ToggleFilter name
                 , Toggles.ripple
                 , Toggles.value isSelected
                 ]
@@ -262,7 +268,7 @@ filterToHtml mdl selectedFilters index filter =
     in
         div []
             [ checkbox
-            , text filter.name
+            , text name
             ]
 
 
@@ -273,7 +279,6 @@ selectFilterView model =
         , text "filters"
         , div []
             (List.indexedMap (filterToHtml model.mdl model.selectedFilters) model.filters)
-          -- FIXME: add filter persistence
         , button [] [ text "new filter" ]
         ]
 

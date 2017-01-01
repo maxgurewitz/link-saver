@@ -61,6 +61,16 @@ function createLink(payload) {
   });
 }
 
+function createFilter(payload) {
+  console.log('loc1', payload);
+  // var now = Date.now();
+  //
+  // firebase.database().ref('filters/' + payload.uid).push().set({
+  //   values: payload.values,
+  //   timestamp: now
+  // });
+}
+
 function linkChanges(app, uid) {
   refs.linksRef = refs.linksRef ||
     firebase.database().ref('links/' + uid);
@@ -104,6 +114,7 @@ function linkChangesFromUser(app, user) {
 
 module.exports = {
   receive: {
+    createFilter: createFilter,
     createLink: createLink,
     createUser: createUser,
     deleteLink: deleteLink,

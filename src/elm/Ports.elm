@@ -1,6 +1,6 @@
 port module Ports exposing (..)
 
-import Types exposing (Link, LoginForm, ResultRecord)
+import Types exposing (..)
 import Maybe exposing (Maybe)
 
 
@@ -19,10 +19,16 @@ port deleteLink : String -> Cmd msg
 port updateLink : Link -> Cmd msg
 
 
+port createFilter : FilterPayload -> Cmd msg
+
+
 port createUserResponse : (ResultRecord String String -> msg) -> Sub msg
 
 
 port logOutResponse : (Maybe String -> msg) -> Sub msg
+
+
+port filters : (List Filter -> msg) -> Sub msg
 
 
 port links : (List Link -> msg) -> Sub msg

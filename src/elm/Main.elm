@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Html exposing (text, programWithFlags, div, button, input, a, br, form)
+import Html exposing (text, programWithFlags, div, button, input, a, br, form, Html)
 import Ports exposing (createLink, links, createUser, createUserResponse, logOut, logOutResponse, deleteLink, updateLink, createFilter)
 import Types exposing (..)
 import Html.Events exposing (onInput, onClick, onSubmit, keyCode)
@@ -93,6 +93,7 @@ init { user } =
         initialModel =
             { links = []
             , selectedFilters = Dict.empty
+            , assignedFilters = Dict.empty
             , renderedLinks = []
             , linkInputText = ""
             , linkInputValidation = Nothing
@@ -137,14 +138,22 @@ linkView model index link =
         [ MList.li [ Elevation.e2 ]
             [ MList.content []
                 [ Button.render Mdl
-                    [ index + 3 ]
+                    [ 3, 0, index ]
                     model.mdl
                     [ Button.minifab
                     , Button.ripple
                     , Button.onClick <| DeleteLink link.guid
-                    , MOpts.css "marginRight" "1.5em"
                     ]
                     [ Icon.i "delete" ]
+                , Button.render Mdl
+                    [ 3, 1, index ]
+                    model.mdl
+                    [ Button.minifab
+                    , Button.ripple
+                    , Button.onClick <| ChangePage (AssignFilterPage link.guid)
+                    , MOpts.css "marginRight" "1.5em"
+                    ]
+                    [ Icon.i "brush" ]
                 , a
                     [ target "_blank"
                     , href linkHref
@@ -158,7 +167,7 @@ linkView model index link =
                     [ style
                         [ ( "overflow", "hidden" )
                         , ( "textOverflow", "ellipsis" )
-                        , ( "max-width", "50vw" )
+                        , ( "max-width", "25vw" )
                         , ( "whiteSpace", "nowrap" )
                         ]
                     ]
@@ -247,13 +256,14 @@ homePageView model =
             }
 
 
-filterToHtml mdl selectedFilters index filter =
+filterToHtml : (String -> Msg) -> Material.Model -> ToggledFilters -> Int -> Filter -> Html Msg
+filterToHtml toggleMsg mdl toggledFilters index filter =
     let
         { name } =
             filter.values
 
         isSelected =
-            selectedFilters
+            toggledFilters
                 |> Dict.get name
                 |> Maybe.withDefault False
 
@@ -261,7 +271,7 @@ filterToHtml mdl selectedFilters index filter =
             Toggles.checkbox Mdl
                 [ 0, index ]
                 mdl
-                [ Toggles.onClick <| ToggleFilter name
+                [ Toggles.onClick <| toggleMsg name
                 , Toggles.ripple
                 , Toggles.value isSelected
                 ]
@@ -279,18 +289,29 @@ selectFilterView model =
         [ button [ onClick <| ChangePage HomePage ] [ text "back" ]
         , text "filters"
         , div []
-            (List.indexedMap (filterToHtml model.mdl model.selectedFilters) model.filters)
-        , button [ onClick <| ChangePage CreateFilterPage ] [ text "new filter" ]
+            (List.indexedMap (filterToHtml SelectFilter model.mdl model.selectedFilters) model.filters)
         ]
 
 
 createFilterView : LoggedInView
 createFilterView model =
     div []
-        [ button [ onClick <| ChangePage SelectFilterPage ] [ text "back" ]
-        , text "create filter"
+        [ text "create filter"
         , input [ onInput SetFilterInputText ] []
         , button [ onClick CreateFilter ] [ text "save" ]
+        ]
+
+
+assignFilterView : String -> LoggedInView
+assignFilterView guid model =
+    div []
+        [ button [ onClick <| ChangePage HomePage ] [ text "back" ]
+        , text "assign filter view"
+        , div []
+            (List.indexedMap (filterToHtml AssignFilter model.mdl model.assignedFilters)
+                model.filters
+            )
+        , text guid
         ]
 
 
@@ -312,6 +333,7 @@ view model =
                             , page = model.page
                             , filters = model.filters
                             , selectedFilters = model.selectedFilters
+                            , assignedFilters = model.assignedFilters
                             }
                     in
                         case model.page of
@@ -323,6 +345,9 @@ view model =
 
                             CreateFilterPage ->
                                 createFilterView loggedInModel
+
+                            AssignFilterPage guid ->
+                                assignFilterView guid loggedInModel
 
                 LoggedOut loginForm ->
                     MOpts.styled div
@@ -407,26 +432,38 @@ defaultLoggedOut defaultLoggedOut loggedInMapper session =
             defaultLoggedOut
 
 
+toggleFilter : ToggledFilters -> String -> ToggledFilters
+toggleFilter toggledFilters filterName =
+    toggledFilters
+        |> Dict.get filterName
+        |> (\maybeIsSelected ->
+                case maybeIsSelected of
+                    Just isSelected ->
+                        Dict.remove filterName toggledFilters
+
+                    Nothing ->
+                        Dict.insert filterName True toggledFilters
+           )
+
+
 update msg model =
     case msg of
         SetFilterInputText filterInputText ->
             ( { model | filterInputText = filterInputText }, Cmd.none )
 
-        ToggleFilter filterName ->
+        SelectFilter filterName ->
             let
                 selectedFilters =
-                    model.selectedFilters
-                        |> Dict.get filterName
-                        |> (\maybeIsSelected ->
-                                case maybeIsSelected of
-                                    Just isSelected ->
-                                        Dict.remove filterName model.selectedFilters
-
-                                    Nothing ->
-                                        Dict.insert filterName True model.selectedFilters
-                           )
+                    toggleFilter model.selectedFilters filterName
             in
                 ( { model | selectedFilters = selectedFilters }, Cmd.none )
+
+        AssignFilter filterName ->
+            let
+                assignedFilters =
+                    toggleFilter model.assignedFilters filterName
+            in
+                ( { model | assignedFilters = assignedFilters }, Cmd.none )
 
         ChangePage page ->
             ( { model | page = page }, Cmd.none )

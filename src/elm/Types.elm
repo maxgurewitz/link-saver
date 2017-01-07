@@ -54,6 +54,7 @@ type Page
     = HomePage
     | SelectFilterPage
     | CreateFilterPage
+    | AssignFilterPage String
 
 
 type alias Filter =
@@ -88,11 +89,16 @@ type alias Model =
     BaseModel Sessionless
 
 
+type alias ToggledFilters =
+    Dict String Bool
+
+
 type alias Sessionless =
     { links : List Link
     , renderedLinks : List Link
     , mdl : Material.Model
-    , selectedFilters : Dict String Bool
+    , selectedFilters : ToggledFilters
+    , assignedFilters : ToggledFilters
     , snackbar : Snackbar.Model ()
     , page : Page
     , filters : List Filter
@@ -124,7 +130,8 @@ type Msg
     | SetLoginForm LoginForm
     | CreateLink
     | CreateFilter
-    | ToggleFilter String
+    | SelectFilter String
+    | AssignFilter String
     | DeleteLink String
     | Timestamp (Time -> Msg)
     | ClickedAt Link Time

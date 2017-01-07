@@ -62,13 +62,16 @@ function createLink(payload) {
 }
 
 function createFilter(payload) {
-  console.log('loc1', payload);
-  // var now = Date.now();
-  //
-  // firebase.database().ref('filters/' + payload.uid).push().set({
-  //   values: payload.values,
-  //   timestamp: now
-  // });
+  var now = Date.now();
+
+  firebase.database().ref('filters/' + payload.uid).push().set({
+    values: payload.values,
+    timestamp: now
+  });
+}
+
+function filterChanges(app, uid) {
+
 }
 
 function linkChanges(app, uid) {

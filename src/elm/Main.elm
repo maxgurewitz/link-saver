@@ -483,6 +483,22 @@ update msg model =
 
                         assignedFilters =
                             toggleFilter model.assignedFilters filterGuid commands
+
+                        filterAssignmentsUpdate =
+                            model.filterAssignments
+                                |> Dict.get filterGuid
+                                |> Maybe.map
+                                    (always
+                                        ( Dict.remove filterGuid model.filterAssignments
+                                        , Cmd.none
+                                        )
+                                    )
+                                |> Maybe.withDefault
+                                    ( Dict.insert filterGuid
+                                        NoAssignment
+                                        model.filterAssignments
+                                    , Cmd.none
+                                    )
                     in
                         ( { model
                             | assignedFilters = Tuple.first assignedFilters

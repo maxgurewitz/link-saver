@@ -97,7 +97,7 @@ type alias Sessionless =
     { links : List Link
     , renderedLinks : List Link
     , mdl : Material.Model
-    , filterAssignments : Dict String FilterAssignment
+    , filterAssignments : Dict String FilterAssignmentStatus
     , selectedFilters : ToggledFilters
     , assignedFilters : ToggledFilters
     , snackbar : Snackbar.Model ()
@@ -121,6 +121,10 @@ type alias FilterAssignmentValues =
     }
 
 
+
+-- FIXME: guid is not necessary
+
+
 type alias FilterAssignmentPayload =
     { values : FilterAssignmentValues
     , uid : String
@@ -133,6 +137,12 @@ type alias FilterAssignment =
     , values : FilterAssignmentValues
     , timestamp : Int
     }
+
+
+type FilterAssignmentStatus
+    = NoAssignment
+    | FilterAssigned FilterAssignment
+    | AssignmentInProgress FilterAssignmentPayload
 
 
 type alias LoggedInModel =

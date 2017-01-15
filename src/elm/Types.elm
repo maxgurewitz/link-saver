@@ -97,6 +97,7 @@ type alias Sessionless =
     { links : List Link
     , renderedLinks : List Link
     , mdl : Material.Model
+    , filterAssignments : Dict String FilterAssignment
     , selectedFilters : ToggledFilters
     , assignedFilters : ToggledFilters
     , snackbar : Snackbar.Model ()
@@ -111,6 +112,26 @@ type alias Sessionless =
 type alias BaseLoggedInModel model =
     { model
         | sessionData : SessionData
+    }
+
+
+type alias FilterAssignmentValues =
+    { filterGuid : String
+    , linkGuid : String
+    }
+
+
+type alias FilterAssignmentPayload =
+    { values : FilterAssignmentValues
+    , uid : String
+    , guid : Maybe String
+    }
+
+
+type alias FilterAssignment =
+    { guid : String
+    , values : FilterAssignmentValues
+    , timestamp : Int
     }
 
 
@@ -131,7 +152,7 @@ type Msg
     | CreateLink
     | CreateFilter
     | SelectFilter String
-    | AssignFilter String
+    | AssignFilter String String
     | DeleteLink String
     | Timestamp (Time -> Msg)
     | ClickedAt Link Time

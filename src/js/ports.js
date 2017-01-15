@@ -28,7 +28,7 @@ function createUser(loginForm, app) {
     })
     .then(function(user) {
       var uid = user.uid || 'fake-id';
-      linkChanges(app, uid);
+      links(app, uid);
       app.ports.createUserResponse.send({ ok: uid, err: null });
     })
     .catch(function(err) {
@@ -61,20 +61,52 @@ function createLink(payload) {
   });
 }
 
-function createFilter(payload) {
-  var now = Date.now();
+// FIXME: enable users to create their own Filters
+// function createFilter(payload) {
+//   var now = Date.now();
+//
+//   firebase.database().ref('filters/' + payload.uid).push().set({
+//     values: payload.values,
+//     timestamp: now
+//   });
+// }
+//
+// function filterChanges(app, uid) {
+//
+// }
 
-  firebase.database().ref('filters/' + payload.uid).push().set({
-    values: payload.values,
-    timestamp: now
+function createFilterAssignment(values) {
+  // FIXME change to upsert
+  // https://firebase.google.com/docs/database/web/read-and-write#update_specific_fields
+  // var now = Date.now();
+  //
+  // firebase.database().ref('filter-assignments/' + payload.uid).push().set({
+  //   values: payload.values,
+  //   timestamp: now
+  // });
+}
+//
+// function deleteFilterAssignment(guid) {
+//   console.log('loc2', guid)
+// }
+
+function filterAssignments(app, uid) {
+  refs.filterAssignmentsRef = refs.filterAssignmentsRef ||
+    firebase.database().ref('filter-assignments/' + uid);
+
+  refs.filterAssignmentsRef.on('value', function(snapshot) {
+    var vals = snapshot.val();
+
+    var filterAssignments = Object.keys(vals || {}).map(function(guid) {
+      var filterAssignment = vals[guid];
+      return xtend(link, { guid: guid });
+    });
+
+    app.ports.filterAssignments.send(filterAssignments);
   });
 }
 
-function filterChanges(app, uid) {
-
-}
-
-function linkChanges(app, uid) {
+function links(app, uid) {
   refs.linksRef = refs.linksRef ||
     firebase.database().ref('links/' + uid);
 
@@ -85,12 +117,7 @@ function linkChanges(app, uid) {
     var links = Object.keys(vals || {}).map(function(guid) {
       var link = vals[guid];
 
-      return {
-        guid: guid,
-        href: link.href,
-        clickedAt: link.clickedAt || 0,
-        timestamp: link.timestamp
-      };
+      return xtend({clickedAt: 0}, link, {guid: guid});
     }).sort(function(link1, link2) {
       var val;
 
@@ -109,15 +136,21 @@ function linkChanges(app, uid) {
   });
 }
 
-function linkChangesFromUser(app, user) {
+function changes(app, user) {
   if (user) {
-    linkChanges(app, user.uid);
+    [
+      links,
+      filterAssignments
+    ]
+    .forEach(function(emitter) {
+      emitter(app, user.uid);
+    });
   }
 }
 
 module.exports = {
   receive: {
-    createFilter: createFilter,
+    createFilterAssignment: createFilterAssignment,
     createLink: createLink,
     createUser: createUser,
     deleteLink: deleteLink,
@@ -125,6 +158,6 @@ module.exports = {
     updateLink: updateLink
   },
   send: [
-    linkChangesFromUser
+    changes
   ]
 };

@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (text, programWithFlags, div, button, input, a, br, form, Html)
-import Ports exposing (createLink, links, createUser, createUserResponse, logOut, logOutResponse, deleteLink, updateLink, createFilter)
+import Ports exposing (..)
 import Types exposing (..)
 import Html.Events exposing (onInput, onClick, onSubmit, keyCode)
 import Debug
@@ -9,6 +9,7 @@ import Html
 import Dict
 import Task
 import Time
+import Tuple
 import Set
 import Material.Elevation as Elevation
 import List.Extra exposing (find)
@@ -92,8 +93,11 @@ init { user } =
 
         initialModel =
             { links = []
-            , selectedFilters = Dict.empty
+            , selectedFilters =
+                Dict.empty
+                -- FIXME: remove
             , assignedFilters = Dict.empty
+            , filterAssignments = Dict.empty
             , renderedLinks = []
             , linkInputText = ""
             , linkInputValidation = Nothing
@@ -308,7 +312,7 @@ assignFilterView guid model =
         [ button [ onClick <| ChangePage HomePage ] [ text "back" ]
         , text "assign filter view"
         , div []
-            (List.indexedMap (filterToHtml AssignFilter model.mdl model.assignedFilters)
+            (List.indexedMap (filterToHtml (AssignFilter guid) model.mdl model.assignedFilters)
                 model.filters
             )
         , text guid
@@ -334,6 +338,7 @@ view model =
                             , filters = model.filters
                             , selectedFilters = model.selectedFilters
                             , assignedFilters = model.assignedFilters
+                            , filterAssignments = model.filterAssignments
                             }
                     in
                         case model.page of
@@ -432,17 +437,17 @@ defaultLoggedOut defaultLoggedOut loggedInMapper session =
             defaultLoggedOut
 
 
-toggleFilter : ToggledFilters -> String -> ToggledFilters
-toggleFilter toggledFilters filterName =
+toggleFilter : ToggledFilters -> String -> ( Cmd Msg, Cmd Msg ) -> ( ToggledFilters, Cmd Msg )
+toggleFilter toggledFilters filterGuid commands =
     toggledFilters
-        |> Dict.get filterName
+        |> Dict.get filterGuid
         |> (\maybeIsSelected ->
                 case maybeIsSelected of
                     Just isSelected ->
-                        Dict.remove filterName toggledFilters
+                        ( Dict.remove filterGuid toggledFilters, Tuple.first commands )
 
                     Nothing ->
-                        Dict.insert filterName True toggledFilters
+                        ( Dict.insert filterGuid True toggledFilters, Tuple.second commands )
            )
 
 
@@ -451,19 +456,42 @@ update msg model =
         SetFilterInputText filterInputText ->
             ( { model | filterInputText = filterInputText }, Cmd.none )
 
-        SelectFilter filterName ->
+        SelectFilter filterGuid ->
             let
                 selectedFilters =
-                    toggleFilter model.selectedFilters filterName
+                    toggleFilter model.selectedFilters
+                        filterGuid
+                        ( Cmd.none, Cmd.none )
+                        |> Tuple.first
             in
                 ( { model | selectedFilters = selectedFilters }, Cmd.none )
 
-        AssignFilter filterName ->
-            let
-                assignedFilters =
-                    toggleFilter model.assignedFilters filterName
-            in
-                ( { model | assignedFilters = assignedFilters }, Cmd.none )
+        AssignFilter linkGuid filterGuid ->
+            case model.session of
+                LoggedIn session ->
+                    let
+                        filterAssignmentPayload =
+                            { guid = Nothing
+                            , values = { filterGuid = filterGuid, linkGuid = linkGuid }
+                            , uid = session.uid
+                            }
+
+                        commands =
+                            ( Cmd.none
+                            , createFilterAssignment filterAssignmentPayload
+                            )
+
+                        assignedFilters =
+                            toggleFilter model.assignedFilters filterGuid commands
+                    in
+                        ( { model
+                            | assignedFilters = Tuple.first assignedFilters
+                          }
+                        , Tuple.second assignedFilters
+                        )
+
+                _ ->
+                    ( model, Cmd.none )
 
         ChangePage page ->
             ( { model | page = page }, Cmd.none )

@@ -22,6 +22,12 @@ port updateLink : Link -> Cmd msg
 port createFilter : FilterPayload -> Cmd msg
 
 
+port deleteFilterAssignment : String -> Cmd msg
+
+
+port createFilterAssignment : FilterAssignmentPayload -> Cmd msg
+
+
 port createUserResponse : (ResultRecord String String -> msg) -> Sub msg
 
 
@@ -32,3 +38,6 @@ port filters : (List Filter -> msg) -> Sub msg
 
 
 port links : (List Link -> msg) -> Sub msg
+
+
+port filterAssignments : (List FilterAssignment -> msg) -> Sub msg

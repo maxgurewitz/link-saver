@@ -121,14 +121,9 @@ type alias FilterAssignmentValues =
     }
 
 
-
--- FIXME: guid is not necessary
-
-
 type alias FilterAssignmentPayload =
     { values : FilterAssignmentValues
     , uid : String
-    , guid : Maybe String
     }
 
 
@@ -140,8 +135,7 @@ type alias FilterAssignment =
 
 
 type FilterAssignmentStatus
-    = NoAssignment
-    | FilterAssigned FilterAssignment
+    = FilterAssigned FilterAssignment
     | AssignmentInProgress FilterAssignmentPayload
 
 
@@ -163,6 +157,7 @@ type Msg
     | CreateFilter
     | SelectFilter String
     | AssignFilter String String
+    | SetFilterAssignments (List FilterAssignment)
     | DeleteLink String
     | Timestamp (Time -> Msg)
     | ClickedAt Link Time

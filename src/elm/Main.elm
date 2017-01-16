@@ -466,13 +466,26 @@ update msg model =
             in
                 ( { model | selectedFilters = selectedFilters }, Cmd.none )
 
+        SetFilterAssignments filterAssignments ->
+            let
+                newFilterAssignments =
+                    filterAssignments
+                        |> List.map
+                            (\filterAssignment ->
+                                ( filterAssignment.guid
+                                , FilterAssigned filterAssignment
+                                )
+                            )
+                        |> Dict.fromList
+            in
+                ( { model | filterAssignments = newFilterAssignments }, Cmd.none )
+
         AssignFilter linkGuid filterGuid ->
             case model.session of
                 LoggedIn session ->
                     let
                         filterAssignmentPayload =
-                            { guid = Nothing
-                            , values = { filterGuid = filterGuid, linkGuid = linkGuid }
+                            { values = { filterGuid = filterGuid, linkGuid = linkGuid }
                             , uid = session.uid
                             }
 
@@ -481,6 +494,7 @@ update msg model =
                             , createFilterAssignment filterAssignmentPayload
                             )
 
+                        -- FIXME delete
                         assignedFilters =
                             toggleFilter model.assignedFilters filterGuid commands
 
@@ -488,22 +502,28 @@ update msg model =
                             model.filterAssignments
                                 |> Dict.get filterGuid
                                 |> Maybe.map
-                                    (always
-                                        ( Dict.remove filterGuid model.filterAssignments
-                                        , Cmd.none
-                                        )
+                                    (\filterAssignmentStatus ->
+                                        case filterAssignmentStatus of
+                                            FilterAssigned filterAssignment ->
+                                                ( Dict.remove filterGuid model.filterAssignments
+                                                , deleteFilterAssignment filterAssignment.guid
+                                                )
+
+                                            _ ->
+                                                ( model.filterAssignments, Cmd.none )
                                     )
                                 |> Maybe.withDefault
                                     ( Dict.insert filterGuid
-                                        NoAssignment
+                                        (AssignmentInProgress filterAssignmentPayload)
                                         model.filterAssignments
-                                    , Cmd.none
+                                    , createFilterAssignment filterAssignmentPayload
                                     )
                     in
                         ( { model
                             | assignedFilters = Tuple.first assignedFilters
+                            , filterAssignments = Tuple.first filterAssignmentsUpdate
                           }
-                        , Tuple.second assignedFilters
+                        , Cmd.batch [ Tuple.second assignedFilters, Tuple.second filterAssignmentsUpdate ]
                         )
 
                 _ ->

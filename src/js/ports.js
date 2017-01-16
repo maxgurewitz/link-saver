@@ -85,25 +85,32 @@ function createFilterAssignment(values) {
   //   timestamp: now
   // });
 }
-//
-// function deleteFilterAssignment(guid) {
-//   console.log('loc2', guid)
-// }
+
+function deleteFilterAssignment(guid) {
+  if (refs.filterAssignmentsRef) {
+    refs.filterAssignmentsRef.child(guid).remove();
+  }
+}
 
 function filterAssignments(app, uid) {
   refs.filterAssignmentsRef = refs.filterAssignmentsRef ||
     firebase.database().ref('filter-assignments/' + uid);
 
-  refs.filterAssignmentsRef.on('value', function(snapshot) {
+  function onAssignmentValue(snapshot) {
     var vals = snapshot.val();
 
-    var filterAssignments = Object.keys(vals || {}).map(function(guid) {
-      var filterAssignment = vals[guid];
-      return xtend(link, { guid: guid });
-    });
+    var filterAssignments =
+      Object
+        .keys(vals || {})
+        .map(function(guid) {
+          var filterAssignment = vals[guid];
+          return xtend(link, { guid: guid });
+        });
 
     app.ports.filterAssignments.send(filterAssignments);
-  });
+  }
+
+  refs.filterAssignmentsRef.on('value', onAssignmentValue);
 }
 
 function links(app, uid) {
@@ -151,6 +158,7 @@ function changes(app, user) {
 module.exports = {
   receive: {
     createFilterAssignment: createFilterAssignment,
+    deleteFilterAssignment: deleteFilterAssignment,
     createLink: createLink,
     createUser: createUser,
     deleteLink: deleteLink,

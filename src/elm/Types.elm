@@ -54,7 +54,7 @@ type Page
     = HomePage
     | SelectFilterPage
     | CreateFilterPage
-    | AssignFilterPage String
+    | AssignFilterPage Link
 
 
 type alias Filter =
@@ -103,7 +103,6 @@ type alias Sessionless =
     , mdl : Material.Model
     , filterAssignments : FilterAssignments
     , selectedFilters : ToggledFilters
-    , assignedFilters : ToggledFilters
     , snackbar : Snackbar.Model ()
     , page : Page
     , filters : List Filter

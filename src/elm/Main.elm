@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Html exposing (text, programWithFlags, div, button, input, a, br, form, Html)
+import Html exposing (text, programWithFlags, div, button, input, a, br, form, Html, span)
 import Ports exposing (..)
 import Types exposing (..)
 import Html.Events exposing (onInput, onClick, onSubmit, keyCode)
@@ -95,8 +95,6 @@ init { user } =
             { links = []
             , selectedFilters =
                 Dict.empty
-                -- FIXME: remove
-            , assignedFilters = Dict.empty
             , filterAssignments = Dict.empty
             , renderedLinks = []
             , linkInputText = ""
@@ -154,7 +152,7 @@ linkView model index link =
                     model.mdl
                     [ Button.minifab
                     , Button.ripple
-                    , Button.onClick <| ChangePage (AssignFilterPage link.guid)
+                    , Button.onClick <| ChangePage (AssignFilterPage link)
                     , MOpts.css "marginRight" "1.5em"
                     ]
                     [ Icon.i "brush" ]
@@ -317,8 +315,8 @@ filterAssignmentToHtml linkGuid model index filter =
                 []
     in
         div []
-            [ checkbox
-            , text filter.values.name
+            [ span [] [ text filter.values.name ]
+            , checkbox
             ]
 
 
@@ -341,16 +339,15 @@ createFilterView model =
         ]
 
 
-assignFilterView : String -> LoggedInView
-assignFilterView guid model =
+assignFilterView : Link -> LoggedInView
+assignFilterView link model =
     div []
         [ button [ onClick <| ChangePage HomePage ] [ text "back" ]
-        , text "assign filter view"
+        , text ("Assign tags to link: " ++ link.href)
         , div []
-            (List.indexedMap (filterAssignmentToHtml guid model)
+            (List.indexedMap (filterAssignmentToHtml link.guid model)
                 model.filters
             )
-        , text guid
         ]
 
 
@@ -372,7 +369,6 @@ view model =
                             , page = model.page
                             , filters = model.filters
                             , selectedFilters = model.selectedFilters
-                            , assignedFilters = model.assignedFilters
                             , filterAssignments = model.filterAssignments
                             }
                     in
@@ -386,8 +382,8 @@ view model =
                             CreateFilterPage ->
                                 createFilterView loggedInModel
 
-                            AssignFilterPage guid ->
-                                assignFilterView guid loggedInModel
+                            AssignFilterPage link ->
+                                assignFilterView link loggedInModel
 
                 LoggedOut loginForm ->
                     MOpts.styled div

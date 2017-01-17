@@ -93,11 +93,15 @@ type alias ToggledFilters =
     Dict String Bool
 
 
+type alias FilterAssignments =
+    Dict String FilterAssignmentStatus
+
+
 type alias Sessionless =
     { links : List Link
     , renderedLinks : List Link
     , mdl : Material.Model
-    , filterAssignments : Dict String FilterAssignmentStatus
+    , filterAssignments : FilterAssignments
     , selectedFilters : ToggledFilters
     , assignedFilters : ToggledFilters
     , snackbar : Snackbar.Model ()

@@ -287,6 +287,41 @@ filterToHtml toggleMsg mdl toggledFilters index filter =
             ]
 
 
+filterAssignmentToHtml : String -> LoggedInModel -> Int -> Filter -> Html Msg
+filterAssignmentToHtml linkGuid model index filter =
+    let
+        conditionalProps =
+            model.filterAssignments
+                |> Dict.get (filter.guid ++ "," ++ linkGuid)
+                |> Maybe.map
+                    (\filterAssignmentStatus ->
+                        case filterAssignmentStatus of
+                            FilterAssigned filterAssignment ->
+                                [ Toggles.value True, Toggles.ripple ]
+
+                            AssignmentInProgress assignmentPayload ->
+                                [ Toggles.value False, Toggles.disabled ]
+                    )
+                |> Maybe.withDefault [ Toggles.value False, Toggles.ripple ]
+
+        checkbox =
+            Toggles.checkbox Mdl
+                [ 0, index ]
+                model.mdl
+                (List.concat
+                    [ conditionalProps
+                    , [ Toggles.onClick <| AssignFilter linkGuid filter.guid
+                      ]
+                    ]
+                )
+                []
+    in
+        div []
+            [ checkbox
+            , text filter.values.name
+            ]
+
+
 selectFilterView : LoggedInView
 selectFilterView model =
     div []
@@ -312,7 +347,7 @@ assignFilterView guid model =
         [ button [ onClick <| ChangePage HomePage ] [ text "back" ]
         , text "assign filter view"
         , div []
-            (List.indexedMap (filterToHtml (AssignFilter guid) model.mdl model.assignedFilters)
+            (List.indexedMap (filterAssignmentToHtml guid model)
                 model.filters
             )
         , text guid
@@ -472,9 +507,13 @@ update msg model =
                     filterAssignments
                         |> List.map
                             (\filterAssignment ->
-                                ( filterAssignment.guid
-                                , FilterAssigned filterAssignment
-                                )
+                                let
+                                    { linkGuid, filterGuid } =
+                                        filterAssignment.values
+                                in
+                                    ( filterGuid ++ "," ++ linkGuid
+                                    , FilterAssigned filterAssignment
+                                    )
                             )
                         |> Dict.fromList
             in
@@ -489,23 +528,17 @@ update msg model =
                             , uid = session.uid
                             }
 
-                        commands =
-                            ( Cmd.none
-                            , createFilterAssignment filterAssignmentPayload
-                            )
-
-                        -- FIXME delete
-                        assignedFilters =
-                            toggleFilter model.assignedFilters filterGuid commands
+                        filterAssignmentId =
+                            (filterGuid ++ "," ++ linkGuid)
 
                         filterAssignmentsUpdate =
                             model.filterAssignments
-                                |> Dict.get filterGuid
+                                |> Dict.get filterAssignmentId
                                 |> Maybe.map
                                     (\filterAssignmentStatus ->
                                         case filterAssignmentStatus of
                                             FilterAssigned filterAssignment ->
-                                                ( Dict.remove filterGuid model.filterAssignments
+                                                ( Dict.remove filterAssignmentId model.filterAssignments
                                                 , deleteFilterAssignment filterAssignment.guid
                                                 )
 
@@ -520,10 +553,9 @@ update msg model =
                                     )
                     in
                         ( { model
-                            | assignedFilters = Tuple.first assignedFilters
-                            , filterAssignments = Tuple.first filterAssignmentsUpdate
+                            | filterAssignments = Tuple.first filterAssignmentsUpdate
                           }
-                        , Cmd.batch [ Tuple.second assignedFilters, Tuple.second filterAssignmentsUpdate ]
+                        , Tuple.second filterAssignmentsUpdate
                         )
 
                 _ ->
@@ -716,6 +748,7 @@ main =
             \model ->
                 Sub.batch
                     [ links SetLinks
+                    , filterAssignments SetFilterAssignments
                     , createUserResponse (resultFromRecord "" >> CreateUserResponse)
                     , logOutResponse LogOutResponse
                     , Material.subscriptions Mdl model

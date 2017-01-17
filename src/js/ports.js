@@ -61,7 +61,7 @@ function createLink(payload) {
   });
 }
 
-// FIXME: enable users to create their own Filters
+// TODO: enable users to create their own Filters
 // function createFilter(payload) {
 //   var now = Date.now();
 //
@@ -75,15 +75,13 @@ function createLink(payload) {
 //
 // }
 
-function createFilterAssignment(values) {
-  // FIXME change to upsert
-  // https://firebase.google.com/docs/database/web/read-and-write#update_specific_fields
-  // var now = Date.now();
-  //
-  // firebase.database().ref('filter-assignments/' + payload.uid).push().set({
-  //   values: payload.values,
-  //   timestamp: now
-  // });
+function createFilterAssignment(payload) {
+  var now = Date.now();
+
+  firebase.database().ref('filter-assignments/' + payload.uid).push().set({
+    values: payload.values,
+    timestamp: now
+  });
 }
 
 function deleteFilterAssignment(guid) {
@@ -104,7 +102,7 @@ function filterAssignments(app, uid) {
         .keys(vals || {})
         .map(function(guid) {
           var filterAssignment = vals[guid];
-          return xtend(link, { guid: guid });
+          return xtend(filterAssignment, { guid: guid });
         });
 
     app.ports.filterAssignments.send(filterAssignments);

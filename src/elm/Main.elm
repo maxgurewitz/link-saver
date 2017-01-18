@@ -562,12 +562,35 @@ update msg model =
 
         Search query ->
             let
+                -- FIXME add condition which checks for
+                filterId =
+                    model.filters
+                        |> find (\filter -> filter.values.name == query)
+                        |> Maybe.map .guid
+
                 renderedLinks =
                     if query == "" then
                         model.links
                     else
                         model.links
-                            |> List.filter (.href >> String.contains query)
+                            |> List.filter
+                                (\link ->
+                                    let
+                                        matchesHref =
+                                            (String.contains query link.href)
+
+                                        matchesFilter =
+                                            filterId
+                                                |> Maybe.andThen
+                                                    (\filterId ->
+                                                        Dict.get (filterId ++ "," ++ link.guid)
+                                                            model.filterAssignments
+                                                    )
+                                                |> Maybe.map (always True)
+                                                |> Maybe.withDefault False
+                                    in
+                                        matchesHref || matchesFilter
+                                )
             in
                 ( { model | renderedLinks = renderedLinks }, Cmd.none )
 

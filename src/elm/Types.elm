@@ -52,7 +52,6 @@ type alias Flags =
 
 type Page
     = HomePage
-    | SelectFilterPage
     | CreateFilterPage
     | AssignFilterPage Link
 
@@ -102,7 +101,6 @@ type alias Sessionless =
     , renderedLinks : List Link
     , mdl : Material.Model
     , filterAssignments : FilterAssignments
-    , selectedFilters : ToggledFilters
     , snackbar : Snackbar.Model ()
     , page : Page
     , filters : List Filter
@@ -158,7 +156,6 @@ type Msg
     | SetLoginForm LoginForm
     | CreateLink
     | CreateFilter
-    | SelectFilter String
     | AssignFilter String String
     | SetFilterAssignments (List FilterAssignment)
     | DeleteLink String

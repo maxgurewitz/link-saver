@@ -93,8 +93,6 @@ init { user } =
 
         initialModel =
             { links = []
-            , selectedFilters =
-                Dict.empty
             , filterAssignments = Dict.empty
             , renderedLinks = []
             , linkInputText = ""
@@ -245,44 +243,9 @@ homePageView model =
                     ]
                 ]
             , drawer =
-                [ Layout.navigation []
-                    [ Layout.row []
-                        [ Layout.link
-                            [ Layout.onClick <| ChangePage SelectFilterPage
-                            ]
-                            [ text "filters" ]
-                        ]
-                    ]
-                ]
+                []
             , tabs = ( [], [] )
             }
-
-
-filterToHtml : (String -> Msg) -> Material.Model -> ToggledFilters -> Int -> Filter -> Html Msg
-filterToHtml toggleMsg mdl toggledFilters index filter =
-    let
-        { name } =
-            filter.values
-
-        isSelected =
-            toggledFilters
-                |> Dict.get name
-                |> Maybe.withDefault False
-
-        checkbox =
-            Toggles.checkbox Mdl
-                [ 0, index ]
-                mdl
-                [ Toggles.onClick <| toggleMsg name
-                , Toggles.ripple
-                , Toggles.value isSelected
-                ]
-                []
-    in
-        div []
-            [ checkbox
-            , text name
-            ]
 
 
 filterAssignmentToHtml : String -> LoggedInModel -> Int -> Filter -> Html Msg
@@ -318,16 +281,6 @@ filterAssignmentToHtml linkGuid model index filter =
             [ span [] [ text filter.values.name ]
             , checkbox
             ]
-
-
-selectFilterView : LoggedInView
-selectFilterView model =
-    div []
-        [ button [ onClick <| ChangePage HomePage ] [ text "back" ]
-        , text "filters"
-        , div []
-            (List.indexedMap (filterToHtml SelectFilter model.mdl model.selectedFilters) model.filters)
-        ]
 
 
 createFilterView : LoggedInView
@@ -368,16 +321,12 @@ view model =
                             , snackbar = model.snackbar
                             , page = model.page
                             , filters = model.filters
-                            , selectedFilters = model.selectedFilters
                             , filterAssignments = model.filterAssignments
                             }
                     in
                         case model.page of
                             HomePage ->
                                 homePageView loggedInModel
-
-                            SelectFilterPage ->
-                                selectFilterView loggedInModel
 
                             CreateFilterPage ->
                                 createFilterView loggedInModel
@@ -487,16 +436,6 @@ update msg model =
         SetFilterInputText filterInputText ->
             ( { model | filterInputText = filterInputText }, Cmd.none )
 
-        SelectFilter filterGuid ->
-            let
-                selectedFilters =
-                    toggleFilter model.selectedFilters
-                        filterGuid
-                        ( Cmd.none, Cmd.none )
-                        |> Tuple.first
-            in
-                ( { model | selectedFilters = selectedFilters }, Cmd.none )
-
         SetFilterAssignments filterAssignments ->
             let
                 newFilterAssignments =
@@ -562,7 +501,6 @@ update msg model =
 
         Search query ->
             let
-                -- FIXME add condition which checks for
                 filterId =
                     model.filters
                         |> find (\filter -> filter.values.name == query)

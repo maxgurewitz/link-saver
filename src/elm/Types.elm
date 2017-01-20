@@ -64,9 +64,7 @@ type alias Filter =
 
 
 type alias FilterValues =
-    { icon : String
-    , color : String
-    , name : String
+    { name : String
     }
 
 

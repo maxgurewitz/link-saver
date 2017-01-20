@@ -82,9 +82,7 @@ init { user } =
 
         filters =
             [ { values =
-                    { color = "black"
-                    , icon = "nature_people"
-                    , name = "outdoors"
+                    { name = "outdoors"
                     }
               , timestamp = 1482088371823
               , guid = "abc"
@@ -154,20 +152,15 @@ linkView model index link =
                     , MOpts.css "marginRight" "1.5em"
                     ]
                     [ Icon.i "brush" ]
-                , a
-                    [ target "_blank"
-                    , href linkHref
-                    , style [ ( "display", "inline-block" ) ]
-                    , onClick <| setClickedAt link
-                    ]
-                    [ Icon.view "subdirectory_arrow_right" [ Icon.size24 ] ]
                 ]
             , MList.content2 []
                 [ div
                     [ style
                         [ ( "overflow", "hidden" )
                         , ( "textOverflow", "ellipsis" )
-                        , ( "max-width", "25vw" )
+                          -- FIXME:
+                          -- , ( "max-width", "38vw" )
+                        , ( "maxWidth", "100%" )
                         , ( "whiteSpace", "nowrap" )
                         ]
                     ]
@@ -272,14 +265,20 @@ filterAssignmentToHtml linkGuid model index filter =
                 (List.concat
                     [ conditionalProps
                     , [ Toggles.onClick <| AssignFilter linkGuid filter.guid
+                      , MOpts.css "width" "initial"
                       ]
                     ]
                 )
                 []
     in
-        div []
-            [ span [] [ text filter.values.name ]
-            , checkbox
+        MList.li []
+            [ MList.content []
+                [ checkbox
+                , div
+                    [ style [ ( "marginLeft", "1em" ) ]
+                    ]
+                    [ text filter.values.name ]
+                ]
             ]
 
 
@@ -294,10 +293,31 @@ createFilterView model =
 
 assignFilterView : Link -> LoggedInView
 assignFilterView link model =
-    div []
-        [ button [ onClick <| ChangePage HomePage ] [ text "back" ]
-        , text ("Assign tags to link: " ++ link.href)
-        , div []
+    div
+        [ style
+            [ ( "maxWidth", "90vw" )
+            , ( "margin", "2em auto" )
+            , ( "text-align", "center" )
+            ]
+        ]
+        [ div
+            [ style
+                [ ( "fontSize", "16px" )
+                ]
+            ]
+            [ button
+                [ style [ ( "float", "left" ) ]
+                , onClick <| ChangePage HomePage
+                ]
+                [ text "back" ]
+            , div
+                [ style
+                    [ ( "clear", "both" )
+                    ]
+                ]
+                [ text ("Assign to " ++ "\"" ++ link.href ++ "\".") ]
+            ]
+        , MList.ul []
             (List.indexedMap (filterAssignmentToHtml link.guid model)
                 model.filters
             )
@@ -592,9 +612,7 @@ update msg model =
                             createFilter
                                 { uid = uid
                                 , values =
-                                    { color = "blue"
-                                    , icon = "TODO"
-                                    , name = model.filterInputText
+                                    { name = model.filterInputText
                                     }
                                 }
 

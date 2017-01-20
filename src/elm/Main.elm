@@ -533,10 +533,16 @@ update msg model =
 
         Search query ->
             let
+                toMatch =
+                    String.split " " query
+
+                toMatchSet =
+                    Set.fromList toMatch
+
                 filterId =
                     model.filters
-                        |> find (\filter -> filter.values.name == query)
-                        |> Maybe.map .guid
+                        |> List.filter (\filter -> filter.values.name == query)
+                        |> List.map .guid
 
                 renderedLinks =
                     if query == "" then
@@ -545,21 +551,26 @@ update msg model =
                         model.links
                             |> List.filter
                                 (\link ->
-                                    let
-                                        matchesHref =
-                                            (String.contains query link.href)
+                                    toMatch
+                                        |> List.foldl
+                                            (\word isMatch ->
+                                                let
+                                                    matchesHref =
+                                                        (String.contains word link.href)
 
-                                        matchesFilter =
-                                            filterId
-                                                |> Maybe.andThen
-                                                    (\filterId ->
-                                                        Dict.get (filterId ++ "," ++ link.guid)
-                                                            model.filterAssignments
-                                                    )
-                                                |> Maybe.map (always True)
-                                                |> Maybe.withDefault False
-                                    in
-                                        matchesHref || matchesFilter
+                                                    matchesFilter =
+                                                        filterId
+                                                            |> Maybe.andThen
+                                                                (\justFilterId ->
+                                                                    Dict.get (justFilterId ++ "," ++ link.guid)
+                                                                        model.filterAssignments
+                                                                )
+                                                            |> Maybe.map (always True)
+                                                            |> Maybe.withDefault False
+                                                in
+                                                    isMatch && (matchesHref || matchesFilter)
+                                            )
+                                            True
                                 )
             in
                 ( { model | renderedLinks = renderedLinks }, Cmd.none )

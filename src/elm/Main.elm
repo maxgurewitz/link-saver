@@ -82,10 +82,22 @@ init { user } =
 
         filters =
             [ { values =
-                    { name = "outdoors"
+                    { name = "funny"
                     }
-              , timestamp = 1482088371823
-              , guid = "abc"
+              , timestamp = 0
+              , guid = "1"
+              }
+            , { values =
+                    { name = "work"
+                    }
+              , timestamp = 0
+              , guid = "2"
+              }
+            , { values =
+                    { name = "nsfw"
+                    }
+              , timestamp = 0
+              , guid = "3"
               }
             ]
 

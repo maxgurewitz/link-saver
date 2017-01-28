@@ -534,44 +534,62 @@ update msg model =
         Search query ->
             let
                 toMatch =
-                    String.split " " query
+                    query
+                        |> String.toLower
+                        |> String.split " "
 
                 toMatchSet =
                     Set.fromList toMatch
 
-                filterId =
+                filterIds =
                     model.filters
-                        |> List.filter (\filter -> filter.values.name == query)
+                        |> List.filter
+                            (\filter ->
+                                List.foldl
+                                    (\word memo ->
+                                        if word == "" then
+                                            memo
+                                        else
+                                            memo || String.contains word (String.toLower filter.values.name)
+                                    )
+                                    False
+                                    toMatch
+                            )
                         |> List.map .guid
 
                 renderedLinks =
                     if query == "" then
                         model.links
                     else
-                        model.links
-                            |> List.filter
-                                (\link ->
-                                    toMatch
-                                        |> List.foldl
-                                            (\word isMatch ->
-                                                let
-                                                    matchesHref =
-                                                        (String.contains word link.href)
+                        List.filter
+                            (\link ->
+                                List.foldl
+                                    (\word isMatch ->
+                                        let
+                                            matchesHref =
+                                                (String.contains word (String.toLower link.href))
 
-                                                    matchesFilter =
-                                                        filterId
-                                                            |> Maybe.andThen
-                                                                (\justFilterId ->
-                                                                    Dict.get (justFilterId ++ "," ++ link.guid)
-                                                                        model.filterAssignments
-                                                                )
-                                                            |> Maybe.map (always True)
-                                                            |> Maybe.withDefault False
-                                                in
-                                                    isMatch && (matchesHref || matchesFilter)
-                                            )
-                                            True
-                                )
+                                            matchesFilter =
+                                                List.foldl
+                                                    (\filterId memo ->
+                                                        let
+                                                            filterIdMatches =
+                                                                Dict.get (filterId ++ "," ++ link.guid)
+                                                                    model.filterAssignments
+                                                                    |> Maybe.map (always True)
+                                                                    |> Maybe.withDefault False
+                                                        in
+                                                            memo || filterIdMatches
+                                                    )
+                                                    False
+                                                    filterIds
+                                        in
+                                            isMatch && (matchesHref || matchesFilter)
+                                    )
+                                    True
+                                    toMatch
+                            )
+                            model.links
             in
                 ( { model | renderedLinks = renderedLinks }, Cmd.none )
 

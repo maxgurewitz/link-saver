@@ -1,5 +1,29 @@
 .mdl-list__item-secondary-content {
-    min-width: 0;
+    @extend .overflow-ellipsis-container;
+}
+
+.centered-container {
+  max-width: 90vw;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.no-header {
+  margin-top: 2em;
+}
+
+.overflow-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.overflow-ellipsis-container {
+  min-width: 0;
+}
+
+.back-button {
+  margin-right: 1em;
 }
 
 .link-href {

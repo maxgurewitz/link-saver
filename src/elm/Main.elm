@@ -191,13 +191,7 @@ homePageView model =
                 ]
             , main =
                 [ br [] []
-                , div
-                    [ style
-                        [ ( "maxWidth", "90vw" )
-                        , ( "margin", "0 auto" )
-                        , ( "text-align", "center" )
-                        ]
-                    ]
+                , div [ class "centered-container" ]
                     [ grid []
                         [ cell [ size Desktop 4, size Tablet 3 ]
                             [ Textfield.render Mdl
@@ -298,16 +292,12 @@ createFilterView model =
 assignFilterView : Link -> LoggedInView
 assignFilterView link model =
     div
-        [ style
-            [ ( "margin", "2em auto" )
-            , ( "text-align", "center" )
-            ]
+        [ class "centered-container no-header"
         ]
         [ div
             [ style
-                [ ( "fontSize", "16px" )
-                , ( "display", "flex" )
-                , ( "justifyContent", "space-around" )
+                [ ( "display", "flex" )
+                , ( "justifyContent", "space-between" )
                 ]
             ]
             [ Button.render Mdl
@@ -315,15 +305,12 @@ assignFilterView link model =
                 model.mdl
                 [ Button.raised
                 , Button.onClick <| ChangePage HomePage
+                , MOpts.cs "back-button"
                 ]
                 [ text "back" ]
-            , div
-                [ style
-                    [ ( "clear", "both" )
-                    , ( "display", "inline-block" )
-                    ]
+            , div [ class "overflow-ellipsis-container" ]
+                [ div [ class "overflow-ellipsis" ] [ text link.href ]
                 ]
-                [ text ("Assign to " ++ "\"" ++ link.href ++ "\".") ]
             ]
         , MList.ul []
             (List.indexedMap (filterAssignmentToHtml link.guid model)

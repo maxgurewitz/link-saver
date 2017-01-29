@@ -114,6 +114,7 @@ init { user } =
             , snackbar = Snackbar.model
             , page = HomePage
             , filters = filters
+            , highlightedLink = Nothing
             }
     in
         ( initialModel, Cmd.none )
@@ -138,37 +139,69 @@ setClickedAt link =
     Timestamp (\timestamp -> ClickedAt link timestamp)
 
 
+protocolRgx =
+    regex "(.*:)?//"
+
+
 linkView model index link =
     let
         linkHref =
-            if String.contains "//" link.href then
+            if contains protocolRgx link.href then
                 link.href
             else
-                "//" ++ link.href
-    in
-        [ MList.li [ Elevation.e2 ]
-            [ MList.content []
-                [ Button.render Mdl
-                    [ 1, 0, index ]
-                    model.mdl
-                    [ Button.icon
-                    , Button.ripple
-                    , Button.onClick <| DeleteLink link.guid
-                    ]
-                    [ Icon.i "delete" ]
-                , Button.render Mdl
-                    [ 1, 1, index ]
-                    model.mdl
-                    [ Button.icon
-                    , Button.ripple
-                    , Button.onClick <| ChangePage (AssignFilterPage link)
-                    , MOpts.cs "link-icon-right"
-                    ]
-                    [ Icon.i "brush" ]
+                ("//" ++ link.href)
+
+        isHighlighted =
+            model.highlightedLink
+                |> Maybe.map (\guid -> link.guid == guid)
+                |> Maybe.withDefault False
+
+        linkContainerClass =
+            if isHighlighted then
+                "highlighted-link"
+            else
+                ""
+
+        conditionalLinkProps =
+            if isHighlighted then
+                [ target "_blank"
+                , href linkHref
                 ]
-            , MList.content2 []
-                [ div [ class "link-href" ]
-                    [ text link.href ]
+            else
+                [ target "_self"
+                , href "#"
+                ]
+
+        linkProps =
+            (onClick <| SetHighlightedLink link.guid) :: conditionalLinkProps
+    in
+        [ a linkProps
+            [ MList.li
+                [ Elevation.e2
+                , MOpts.cs linkContainerClass
+                ]
+                [ MList.content []
+                    [ Button.render Mdl
+                        [ 1, 0, index ]
+                        model.mdl
+                        [ Button.icon
+                        , Button.ripple
+                        , Button.onClick <| DeleteLink link.guid
+                        ]
+                        [ Icon.i "delete" ]
+                    , Button.render Mdl
+                        [ 1, 1, index ]
+                        model.mdl
+                        [ Button.icon
+                        , Button.ripple
+                        , Button.onClick <| ChangePage (AssignFilterPage link)
+                        , MOpts.cs "link-icon-right"
+                        ]
+                        [ Icon.i "brush" ]
+                    ]
+                , MList.content2 []
+                    [ div [ class "link-href" ] [ text link.href ]
+                    ]
                 ]
             ]
         ]
@@ -336,6 +369,7 @@ view model =
                             , snackbar = model.snackbar
                             , page = model.page
                             , filters = model.filters
+                            , highlightedLink = model.highlightedLink
                             , filterAssignments = model.filterAssignments
                             }
                     in
@@ -448,6 +482,21 @@ toggleFilter toggledFilters filterGuid commands =
 
 update msg model =
     case msg of
+        SetHighlightedLink guid ->
+            let
+                highlightedLink =
+                    model.highlightedLink
+                        |> Maybe.map
+                            (\highlightedGuid ->
+                                if highlightedGuid == guid then
+                                    Nothing
+                                else
+                                    Just guid
+                            )
+                        |> Maybe.withDefault (Just guid)
+            in
+                ( { model | highlightedLink = highlightedLink }, Cmd.none )
+
         SetFilterInputText filterInputText ->
             ( { model | filterInputText = filterInputText }, Cmd.none )
 

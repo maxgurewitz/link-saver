@@ -1,11 +1,22 @@
+$primary-color: #3f51b5;
+
+a {
+  text-decoration: none;
+}
+
 .mdl-list__item-secondary-content {
-    @extend .overflow-ellipsis-container;
+  @extend .overflow-ellipsis-container;
 }
 
 .centered-container {
   max-width: 90vw;
   margin: 0 auto;
   text-align: center;
+}
+
+.highlighted-link {
+  background-color: $primary-color;
+  color: white;
 }
 
 .no-header {

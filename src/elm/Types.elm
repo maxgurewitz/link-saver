@@ -101,6 +101,7 @@ type alias Sessionless =
     , filterAssignments : FilterAssignments
     , snackbar : Snackbar.Model ()
     , page : Page
+    , highlightedLink : Maybe String
     , filters : List Filter
     , linkInputText : String
     , linkInputValidation : Maybe String
@@ -149,6 +150,7 @@ type alias LoggedInView =
 type Msg
     = SetLinks (List Link)
     | Search String
+    | SetHighlightedLink String
     | SetLinkInputText String
     | SetFilterInputText String
     | SetLoginForm LoginForm

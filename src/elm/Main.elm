@@ -38,7 +38,7 @@ emptyLogin =
 
 standardButton index model attrs contents =
     Button.render Mdl
-        [ index ]
+        [ 0, index ]
         model.mdl
         (List.concat
             [ attrs
@@ -148,7 +148,7 @@ linkView model index link =
         [ MList.li [ Elevation.e2 ]
             [ MList.content []
                 [ Button.render Mdl
-                    [ 3, 0, index ]
+                    [ 1, 0, index ]
                     model.mdl
                     [ Button.minifab
                     , Button.ripple
@@ -156,7 +156,7 @@ linkView model index link =
                     ]
                     [ Icon.i "delete" ]
                 , Button.render Mdl
-                    [ 3, 1, index ]
+                    [ 1, 1, index ]
                     model.mdl
                     [ Button.minifab
                     , Button.ripple
@@ -315,16 +315,21 @@ assignFilterView link model =
         [ div
             [ style
                 [ ( "fontSize", "16px" )
+                , ( "display", "flex" )
+                , ( "justifyContent", "space-around" )
                 ]
             ]
-            [ button
-                [ style [ ( "float", "left" ) ]
-                , onClick <| ChangePage HomePage
+            [ Button.render Mdl
+                [ 2 ]
+                model.mdl
+                [ Button.raised
+                , Button.onClick <| ChangePage HomePage
                 ]
                 [ text "back" ]
             , div
                 [ style
                     [ ( "clear", "both" )
+                    , ( "display", "inline-block" )
                     ]
                 ]
                 [ text ("Assign to " ++ "\"" ++ link.href ++ "\".") ]

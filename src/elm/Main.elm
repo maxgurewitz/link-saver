@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (text, programWithFlags, div, button, input, a, br, form, Html, span)
+import Html.Attributes exposing (class)
 import Ports exposing (..)
 import Types exposing (..)
 import Html.Events exposing (onInput, onClick, onSubmit, keyCode)
@@ -150,7 +151,7 @@ linkView model index link =
                 [ Button.render Mdl
                     [ 1, 0, index ]
                     model.mdl
-                    [ Button.minifab
+                    [ Button.icon
                     , Button.ripple
                     , Button.onClick <| DeleteLink link.guid
                     ]
@@ -158,24 +159,15 @@ linkView model index link =
                 , Button.render Mdl
                     [ 1, 1, index ]
                     model.mdl
-                    [ Button.minifab
+                    [ Button.icon
                     , Button.ripple
                     , Button.onClick <| ChangePage (AssignFilterPage link)
-                    , MOpts.css "marginRight" "1.5em"
+                    , MOpts.cs "link-icon-right"
                     ]
                     [ Icon.i "brush" ]
                 ]
             , MList.content2 []
-                [ div
-                    [ style
-                        [ ( "overflow", "hidden" )
-                        , ( "textOverflow", "ellipsis" )
-                          -- FIXME:
-                          -- , ( "max-width", "38vw" )
-                        , ( "maxWidth", "100%" )
-                        , ( "whiteSpace", "nowrap" )
-                        ]
-                    ]
+                [ div [ class "link-href" ]
                     [ text link.href ]
                 ]
             ]
@@ -307,8 +299,7 @@ assignFilterView : Link -> LoggedInView
 assignFilterView link model =
     div
         [ style
-            [ ( "maxWidth", "90vw" )
-            , ( "margin", "2em auto" )
+            [ ( "margin", "2em auto" )
             , ( "text-align", "center" )
             ]
         ]

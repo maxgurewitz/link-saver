@@ -1,3 +1,15 @@
 .mdl-list__item-secondary-content {
     min-width: 0;
 }
+
+.link-href {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.link-icon-right {
+  margin-left: .4em;
+}

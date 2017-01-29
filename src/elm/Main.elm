@@ -537,21 +537,25 @@ update msg model =
                 toMatchSet =
                     Set.fromList toMatch
 
-                filterIds =
-                    model.filters
-                        |> List.filter
-                            (\filter ->
-                                List.foldl
-                                    (\word memo ->
-                                        if word == "" then
-                                            memo
-                                        else
-                                            memo || String.contains word (String.toLower filter.values.name)
+                filterIdsForWord =
+                    List.foldl
+                        (\word memo ->
+                            if word == "" then
+                                memo
+                            else
+                                Dict.insert word
+                                    ((List.filter
+                                        (\filter ->
+                                            String.contains word (String.toLower filter.values.name)
+                                        )
+                                        model.filters
+                                     )
+                                        |> List.map .guid
                                     )
-                                    False
-                                    toMatch
-                            )
-                        |> List.map .guid
+                                    memo
+                        )
+                        Dict.empty
+                        toMatch
 
                 renderedLinks =
                     if query == "" then
@@ -564,6 +568,11 @@ update msg model =
                                         let
                                             matchesHref =
                                                 (String.contains word (String.toLower link.href))
+
+                                            filterIds =
+                                                filterIdsForWord
+                                                    |> Dict.get word
+                                                    |> Maybe.withDefault []
 
                                             matchesFilter =
                                                 List.foldl

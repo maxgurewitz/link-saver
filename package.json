@@ -23,8 +23,12 @@
   },
   "homepage": "https://github.com/maxgurewitz/link-saver#readme",
   "devDependencies": {
+    "css-loader": "^0.26.1",
     "elm-webpack-loader": "^3.0.6",
     "file-loader": "^0.9.0",
+    "node-sass": "^4.4.0",
+    "sass-loader": "^4.1.1",
+    "style-loader": "^0.13.1",
     "webpack": "^1.13.3",
     "webpack-dev-server": "^1.16.2"
   },

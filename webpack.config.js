@@ -23,6 +23,10 @@ module.exports = {
   module: {
     loaders: [
       {
+        test: /\.scss$/,
+        loaders: ["style-loader", "css-loader", "sass-loader"]
+      },
+      {
         test: /\.html$/,
         exclude: /node_modules/,
         loader: 'file?name=[name].[ext]'

@@ -195,12 +195,6 @@ homePageView model =
                 [ Layout.row []
                     [ text sessionData.email
                     , Layout.spacer
-                    , standardButton 0
-                        model
-                        [ Button.onClick LogOut
-                        , Button.accent
-                        ]
-                        [ text "sign out" ]
                     ]
                 ]
             , main =
@@ -248,7 +242,13 @@ homePageView model =
                     ]
                 ]
             , drawer =
-                []
+                [ standardButton 0
+                    model
+                    [ Button.onClick LogOut
+                    , Button.accent
+                    ]
+                    [ text "sign out" ]
+                ]
             , tabs = ( [], [] )
             }
 

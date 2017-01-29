@@ -1,5 +1,6 @@
 'use strict';
 require('../scss/index.scss');
+require('../html/index.html');
 
 var firebase = require('firebase/app');
 require('firebase/auth');

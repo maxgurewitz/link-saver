@@ -150,7 +150,7 @@ type alias LoggedInView =
 type Msg
     = SetLinks (List Link)
     | Search String
-    | SetHighlightedLink String
+    | SetHighlightedLink Link
     | SetLinkInputText String
     | SetFilterInputText String
     | SetLoginForm LoginForm

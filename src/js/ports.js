@@ -4,6 +4,10 @@ var xtend = require('xtend');
 
 var refs = {};
 
+function open(url) {
+  window.open(url, '_blank');
+}
+
 function logOut(uid, app) {
   firebase.auth().signOut().then(function() {
     if (refs.linksRef) {
@@ -158,6 +162,7 @@ module.exports = {
     createFilterAssignment: createFilterAssignment,
     deleteFilterAssignment: deleteFilterAssignment,
     createLink: createLink,
+    open: open,
     createUser: createUser,
     deleteLink: deleteLink,
     logOut: logOut,

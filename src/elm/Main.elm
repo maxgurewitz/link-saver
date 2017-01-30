@@ -143,14 +143,15 @@ protocolRgx =
     regex "(.*:)?//"
 
 
+targetLink href =
+    if contains protocolRgx href then
+        href
+    else
+        ("//" ++ href)
+
+
 linkView model index link =
     let
-        linkHref =
-            if contains protocolRgx link.href then
-                link.href
-            else
-                ("//" ++ link.href)
-
         isHighlighted =
             model.highlightedLink
                 |> Maybe.map (\guid -> link.guid == guid)
@@ -162,20 +163,10 @@ linkView model index link =
             else
                 ""
 
-        conditionalLinkProps =
-            if isHighlighted then
-                [ target "_blank"
-                , href linkHref
-                ]
-            else
-                [ target "_self"
-                , href "#"
-                ]
-
-        linkProps =
-            (onClick <| SetHighlightedLink link.guid) :: conditionalLinkProps
+        -- linkProps =
+        --     (onClick <| SetHighlightedLink link) :: conditionalLinkProps
     in
-        [ a linkProps
+        [ a [ onClick <| SetHighlightedLink link ]
             [ MList.li
                 [ Elevation.e2
                 , MOpts.cs linkContainerClass
@@ -482,20 +473,23 @@ toggleFilter toggledFilters filterGuid commands =
 
 update msg model =
     case msg of
-        SetHighlightedLink guid ->
+        SetHighlightedLink link ->
             let
-                highlightedLink =
+                { guid } =
+                    link
+
+                ( highlightedLink, cmd ) =
                     model.highlightedLink
                         |> Maybe.map
                             (\highlightedGuid ->
                                 if highlightedGuid == guid then
-                                    Nothing
+                                    ( Nothing, open (targetLink link.href) )
                                 else
-                                    Just guid
+                                    ( Just guid, Cmd.none )
                             )
-                        |> Maybe.withDefault (Just guid)
+                        |> Maybe.withDefault ( Just guid, Cmd.none )
             in
-                ( { model | highlightedLink = highlightedLink }, Cmd.none )
+                ( { model | highlightedLink = highlightedLink }, cmd )
 
         SetFilterInputText filterInputText ->
             ( { model | filterInputText = filterInputText }, Cmd.none )

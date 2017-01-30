@@ -10,6 +10,9 @@ port createLink : { href : String, uid : String } -> Cmd msg
 port createUser : LoginForm -> Cmd msg
 
 
+port open : String -> Cmd msg
+
+
 port logOut : String -> Cmd msg
 
 

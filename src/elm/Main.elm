@@ -4,7 +4,7 @@ import Html exposing (text, programWithFlags, div, button, input, a, br, form, H
 import Html.Attributes exposing (class)
 import Ports exposing (..)
 import Types exposing (..)
-import Html.Events exposing (onInput, onClick, onSubmit, keyCode)
+import Html.Events exposing (onInput, onClick, onSubmit, keyCode, onWithOptions)
 import Debug
 import Html
 import Dict
@@ -31,7 +31,11 @@ import Material.Button as Button
 import Material.Grid exposing (grid, cell, size, Device(..))
 import Material.Color as Color
 import Dict
+import Json.Decode as Json
 
+onClickNoPropagate : msg -> Html.Attribute msg
+onClickNoPropagate message =
+    onWithOptions "click" { stopPropagation = True, preventDefault = False } (Json.succeed message)
 
 emptyLogin =
     LoggedOut { email = "", password = "" }

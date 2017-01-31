@@ -4,7 +4,7 @@ import Html exposing (text, programWithFlags, div, button, input, a, br, form, H
 import Html.Attributes exposing (class)
 import Ports exposing (..)
 import Types exposing (..)
-import Html.Events exposing (onInput, onClick, onSubmit, keyCode, onWithOptions)
+import Html.Events exposing (onInput, onClick, onSubmit, keyCode)
 import Debug
 import Html
 import Dict
@@ -34,9 +34,10 @@ import Dict
 import Json.Decode as Json
 
 
-onClickNoPropagate : msg -> Html.Attribute msg
 onClickNoPropagate message =
-    onWithOptions "click" { stopPropagation = True, preventDefault = False } (Json.succeed message)
+    MOpts.onWithOptions "click"
+        { stopPropagation = True, preventDefault = False }
+        (Json.succeed message)
 
 
 emptyLogin =
@@ -180,7 +181,7 @@ linkView model index link =
                         model.mdl
                         [ Button.icon
                         , Button.ripple
-                        , MOpts.onClick <| DeleteLink link.guid
+                        , onClickNoPropagate <| DeleteLink link.guid
                         ]
                         [ Icon.i "delete" ]
                     , Button.render Mdl
@@ -188,7 +189,7 @@ linkView model index link =
                         model.mdl
                         [ Button.icon
                         , Button.ripple
-                        , MOpts.onClick <| ChangePage (AssignFilterPage link)
+                        , onClickNoPropagate <| ChangePage (AssignFilterPage link)
                         , MOpts.cs "link-icon-right"
                         ]
                         [ Icon.i "brush" ]

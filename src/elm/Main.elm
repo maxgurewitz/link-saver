@@ -33,9 +33,11 @@ import Material.Color as Color
 import Dict
 import Json.Decode as Json
 
+
 onClickNoPropagate : msg -> Html.Attribute msg
 onClickNoPropagate message =
     onWithOptions "click" { stopPropagation = True, preventDefault = False } (Json.succeed message)
+
 
 emptyLogin =
     LoggedOut { email = "", password = "" }
@@ -68,7 +70,7 @@ onEnterTextfield msg =
             else
                 Json.fail "not ENTER"
     in
-        Textfield.on "keydown" (Json.andThen isEnter keyCode)
+        MOpts.on "keydown" (Json.andThen isEnter keyCode)
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -166,9 +168,6 @@ linkView model index link =
                 "highlighted-link"
             else
                 ""
-
-        -- linkProps =
-        --     (onClick <| SetHighlightedLink link) :: conditionalLinkProps
     in
         [ a [ onClick <| SetHighlightedLink link ]
             [ MList.li
@@ -181,7 +180,7 @@ linkView model index link =
                         model.mdl
                         [ Button.icon
                         , Button.ripple
-                        , Button.onClick <| DeleteLink link.guid
+                        , MOpts.onClick <| DeleteLink link.guid
                         ]
                         [ Icon.i "delete" ]
                     , Button.render Mdl
@@ -189,7 +188,7 @@ linkView model index link =
                         model.mdl
                         [ Button.icon
                         , Button.ripple
-                        , Button.onClick <| ChangePage (AssignFilterPage link)
+                        , MOpts.onClick <| ChangePage (AssignFilterPage link)
                         , MOpts.cs "link-icon-right"
                         ]
                         [ Icon.i "brush" ]
@@ -226,8 +225,9 @@ homePageView model =
                                 [ 3 ]
                                 model.mdl
                                 [ Textfield.label "search"
-                                , Textfield.onInput Search
+                                , MOpts.onInput Search
                                 ]
+                                []
                             ]
                         , cell [ size Desktop 4, size Tablet 3 ]
                             [ Textfield.render Mdl
@@ -237,14 +237,15 @@ homePageView model =
                                 , model.linkInputValidation
                                     |> Maybe.map Textfield.error
                                     |> Maybe.withDefault MOpts.nop
-                                , Textfield.onInput SetLinkInputText
+                                , MOpts.onInput SetLinkInputText
                                 , onEnterTextfield CreateLink
                                 ]
+                                []
                             ]
                         , cell [ size Desktop 4, size Tablet 2 ]
                             [ standardButton 1
                                 model
-                                [ Button.onClick CreateLink ]
+                                [ MOpts.onClick CreateLink ]
                                 [ text "submit link" ]
                             ]
                         ]
@@ -258,7 +259,7 @@ homePageView model =
             , drawer =
                 [ standardButton 0
                     model
-                    [ Button.onClick LogOut
+                    [ MOpts.onClick LogOut
                     , Button.accent
                     ]
                     [ text "sign out" ]
@@ -290,7 +291,7 @@ filterAssignmentToHtml linkGuid model index filter =
                 model.mdl
                 (List.concat
                     [ conditionalProps
-                    , [ Toggles.onClick <| AssignFilter linkGuid filter.guid
+                    , [ MOpts.onToggle <| AssignFilter linkGuid filter.guid
                       , MOpts.css "width" "initial"
                       ]
                     ]
@@ -332,7 +333,7 @@ assignFilterView link model =
                 [ 2 ]
                 model.mdl
                 [ Button.raised
-                , Button.onClick <| ChangePage HomePage
+                , MOpts.onClick <| ChangePage HomePage
                 , MOpts.cs "back-button"
                 ]
                 [ text "back" ]
@@ -404,8 +405,9 @@ view model =
                                     , Textfield.floatingLabel
                                     , onEnterTextfield LogIn
                                     , Textfield.text_
-                                    , Textfield.onInput (\email -> SetLoginForm { loginForm | email = email })
+                                    , MOpts.onInput (\email -> SetLoginForm { loginForm | email = email })
                                     ]
+                                    []
                                 ]
                             , cell
                                 [ size All 2
@@ -418,8 +420,9 @@ view model =
                                     , onEnterTextfield LogIn
                                     , Textfield.floatingLabel
                                     , Textfield.password
-                                    , Textfield.onInput (\password -> SetLoginForm { loginForm | password = password })
+                                    , MOpts.onInput (\password -> SetLoginForm { loginForm | password = password })
                                     ]
+                                    []
                                 ]
                             , cell
                                 [ size All 2
@@ -428,7 +431,7 @@ view model =
                                 [ div [ style [ ( "textAlign", "center" ) ] ]
                                     [ standardButton 2
                                         model
-                                        [ Button.onClick LogIn ]
+                                        [ MOpts.onClick LogIn ]
                                         [ text "register/login" ]
                                     ]
                                 ]
@@ -755,7 +758,7 @@ update msg model =
                 ( { model | session = emptyLogin }, Cmd.none )
 
         Mdl mdlMessage ->
-            Material.update mdlMessage model
+            Material.update Mdl mdlMessage model
 
         CreateUserResponse response ->
             case model.session of

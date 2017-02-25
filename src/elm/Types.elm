@@ -106,6 +106,7 @@ type alias Sessionless =
     , linkInputText : String
     , linkInputValidation : Maybe String
     , filterInputText : String
+    , searchInputText : String
     }
 
 

@@ -116,6 +116,7 @@ init { user } =
             , linkInputText = ""
             , linkInputValidation = Nothing
             , filterInputText = ""
+            , searchInputText = ""
             , session = session
             , mdl = Material.model
             , snackbar = Snackbar.model
@@ -227,6 +228,7 @@ homePageView model =
                                 model.mdl
                                 [ Textfield.label "search"
                                 , MOpts.onInput Search
+                                , Textfield.value model.searchInputText
                                 ]
                                 []
                             ]
@@ -239,6 +241,7 @@ homePageView model =
                                     |> Maybe.map Textfield.error
                                     |> Maybe.withDefault MOpts.nop
                                 , MOpts.onInput SetLinkInputText
+                                , Textfield.value model.linkInputText
                                 , onEnterTextfield CreateLink
                                 ]
                                 []
@@ -362,6 +365,7 @@ view model =
                             , linkInputText = model.linkInputText
                             , linkInputValidation = model.linkInputValidation
                             , filterInputText = model.filterInputText
+                            , searchInputText = model.searchInputText
                             , mdl = model.mdl
                             , snackbar = model.snackbar
                             , page = model.page
@@ -634,7 +638,7 @@ update msg model =
                             )
                             model.links
             in
-                ( { model | renderedLinks = renderedLinks }, Cmd.none )
+                ( { model | renderedLinks = renderedLinks, searchInputText = query }, Cmd.none )
 
         Timestamp msgr ->
             ( model, Task.perform msgr Time.now )

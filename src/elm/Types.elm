@@ -101,6 +101,9 @@ type alias Sessionless =
     , filterAssignments : FilterAssignments
     , snackbar : Snackbar.Model ()
     , page : Page
+    , initializedFilterAssignments : Bool
+    , appliedLinksPostFilter : Bool
+    , showNsfw : Bool
     , highlightedLink : Maybe String
     , filters : List Filter
     , linkInputText : String
@@ -150,6 +153,7 @@ type alias LoggedInView =
 
 type Msg
     = SetLinks (List Link)
+    | ToggleNsfw
     | Search String
     | SetHighlightedLink Link
     | SetLinkInputText String

@@ -51,7 +51,7 @@ standardButton index model attrs contents =
         (List.concat
             [ attrs
             , [ Button.raised
-              , MOpts.css "margin" "1em"
+              , MOpts.cs "standard-button"
               ]
             ]
         )
@@ -72,6 +72,10 @@ onEnterTextfield msg =
                 Json.fail "not ENTER"
     in
         MOpts.on "keydown" (Json.andThen isEnter keyCode)
+
+
+nsfwId =
+    "3"
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -105,7 +109,7 @@ init { user } =
                     { name = "nsfw"
                     }
               , timestamp = 0
-              , guid = "3"
+              , guid = nsfwId
               }
             ]
 
@@ -123,6 +127,9 @@ init { user } =
             , page = HomePage
             , filters = filters
             , highlightedLink = Nothing
+            , showNsfw = False
+            , appliedLinksPostFilter = False
+            , initializedFilterAssignments = False
             }
     in
         ( initialModel, Cmd.none )
@@ -261,7 +268,20 @@ homePageView model =
                     ]
                 ]
             , drawer =
-                [ standardButton 0
+                [ Toggles.switch Mdl
+                    [ 0 ]
+                    model.mdl
+                    [ Toggles.value model.showNsfw
+                    , MOpts.onToggle ToggleNsfw
+                    , MOpts.cs "drawer-item"
+                    ]
+                    [ text
+                        <| if model.showNsfw then
+                            "NSFW"
+                           else
+                            "Work Friendly"
+                    ]
+                , standardButton 0
                     model
                     [ MOpts.onClick LogOut
                     , Button.accent
@@ -272,12 +292,16 @@ homePageView model =
             }
 
 
+filterAssignmentId filterGuid linkGuid =
+    filterGuid ++ "," ++ linkGuid
+
+
 filterAssignmentToHtml : String -> LoggedInModel -> Int -> Filter -> Html Msg
 filterAssignmentToHtml linkGuid model index filter =
     let
         conditionalProps =
             model.filterAssignments
-                |> Dict.get (filter.guid ++ "," ++ linkGuid)
+                |> Dict.get (filterAssignmentId filter.guid linkGuid)
                 |> Maybe.map
                     (\filterAssignmentStatus ->
                         case filterAssignmentStatus of
@@ -371,6 +395,9 @@ view model =
                             , page = model.page
                             , filters = model.filters
                             , highlightedLink = model.highlightedLink
+                            , showNsfw = model.showNsfw
+                            , appliedLinksPostFilter = model.appliedLinksPostFilter
+                            , initializedFilterAssignments = model.initializedFilterAssignments
                             , filterAssignments = model.filterAssignments
                             }
                     in
@@ -483,8 +510,70 @@ toggleFilter toggledFilters filterGuid commands =
            )
 
 
+linkHasFilter filterAssignments filterId linkId =
+    Dict.get (filterAssignmentId filterId linkId)
+        filterAssignments
+        |> Maybe.map (always True)
+        |> Maybe.withDefault False
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        updaters =
+            [ mainUpdate, linkUpdate ]
+    in
+        List.foldl
+            (\updater ( memoModel, memoCmd ) ->
+                let
+                    ( newModel, newCmd ) =
+                        updater msg memoModel
+                in
+                    ( newModel, Cmd.batch [ newCmd, memoCmd ] )
+            )
+            ( model, Cmd.none )
+            updaters
+
+
+linkUpdate : Msg -> Model -> ( Model, Cmd Msg )
+linkUpdate msg model =
+    let
+        shouldFilterNsfw =
+            (not model.appliedLinksPostFilter) && model.initializedFilterAssignments
+
+        renderedLinks =
+            if not shouldFilterNsfw then
+                List.filter
+                    (\link ->
+                        let
+                            safeForWork =
+                                (not (linkHasFilter model.filterAssignments nsfwId link.guid))
+                        in
+                            model.showNsfw || safeForWork
+                    )
+                    model.links
+            else
+                model.links
+    in
+        ( { model
+            | renderedLinks = renderedLinks
+            , appliedLinksPostFilter = model.initializedFilterAssignments
+          }
+        , Cmd.none
+        )
+
+
+mainUpdate : Msg -> Model -> ( Model, Cmd Msg )
+mainUpdate msg model =
     case msg of
+        ToggleNsfw ->
+            ( { model
+                | showNsfw = not model.showNsfw
+                , appliedLinksPostFilter = False
+              }
+            , Cmd.none
+            )
+
         SetHighlightedLink link ->
             let
                 { guid } =
@@ -504,7 +593,13 @@ update msg model =
                 ( { model | highlightedLink = highlightedLink }, cmd )
 
         SetFilterInputText filterInputText ->
-            ( { model | filterInputText = filterInputText }, Cmd.none )
+            ( { model
+                | filterInputText = filterInputText
+                , initializedFilterAssignments =
+                    True
+              }
+            , Cmd.none
+            )
 
         SetFilterAssignments filterAssignments ->
             let
@@ -516,7 +611,7 @@ update msg model =
                                     { linkGuid, filterGuid } =
                                         filterAssignment.values
                                 in
-                                    ( filterGuid ++ "," ++ linkGuid
+                                    ( filterAssignmentId filterGuid linkGuid
                                     , FilterAssigned filterAssignment
                                     )
                             )
@@ -533,17 +628,17 @@ update msg model =
                             , uid = session.uid
                             }
 
-                        filterAssignmentId =
-                            (filterGuid ++ "," ++ linkGuid)
+                        faId =
+                            filterAssignmentId filterGuid linkGuid
 
                         filterAssignmentsUpdate =
                             model.filterAssignments
-                                |> Dict.get filterAssignmentId
+                                |> Dict.get faId
                                 |> Maybe.map
                                     (\filterAssignmentStatus ->
                                         case filterAssignmentStatus of
                                             FilterAssigned filterAssignment ->
-                                                ( Dict.remove filterAssignmentId model.filterAssignments
+                                                ( Dict.remove faId model.filterAssignments
                                                 , deleteFilterAssignment filterAssignment.guid
                                                 )
 
@@ -569,6 +664,7 @@ update msg model =
         ChangePage page ->
             ( { model | page = page }, Cmd.none )
 
+        -- FIXME: need to move this logic into the linkUpdate
         Search query ->
             let
                 toMatch =
@@ -619,14 +715,7 @@ update msg model =
                                             matchesFilter =
                                                 List.foldl
                                                     (\filterId memo ->
-                                                        let
-                                                            filterIdMatches =
-                                                                Dict.get (filterId ++ "," ++ link.guid)
-                                                                    model.filterAssignments
-                                                                    |> Maybe.map (always True)
-                                                                    |> Maybe.withDefault False
-                                                        in
-                                                            memo || filterIdMatches
+                                                        memo || (linkHasFilter model.filterAssignments filterId link.guid)
                                                     )
                                                     False
                                                     filterIds
@@ -670,9 +759,18 @@ update msg model =
                 ( newModel, Cmd.none )
 
         SetLinks links ->
+            -- let
+            --     renderedLinks =
+            --         List.filter
+            --             (\link ->
+            --                 not (linkHasFilter model.filterAssignments nsfwId link.guid)
+            --             )
+            --             links
+            -- in
             ( { model
                 | links = links
                 , renderedLinks = links
+                , appliedLinksPostFilter = False
               }
             , Cmd.none
             )

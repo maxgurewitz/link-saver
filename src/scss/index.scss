@@ -8,6 +8,14 @@ a {
   @extend .overflow-ellipsis-container;
 }
 
+.standard-button {
+  margin: 1em;
+}
+
+.drawer-item {
+  margin: 1em;
+}
+
 .centered-container {
   max-width: 90vw;
   margin: 0 auto;

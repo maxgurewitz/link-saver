@@ -275,10 +275,10 @@ homePageView model =
                     , MOpts.onToggle ToggleNsfw
                     , MOpts.cs "drawer-item"
                     ]
-                    [ text
-                        <| if model.showNsfw then
+                    [ text <|
+                        if model.showNsfw then
                             "NSFW"
-                           else
+                        else
                             "Work Friendly"
                     ]
                 , standardButton 0
@@ -554,7 +554,7 @@ linkUpdate msg model =
                     model.links
                     |> queryLinks model
             else
-                model.links
+                model.renderedLinks
     in
         ( { model
             | renderedLinks = renderedLinks

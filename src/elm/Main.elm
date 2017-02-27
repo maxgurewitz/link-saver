@@ -552,6 +552,7 @@ linkUpdate msg model =
                             model.showNsfw || safeForWork
                     )
                     model.links
+                    |> queryLinks model
             else
                 model.links
     in
@@ -561,6 +562,69 @@ linkUpdate msg model =
           }
         , Cmd.none
         )
+
+
+queryLinks : Model -> List Link -> List Link
+queryLinks model links =
+    let
+        toMatch =
+            model.searchInputText
+                |> String.toLower
+                |> String.split " "
+
+        toMatchSet =
+            Set.fromList toMatch
+
+        filterIdsForWord =
+            List.foldl
+                (\word memo ->
+                    if word == "" then
+                        memo
+                    else
+                        Dict.insert word
+                            ((List.filter
+                                (\filter ->
+                                    String.contains word (String.toLower filter.values.name)
+                                )
+                                model.filters
+                             )
+                                |> List.map .guid
+                            )
+                            memo
+                )
+                Dict.empty
+                toMatch
+    in
+        if model.searchInputText == "" then
+            links
+        else
+            List.filter
+                (\link ->
+                    List.foldl
+                        (\word isMatch ->
+                            let
+                                matchesHref =
+                                    (String.contains word (String.toLower link.href))
+
+                                filterIds =
+                                    filterIdsForWord
+                                        |> Dict.get word
+                                        |> Maybe.withDefault []
+
+                                matchesFilter =
+                                    List.foldl
+                                        (\filterId memo ->
+                                            memo || (linkHasFilter model.filterAssignments filterId link.guid)
+                                        )
+                                        False
+                                        filterIds
+                            in
+                                isMatch && (matchesHref || matchesFilter)
+                        )
+                        True
+                        toMatch
+                )
+                links
 
 
 mainUpdate : Msg -> Model -> ( Model, Cmd Msg )
@@ -664,70 +728,14 @@ mainUpdate msg model =
         ChangePage page ->
             ( { model | page = page }, Cmd.none )
 
-        -- FIXME: need to move this logic into the linkUpdate
         Search query ->
-            let
-                toMatch =
-                    query
-                        |> String.toLower
-                        |> String.split " "
-
-                toMatchSet =
-                    Set.fromList toMatch
-
-                filterIdsForWord =
-                    List.foldl
-                        (\word memo ->
-                            if word == "" then
-                                memo
-                            else
-                                Dict.insert word
-                                    ((List.filter
-                                        (\filter ->
-                                            String.contains word (String.toLower filter.values.name)
-                                        )
-                                        model.filters
-                                     )
-                                        |> List.map .guid
-                                    )
-                                    memo
-                        )
-                        Dict.empty
-                        toMatch
-
-                renderedLinks =
-                    if query == "" then
-                        model.links
-                    else
-                        List.filter
-                            (\link ->
-                                List.foldl
-                                    (\word isMatch ->
-                                        let
-                                            matchesHref =
-                                                (String.contains word (String.toLower link.href))
-
-                                            filterIds =
-                                                filterIdsForWord
-                                                    |> Dict.get word
-                                                    |> Maybe.withDefault []
-
-                                            matchesFilter =
-                                                List.foldl
-                                                    (\filterId memo ->
-                                                        memo || (linkHasFilter model.filterAssignments filterId link.guid)
-                                                    )
-                                                    False
-                                                    filterIds
-                                        in
-                                            isMatch && (matchesHref || matchesFilter)
-                                    )
-                                    True
-                                    toMatch
-                            )
-                            model.links
-            in
-                ( { model | renderedLinks = renderedLinks, searchInputText = query }, Cmd.none )
+            ( { model
+                | appliedLinksPostFilter =
+                    False
+                , searchInputText = query
+              }
+            , Cmd.none
+            )
 
         Timestamp msgr ->
             ( model, Task.perform msgr Time.now )
@@ -759,14 +767,6 @@ mainUpdate msg model =
                 ( newModel, Cmd.none )
 
         SetLinks links ->
-            -- let
-            --     renderedLinks =
-            --         List.filter
-            --             (\link ->
-            --                 not (linkHasFilter model.filterAssignments nsfwId link.guid)
-            --             )
-            --             links
-            -- in
             ( { model
                 | links = links
                 , renderedLinks = links

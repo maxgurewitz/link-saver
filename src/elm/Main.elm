@@ -275,10 +275,10 @@ homePageView model =
                     , MOpts.onToggle ToggleNsfw
                     , MOpts.cs "drawer-item"
                     ]
-                    [ text <|
-                        if model.showNsfw then
+                    [ text
+                        <| if model.showNsfw then
                             "NSFW"
-                        else
+                           else
                             "Work Friendly"
                     ]
                 , standardButton 0
@@ -538,11 +538,11 @@ update msg model =
 linkUpdate : Msg -> Model -> ( Model, Cmd Msg )
 linkUpdate msg model =
     let
-        shouldFilterNsfw =
+        shouldApplyPostFilter =
             (not model.appliedLinksPostFilter) && model.initializedFilterAssignments
 
         renderedLinks =
-            if not shouldFilterNsfw then
+            if shouldApplyPostFilter then
                 List.filter
                     (\link ->
                         let
@@ -558,7 +558,7 @@ linkUpdate msg model =
     in
         ( { model
             | renderedLinks = renderedLinks
-            , appliedLinksPostFilter = model.initializedFilterAssignments
+            , appliedLinksPostFilter = shouldApplyPostFilter
           }
         , Cmd.none
         )
@@ -681,7 +681,12 @@ mainUpdate msg model =
                             )
                         |> Dict.fromList
             in
-                ( { model | filterAssignments = newFilterAssignments }, Cmd.none )
+                ( { model
+                    | filterAssignments = newFilterAssignments
+                    , initializedFilterAssignments = True
+                  }
+                , Cmd.none
+                )
 
         AssignFilter linkGuid filterGuid ->
             case model.session of
@@ -769,7 +774,7 @@ mainUpdate msg model =
         SetLinks links ->
             ( { model
                 | links = links
-                , renderedLinks = links
+                , renderedLinks = []
                 , appliedLinksPostFilter = False
               }
             , Cmd.none

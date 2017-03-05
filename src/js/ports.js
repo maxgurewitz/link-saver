@@ -31,9 +31,8 @@ function createUser(loginForm, app) {
         Promise.reject(error);
     })
     .then(function(user) {
-      var uid = user.uid || 'fake-id';
-      links(app, uid);
-      app.ports.createUserResponse.send({ ok: uid, err: null });
+      changes(app, user);
+      app.ports.createUserResponse.send({ ok: user.uid || 'fake-id', err: null });
     })
     .catch(function(err) {
       app.ports.createUserResponse.send({ err: err.message || "", ok: null });

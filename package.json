@@ -24,9 +24,9 @@
   "homepage": "https://github.com/maxgurewitz/link-saver#readme",
   "devDependencies": {
     "css-loader": "^0.26.1",
-    "elm-webpack-loader": "^3.0.6",
+    "elm-webpack-loader": "^3.1.0",
     "file-loader": "^0.9.0",
-    "node-sass": "^4.4.0",
+    "node-sass": "^4.5.3",
     "sass-loader": "^4.1.1",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.3",
@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "firebase": "^3.6.1",
+    "vertx3-eventbus-client": "^3.4.1",
     "xtend": "^4.0.1"
   }
 }

@@ -2,6 +2,7 @@
 require('../scss/index.scss');
 require('../html/index.html');
 
+var EventBus = require('vertx3-eventbus-client');
 var firebase = require('firebase/app');
 require('firebase/auth');
 require('firebase/database');
@@ -28,6 +29,16 @@ firebase.auth().onAuthStateChanged(function(user) {
     };
 
     var app = Elm.Main.embed(document.getElementById('main'), flags);
+
+    var eb = new EventBus('http://localhost:8080/eventbus');
+
+    eb.onopen = function onopen() {
+      console.log('Event bus opened.');
+
+      eb.send('create-user', { name: 'max' }, function(err, res) {
+        console.log('create-user callback', err, res);
+      });
+    };
 
     Object.keys(ports.receive).forEach(function(name) {
       var subscription = ports.receive[name];

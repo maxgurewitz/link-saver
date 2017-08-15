@@ -60,7 +60,8 @@ function createLink(payload) {
   firebase.database().ref('links/' + payload.uid).push().set({
     href: payload.href,
     clickedAt: 0,
-    timestamp: now
+    timestamp:
+     now
   });
 }
 

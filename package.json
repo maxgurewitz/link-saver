@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "parallel start-server start-client",
-    "start-server": "nodemon src/js/server/index.js",
+    "start-server": "nodemon --watch src/js/server src/js/server/index.js",
     "start-client": "webpack-dev-server --port 3000 --open",
     "build": "NODE_ENV=production webpack -p"
   },
@@ -38,6 +38,7 @@
   "dependencies": {
     "firebase": "^3.6.1",
     "koa": "^2.3.0",
+    "koa-router": "^7.2.1",
     "xtend": "^4.0.1"
   }
 }

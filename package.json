@@ -4,7 +4,9 @@
   "description": "Link saver app.",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --port 3000 --open",
+    "start": "parallel start-server start-client",
+    "start-server": "nodemon src/js/server/index.js",
+    "start-client": "webpack-dev-server --port 3000 --open",
     "build": "NODE_ENV=production webpack -p"
   },
   "repository": {
@@ -27,6 +29,7 @@
     "elm-webpack-loader": "^3.0.6",
     "file-loader": "^0.9.0",
     "node-sass": "^4.4.0",
+    "npm-parallel": "^2.0.1",
     "sass-loader": "^4.1.1",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.3",
@@ -34,6 +37,7 @@
   },
   "dependencies": {
     "firebase": "^3.6.1",
+    "koa": "^2.3.0",
     "xtend": "^4.0.1"
   }
 }

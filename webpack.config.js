@@ -15,7 +15,7 @@ if (env === 'production') {
 }
 
 module.exports = {
-  entry: './src/js/index.js',
+  entry: './src/js/client/index.js',
   output: {
     path: './docs',
     filename: 'index.js'

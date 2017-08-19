@@ -8,8 +8,19 @@ require('firebase/database');
 
 var Elm = require('../../elm/Main');
 var ports = require('./ports');
+var SockJS = require('sockjs-client');
 
 var fbpid = 'link-saver-44fb2';
+
+var sock = new SockJS('http://localhost:3001/connect');
+
+sock.onopen = function() {
+  sock.send('createUser', { foo: 'bar' });
+};
+
+sock.onmessage = function(e) {
+  console.log('message', e.data);
+};
 
 firebase.initializeApp({
   apiKey: 'AIzaSyAuYCjKcCsk0Z0r5JKjQTVAPpJCB07PJgk',

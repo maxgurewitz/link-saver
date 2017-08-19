@@ -1,15 +1,21 @@
 const Koa = require('koa');
-const router = require('koa-router')();
+const http = require('http');
+const sockjs = require('sockjs');
 
 const app = new Koa();
 
-
-router.get('/connect', async (ctx, next) => {
-    ctx.body = 'foo';
+const sockjsServer = sockjs.createServer({
+  sockjs_url: 'http://cdn.jsdelivr.net/sockjs/1.0.1/sockjs.min.js'
 });
 
-app
-  .use(router.routes())
-  .use(router.allowedMethods());
+sockjsServer.on('connection', conn => {
+  conn.on('createUser', message => {
+    conn.write(JSON.stringify({ baz: 'bar' }));
+  });
+});
 
-app.listen(3001);
+const server = http.createServer(app.callback());
+
+sockjsServer.installHandlers(server, { prefix: '/connect' });
+
+server.listen(3001, '0.0.0.0');

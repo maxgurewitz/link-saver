@@ -39,6 +39,8 @@
     "firebase": "^3.6.1",
     "koa": "^2.3.0",
     "koa-router": "^7.2.1",
+    "sockjs": "^0.3.18",
+    "sockjs-client": "^1.1.4",
     "xtend": "^4.0.1"
   }
 }

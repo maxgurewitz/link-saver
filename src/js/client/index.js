@@ -1,13 +1,13 @@
 'use strict';
-require('../scss/index.scss');
-require('../html/index.html');
+require('../../scss/index.scss');
+require('../../html/index.html');
 
 var firebase = require('firebase/app');
 require('firebase/auth');
 require('firebase/database');
 
-var Elm = require('../elm/Main');
-var ports = require('../js/ports');
+var Elm = require('../../elm/Main');
+var ports = require('./ports');
 
 var fbpid = 'link-saver-44fb2';
 

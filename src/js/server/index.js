@@ -10,7 +10,6 @@ const sockjsServer = sockjs.createServer({
 
 sockjsServer.on('connection', conn => {
   conn.on('data', message => {
-    console.log('loc1', message);
     conn.write(JSON.stringify({ baz: 'bar' }));
   });
 });

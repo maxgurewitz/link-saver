@@ -15,7 +15,7 @@ var fbpid = 'link-saver-44fb2';
 var sock = new SockJS('http://localhost:3001/connect');
 
 sock.onopen = function() {
-  sock.send({ type: 'login', data: 'bar' });
+  sock.send(JSON.stringify({ type: 'login', data: { email: 'a@yahoo.com' } }));
 };
 
 sock.onmessage = function(e) {
